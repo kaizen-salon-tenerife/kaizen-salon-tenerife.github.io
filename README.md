@@ -40,3 +40,16 @@ npm test
 
 `npm run build` también valida que el artefacto final incluya un Worker ESM
 compatible con Cloudflare.
+
+## Publicación gratuita en Cloudflare
+
+El proyecto incluye `wrangler.jsonc` y puede conectarse al repositorio desde
+Cloudflare Workers Builds. Para una publicación manual, después de iniciar
+sesión con Wrangler:
+
+```bash
+npm run deploy:cloudflare
+```
+
+Las imágenes se sirven directamente, sin utilizar Cloudflare Images ni añadir
+un servicio de pago.
