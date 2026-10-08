@@ -72,9 +72,9 @@ export default function StaffLoginPage() {
   return (
     <main className="staff-auth-page">
       <section className="staff-auth-card">
-        <Link href="/" className="staff-auth-brand" aria-label="Volver a Kaizen">
-          <Image src="/logo-kaizen.png" alt="Kaizen" width={82} height={82} unoptimized />
-          <span><strong>Kaizen</strong><small>Panel del equipo</small></span>
+        <Link href="/" className="staff-auth-brand" aria-label="Volver a MB Beauty">
+          <Image src="/brand/logo/mb-beauty-mark.webp" alt="MB Beauty" width={82} height={82} unoptimized />
+          <span><strong>MB Beauty</strong><small>Panel del equipo</small></span>
         </Link>
         <div className="staff-auth-heading">
           <p>Acceso privado</p>
@@ -82,15 +82,16 @@ export default function StaffLoginPage() {
           <span>Introduce tus datos internos para gestionar tu agenda y tus clientas.</span>
         </div>
         <form onSubmit={submit} className="staff-auth-form">
-          <label><span>Correo interno</span><input name="email" type="email" autoComplete="username" required placeholder="nombre@kaizen.local" /></label>
+          <label><span>Correo interno</span><input name="email" type="email" autoComplete="username" required placeholder="Tu correo interno" /></label>
           <PasswordField label="Contraseña" name="password" autoComplete="current-password" required placeholder="Tu contraseña" />
           {error && <p className="staff-auth-error" role="alert">{error}</p>}
           <button type="submit" disabled={loading}>{loading ? "Comprobando…" : "Entrar al panel"}</button>
         </form>
-        <p className="staff-auth-help">Acceso exclusivo para el equipo de Kaizen.</p>
+        <Link className="staff-recovery-link" href="/panel/recuperar-clave">¿Has olvidado tu contraseña?</Link>
+        <p className="staff-auth-help">Acceso exclusivo para el equipo de MB Beauty.</p>
       </section>
       <aside className="staff-auth-visual" aria-hidden="true">
-        <div><small>Kaizen · Tenerife</small><strong>Tu agenda,<br />siempre clara.</strong><span>Clientes, citas y organización en un único espacio seguro.</span></div>
+        <div><small>MB Beauty · Tenerife</small><strong>Tu agenda,<br />siempre clara.</strong><span>Clientes, citas y organización en un único espacio seguro.</span></div>
       </aside>
     </main>
   );

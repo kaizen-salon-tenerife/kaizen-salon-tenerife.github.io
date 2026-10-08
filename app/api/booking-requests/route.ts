@@ -90,7 +90,7 @@ export async function POST(request: Request) {
           p_phone: phone,
           p_notes: notes,
           p_waitlist: waitlist,
-          p_privacy_version: "2026-08-28",
+          p_privacy_version: "2026-10-08",
         }),
       },
     );
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     if (message.includes("client_blocked")) {
       return Response.json(
         {
-          error: "No es posible realizar la reserva online con estos datos. Contacta directamente con Kaizen.",
+          error: "No es posible realizar la reserva online con estos datos. Contacta directamente con MB Beauty.",
           code: "client_blocked",
         },
         { status: 403 },

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     return Response.json({
       error: allDay
         ? "Revisa las fechas del bloqueo."
-        : "El bloqueo debe estar dentro del horario de Kaizen.",
+        : "El bloqueo debe estar dentro del horario de MB Beauty.",
     }, { status: 400 });
   }
 

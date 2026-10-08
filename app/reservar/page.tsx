@@ -39,12 +39,10 @@ type AvailabilityResult = {
 };
 
 const categoryPrices: Record<string, string> = {
-  "Manicura y uñas": "20–35 € aprox.",
-  Pedicura: "15–25 € aprox.",
-  Faciales: "40–50 € aprox.",
-  "Cejas y pestañas": "5–50 € aprox.",
-  Micropigmentación: "Precio a consultar",
-  Tatuajes: "Precio a consultar",
+  "Manicura y uñas": "Ver precios",
+  Pedicura: "Ver precios",
+  Faciales: "Ver precios",
+  "Cejas y pestañas": "Ver precios",
 };
 
 const categoryLabels: Record<string, string> = {
@@ -56,20 +54,18 @@ function groupServices(items: BookingService[]) {
     name,
     price: categoryPrices[name],
     items: items
-      .filter((service) => service.category === name)
+      .filter((service) => service.category === name && service.professionalKey === "nurme")
       .sort((left, right) => left.sortOrder - right.sortOrder),
-  }));
+  })).filter((category) => category.items.length > 0);
 }
 
 const fallbackCategories = groupServices(
-  DEFAULT_SERVICE_DEFINITIONS.filter((service) => service.isActive),
+  DEFAULT_SERVICE_DEFINITIONS.filter((service) => service.isActive && service.professionalKey === "nurme"),
 );
 
 const professionals = [
   { key: "any", name: "Asignación automática", detail: "La mejor combinación disponible" },
-  { key: "sarai", name: "Sarai", detail: "Estética y micropigmentación" },
-  { key: "yeroha", name: "Yeroha", detail: "Tatuajes" },
-  { key: "nurme", name: "Nurme", detail: "Uñas, faciales, cejas y pestañas" },
+  { key: "nurme", name: "Nurme Martín", detail: "Uñas, faciales, cejas y pestañas" },
 ];
 
 function getLocalDayOfWeek(dateValue: string) {
@@ -210,7 +206,7 @@ export default function BookingPage() {
 
   const whatsappUrl = useMemo(() => {
     const message = [
-      "Hola Kaizen, tengo una cita confirmada desde la web.",
+      "Hola MB Beauty, tengo una cita confirmada desde la web.",
       "Nombre: " + (name || "Por completar"),
       "WhatsApp: " + (phone || "Por completar"),
       "Servicios: " + selectedText,
@@ -225,7 +221,7 @@ export default function BookingPage() {
       .filter(Boolean)
       .join("\n");
 
-    return "https://wa.me/34639384727?text=" + encodeURIComponent(message);
+    return "https://wa.me/34652430072?text=" + encodeURIComponent(message);
   }, [bookingReference, day, name, notes, phone, selectedProfessionalName, selectedScheduleText, selectedSlot, selectedText, waitlist]);
 
   function toggleService(serviceId: string) {
@@ -248,7 +244,7 @@ export default function BookingPage() {
     setDay(value);
     clearAvailability(
       getLocalDayOfWeek(value) === 0
-        ? "Kaizen permanece cerrado los domingos. Elige otro día."
+        ? "MB Beauty permanece cerrado los domingos. Elige otro día."
         : "",
     );
   }
@@ -306,7 +302,7 @@ export default function BookingPage() {
       setBookingReference(result.reference ?? "KZ-GUARDADA");
     } catch {
       setBookingError(
-        "No hemos podido conectar con Kaizen. Comprueba tu conexión e inténtalo de nuevo.",
+        "No hemos podido conectar con MB Beauty. Comprueba tu conexión e inténtalo de nuevo.",
       );
     } finally {
       setSubmitting(false);
@@ -319,13 +315,13 @@ export default function BookingPage() {
         <div className="booking-shell booking-header-inner">
           <Link className="booking-brand" href="/">
             <Image
-              src="/logo-kaizen.png"
-              alt="Kaizen"
+              src="/brand/logo/mb-beauty-mark.webp"
+              alt="MB Beauty"
               width={52}
               height={52}
               unoptimized
             />
-            <span><strong>Kaizen</strong><small>Reserva de cita</small></span>
+            <span><strong>MB Beauty</strong><small>Reserva de cita</small></span>
           </Link>
           <Link className="booking-close" href="/" aria-label="Cerrar y volver al inicio">
             ×
@@ -339,7 +335,7 @@ export default function BookingPage() {
           <h1>Cuéntanos qué necesitas.</h1>
           <p>
             No necesitas crear una cuenta. Al terminar, tu cita quedará
-            confirmada directamente en la agenda de Kaizen.
+            confirmada directamente en la agenda de MB Beauty.
           </p>
           <ol className="steps" aria-label="Progreso de la reserva">
             {["Servicios", "Preferencias", "Tus datos", "Confirmación"].map(
@@ -359,7 +355,7 @@ export default function BookingPage() {
           </ol>
           <a
             className="help-link"
-            href="https://wa.me/34639384727?text=Hola%20Kaizen%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
+            href="https://wa.me/34652430072?text=Hola%20MB%20Beauty%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
             target="_blank"
             rel="noreferrer"
           >
@@ -596,7 +592,7 @@ export default function BookingPage() {
                     onChange={(event) => setPrivacyAccepted(event.target.checked)}
                   />
                   <span>
-                    Acepto que Kaizen utilice mis datos para gestionar esta cita.
+                    Acepto que MB Beauty utilice mis datos para gestionar esta cita.
                     He leído el <Link href="/privacidad" target="_blank" rel="noreferrer">aviso de privacidad</Link>.
                   </span>
                 </label>
@@ -612,7 +608,7 @@ export default function BookingPage() {
                   <small>Cita registrada</small>
                   <h2>Tu cita está confirmada.</h2>
                   <p>
-                    La hemos añadido directamente a la agenda de Kaizen. Si el
+                    La hemos añadido directamente a la agenda de MB Beauty. Si el
                     centro necesita hacer algún cambio, se pondrá en contacto contigo.
                   </p>
                   <div className="booking-reference">
@@ -649,7 +645,7 @@ export default function BookingPage() {
                     <span>✓</span>
                     <p>
                       Al confirmar, la cita aparecerá inmediatamente en la agenda de
-                      Kaizen como confirmada y ese horario dejará de estar disponible.
+                      MB Beauty como confirmada y ese horario dejará de estar disponible.
                     </p>
                   </div>
                   {bookingError && (
@@ -690,7 +686,7 @@ export default function BookingPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                Escribir a Kaizen →
+                Escribir a MB Beauty →
               </a>
             ) : (
               <button

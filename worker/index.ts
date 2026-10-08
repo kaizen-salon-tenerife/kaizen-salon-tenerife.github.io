@@ -1,8 +1,8 @@
-/** Cloudflare Worker entry point for Kaizen. */
+/** Cloudflare Worker entry point for MB Beauty. */
 import handler from "vinext/server/app-router-entry";
 
 interface Env {
-  ASSETS: Fetcher;
+  ASSETS: { fetch(request: Request): Promise<Response> };
 }
 
 interface ExecutionContext {
