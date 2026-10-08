@@ -22,8 +22,8 @@ export default function PrivacyPage() {
           <p>
             Nurme Martín · MB Beauty.<br />Dirección registrada (pendiente de confirmar): Ctra. General de Taco, 14, local 14, Barranco Grande,
             Tenerife.<br />
-            Contacto: <a href="tel:+34639384727">639 38 47 27</a> o
-            <a href="https://wa.me/34639384727"> WhatsApp</a>.
+            Contacto: <a href="tel:+34652430072">+34 652 43 00 72</a> o
+            <a href="https://wa.me/34652430072"> WhatsApp</a>.
           </p>
         </section>
 

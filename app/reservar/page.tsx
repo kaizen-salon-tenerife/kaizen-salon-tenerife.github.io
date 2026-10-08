@@ -221,7 +221,7 @@ export default function BookingPage() {
       .filter(Boolean)
       .join("\n");
 
-    return "https://wa.me/34639384727?text=" + encodeURIComponent(message);
+    return "https://wa.me/34652430072?text=" + encodeURIComponent(message);
   }, [bookingReference, day, name, notes, phone, selectedProfessionalName, selectedScheduleText, selectedSlot, selectedText, waitlist]);
 
   function toggleService(serviceId: string) {
@@ -355,7 +355,7 @@ export default function BookingPage() {
           </ol>
           <a
             className="help-link"
-            href="https://wa.me/34639384727?text=Hola%20MB Beauty%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
+            href="https://wa.me/34652430072?text=Hola%20MB%20Beauty%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
             target="_blank"
             rel="noreferrer"
           >

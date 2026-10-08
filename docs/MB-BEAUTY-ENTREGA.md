@@ -73,7 +73,7 @@ La nueva portada utiliza contrastes de texto carbón/taupe sobre fondos claros, 
 
 ## Información que Manuel y Nurme deben confirmar
 
-- Dirección exacta en La Cuesta y vigencia del teléfono/WhatsApp 639 38 47 27. Se conserva la dirección registrada de Barranco Grande, marcada pendiente; los mensajes históricos conservan el domicilio, por lo que deben revisarse antes de enviar avisos reales.
+- Dirección exacta en La Cuesta. El teléfono y WhatsApp +34 652 43 00 72 fueron confirmados por Manuel y actualizados en la web, reserva y privacidad. Se conserva la dirección registrada de Barranco Grande, marcada pendiente; los mensajes históricos conservan el domicilio, por lo que deben revisarse antes de enviar avisos reales.
 - Horarios y precios actuales; se conservaron los horarios del sistema y los precios individuales del catálogo del repositorio. Se retiraron rangos resumidos potencialmente inexactos.
 - Micropigmentación de cejas: está asociada a Sarai en el catálogo; no se anuncia como servicio de Nurme hasta confirmarlo. Dermaplaning no consta: no se añadió.
 - Foto auténtica y biografía profesional autorizada de Nurme; certificaciones solo si se facilitan. Fotos de trabajos con consentimiento y testimonios verificables.
