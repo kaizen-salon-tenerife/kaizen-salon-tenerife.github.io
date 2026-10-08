@@ -170,3 +170,40 @@
   .mb-review-carousel { padding: 6px 6px 4px; }
 }
 @media (prefers-reduced-motion: reduce) { .mb-review-slide { animation: none; } }
+
+/* Slow easing and small distances keep interactions calm and tactile. */
+.mb-home { --mb-motion-ease: cubic-bezier(.22, 1, .36, 1); }
+.mb-home :is(.mb-button, .mb-service-card, .mb-review-carousel) {
+  transition: transform .65s var(--mb-motion-ease), box-shadow .65s var(--mb-motion-ease), background-color .45s ease, border-color .45s ease;
+}
+.mb-home :is(.mb-hero-art img, .mb-service-image img, .mb-portrait-frame img) {
+  transition: transform 1.1s var(--mb-motion-ease);
+}
+.mb-service-image { overflow: hidden; }
+.mb-portrait-frame { overflow: hidden; border-radius: 12px; border: 1px solid #d8c6ae; }
+.mb-portrait-frame img { border: 0; border-radius: 0; }
+.mb-home :is(.mb-text-link, .mb-desktop-nav a, .mb-contact-link) {
+  transition: color .4s ease, text-decoration-color .4s ease;
+}
+.mb-home :is(.mb-button, .mb-text-link) > span {
+  transition: transform .6s var(--mb-motion-ease);
+}
+.mb-desktop-nav a { position: relative; }
+.mb-desktop-nav a::after { content: ""; position: absolute; bottom: 6px; left: 0; right: 0; height: 1px; background: #b79a63; transform: scaleX(0); transform-origin: left; transition: transform .6s var(--mb-motion-ease); }
+.mb-home .mb-button:active { transform: scale(.98); transition-duration: .2s; }
+@media (hover: hover) and (pointer: fine) {
+  .mb-home .mb-button:hover { transform: translateY(-2px); box-shadow: 0 6px 18px #25221f18; }
+  .mb-home :is(.mb-button, .mb-text-link):hover > span { transform: translateX(3px); }
+  .mb-service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px #6e5b4b12; }
+  .mb-service-card:hover .mb-service-image img { transform: scale(1.035); }
+  .mb-about-portrait:hover img { transform: scale(1.025); }
+  .mb-hero-art:hover img { transform: scale(1.025); }
+  .mb-review-carousel:hover { box-shadow: 0 8px 24px #6e5b4b0d; border-color: #b79a63; }
+  .mb-desktop-nav a:hover::after { transform: scaleX(1); }
+}
+.mb-service-card:focus-within { box-shadow: 0 10px 24px #6e5b4b12; }
+.mb-desktop-nav a:focus-visible::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .mb-home :is(.mb-button, .mb-service-card, .mb-hero-art img, .mb-service-image img, .mb-portrait-frame img),
+  .mb-home :is(.mb-button, .mb-text-link) > span { transform: none !important; }
+}

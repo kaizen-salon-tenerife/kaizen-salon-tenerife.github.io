@@ -97,3 +97,7 @@ Cinco PNG originales suministrados por el propietario en `public/brand/reviews/`
 ## Retrato de Nurme
 
 La imagen proporcionada por el propietario se usa sin retoques en `public/brand/about/nurme-martin.jpg`, sustituyendo la inicial en el apartado personal. Ancho máximo 360 px en ordenador y 280 px en móvil, proporción original completa y carga diferida.
+
+## Movimiento de la portada
+
+Entradas al hacer scroll con IntersectionObserver y Web Animations API, una vez por elemento. El contenido sigue visible sin JavaScript. Zoom de fotos entre 2,5 % y 3,5 %, elevación de tarjetas de 4 px y botones de 2 px, easing suave y respuesta al pulsar. Hover solo en dispositivos con ratón; foco visible de teclado conservado. Movimiento reducido desactiva desplazamientos, zoom y entradas, incluso al cambiar la preferencia durante la sesión. Sin librerías ni movimientos continuos.
