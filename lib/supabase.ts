@@ -26,8 +26,9 @@ export async function supabaseRequest<T>(
   } | null;
 
   if (!response.ok) {
+    const errorResult = result as { message?: string; msg?: string; error_description?: string } | null;
     const detail = result && typeof result === "object"
-      ? result.message ?? result.msg ?? result.error_description
+      ? errorResult?.message ?? errorResult?.msg ?? errorResult?.error_description
       : null;
     throw new Error(detail ?? `Supabase respondió con ${response.status}.`);
   }
