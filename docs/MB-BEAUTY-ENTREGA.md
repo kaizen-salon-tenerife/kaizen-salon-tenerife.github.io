@@ -8,7 +8,7 @@ Portada nueva con cabecera y menú móvil, emblema MB Beauty, título y llamadas
 
 Paleta marfil/beige, taupe y carbón para textos y botones, champagne en detalles. Georgia aporta la serif editorial y Arial/Helvetica mantiene legible la interfaz sin depender de descargas externas. Se han eliminado las animaciones de entrada de la portada y se respeta movimiento reducido. Imágenes de manicura y facial identificadas como corporativas, nunca como resultados reales. No se inventan certificaciones, trayectoria, opiniones ni tratamientos.
 
-La imagen suministrada como hero es un emblema cuadrado sobre marfil; se utiliza como pieza de marca. Los iconos y la marca pequeña se derivan de ese emblema limpio. El PNG transparente original y su copia WebP se conservan, junto a todos los originales con doble extensión en `incoming/`. No se ha generado ni retocado creativamente ninguna imagen. WebP a 480/960 px, `srcSet`, carga diferida de servicios y prioridad solo en portada; hero y servicios derivados suman aproximadamente 369 KB entre todos sus tamaños, frente a 8,88 MB de originales totales. El navegador carga el tamaño apropiado, no todos a la vez.
+La imagen suministrada como hero es un emblema cuadrado sobre marfil; se utiliza como pieza de marca. Los iconos y la marca pequeña se derivan de ese emblema limpio. El PNG transparente original y su copia WebP se conservan, junto a todos los originales con doble extensión en `incoming/`. Los recursos iniciales de marca no se han retocado creativamente. Los cinco comentarios de Instagram añadidos después se han editado para eliminar nombres y avatares. WebP a 480/960 px, `srcSet`, carga diferida de servicios y prioridad solo en portada; hero y servicios derivados suman aproximadamente 369 KB entre todos sus tamaños, frente a 8,88 MB de originales totales. El navegador carga el tamaño apropiado, no todos a la vez.
 
 ## Auditoría inicial y protección
 
@@ -89,3 +89,7 @@ Preview final: `http://localhost:3004/`. Acceso: `/panel/acceso`. Las páginas `
 Para volver a abrirlo: `npm run start -- --port 3004 --qa`, después de `npm test`. Capturas en `outputs/mb-beauty-desktop.jpg` y `outputs/mb-beauty-mobile.jpg`.
 
 No hay push, merge, deploy ni cambios de permisos. La aceptación operativa contra Supabase real sigue pendiente. Los informes de [accesos](MB-BEAUTY-ACCESOS.md) y [Cloudflare](MB-BEAUTY-CLOUDFLARE.md) describen la siguiente fase y su reversión.
+
+## Comentarios de Instagram
+
+Cinco imágenes suministradas por el propietario, con nombres y avatares eliminados de los propios píxeles mediante edición de imagen. Solo las versiones privadas WebP están en `public/brand/reviews/`; los originales no se han copiado al repositorio. Carrusel manual con transición suave, flechas, indicadores, teclado y deslizamiento táctil. Respeta movimiento reducido y reproduce el comentario también en texto para facilitar su lectura en móvil. No se añaden estrellas, identidades ni opiniones inventadas.
