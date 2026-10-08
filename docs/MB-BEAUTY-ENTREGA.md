@@ -76,7 +76,7 @@ La nueva portada utiliza contrastes de texto carbón/taupe sobre fondos claros, 
 - Dirección exacta en La Cuesta. El teléfono y WhatsApp +34 652 43 00 72 fueron confirmados por Manuel y actualizados en la web, reserva y privacidad. Se conserva la dirección registrada de Barranco Grande, marcada pendiente; los mensajes históricos conservan el domicilio, por lo que deben revisarse antes de enviar avisos reales.
 - Horarios y precios actuales; se conservaron los horarios del sistema y los precios individuales del catálogo del repositorio. Se retiraron rangos resumidos potencialmente inexactos.
 - Micropigmentación de cejas: está asociada a Sarai en el catálogo; no se anuncia como servicio de Nurme hasta confirmarlo. Dermaplaning no consta: no se añadió.
-- Foto auténtica y biografía profesional autorizada de Nurme; certificaciones solo si se facilitan. Fotos de trabajos con consentimiento y testimonios verificables.
+- Biografía profesional ampliada de Nurme; certificaciones solo si se facilitan. Fotos de trabajos con consentimiento y testimonios verificables.
 - Datos fiscales/legales completos de la titular para completar el aviso y, si procede, aviso legal. La privacidad conserva su estructura sin inventar NIF ni un email.
 - Reactivación de Supabase, roles efectivos y matriz de permisos según el informe separado.
 - Cuenta/subdominio Cloudflare, integración GitHub/Builds y URL definitiva. OG/Twitter ya preparan imágenes absolutas para la URL nueva; no serán recuperables públicamente hasta publicar el Worker. Canonical pendiente de confirmación del dominio.
@@ -93,3 +93,7 @@ No hay push, merge, deploy ni cambios de permisos. La aceptación operativa cont
 ## Comentarios de Instagram
 
 Cinco PNG originales suministrados por el propietario en `public/brand/reviews/`, copiados sin alterar sus bytes. Sustituyen las versiones editadas descartadas. Carrusel compacto junto a la galería, con transición suave, flechas, indicadores, teclado y deslizamiento táctil. Respeta movimiento reducido. El texto accesible está en el alt; no se duplica visualmente. Se conservan los avatares y alias anónimos tal como los entregó el propietario.
+
+## Retrato de Nurme
+
+La imagen proporcionada por el propietario se usa sin retoques en `public/brand/about/nurme-martin.jpg`, sustituyendo la inicial en el apartado personal. Ancho máximo 360 px en ordenador y 280 px en móvil, proporción original completa y carga diferida.

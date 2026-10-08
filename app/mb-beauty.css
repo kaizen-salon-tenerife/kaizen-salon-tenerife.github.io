@@ -51,9 +51,10 @@
 .mb-service-copy > p:not(.mb-eyebrow) { color: #6e5b4b; font-size: 15px; line-height: 1.75; max-width: 420px; }
 .mb-service-simple { background: #f1e9de; }
 .mb-about { padding: 80px 0; background: #e9ddcd; scroll-margin-top: 100px; }
-.mb-about-grid { display: grid; grid-template-columns: .8fr 1fr; gap: 100px; align-items: center; }
-.mb-monogram { padding: 50px 20px; text-align: center; color: #6e5b4b; font: italic 150px Georgia,serif; border: 1px solid #b79a63; border-radius: 180px 180px 4px 4px; }
-.mb-monogram span { display: block; font: 15px Arial,sans-serif; letter-spacing: .08em; margin-top: 10px; }
+.mb-about-grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 80px; align-items: center; }
+.mb-about-portrait { width: 100%; max-width: 360px; margin: 0; justify-self: center; }
+.mb-about-portrait img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid #d8c6ae; }
+.mb-about-portrait figcaption { color: #6e5b4b; text-align: center; font-size: 12px; letter-spacing: .04em; padding-top: 12px; }
 .mb-about p:not(.mb-eyebrow) { color: #6e5b4b; line-height: 1.85; font-size: 16px; }
 .mb-community { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; }
 .mb-community h2 { font-size: 36px; }
@@ -130,7 +131,7 @@
   .mb-service-copy { padding: 26px; }
   .mb-service-copy .mb-eyebrow { letter-spacing: .1em; }
   .mb-about, .mb-contact { padding: 56px 0; }
-  .mb-monogram { max-width: 320px; width: 100%; justify-self: center; font-size: 100px; padding: 36px 20px; }
+  .mb-about-portrait { max-width: 280px; }
   .mb-community { gap: 48px; }
   .mb-footer-grid { flex-direction: column; gap: 12px; }
   .mb-footer nav { gap: 8px 20px; }
