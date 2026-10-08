@@ -1,55 +1,43 @@
-# Kaizen Salón Tenerife
+# MB Beauty
 
-Web pública de Kaizen y panel privado para gestionar reservas, agenda,
-clientas, fichas de tratamiento, fotografías, cobros y avisos de WhatsApp.
+Plataforma de estética y cuidado personalizado de Nurme Martín en Tenerife.
+Web pública y panel privado para reservas, agenda, clientas, historial, tratamientos, fotografías, cobros y avisos de WhatsApp.
 
-## Tecnología
+## Desarrollo local
 
-- Next.js/Vinext y React.
-- Supabase Auth para las cuentas internas.
-- PostgreSQL de Supabase para los datos.
-- Supabase Storage para fotografías privadas.
-- Cloudflare como entorno de ejecución de la web.
-
-## Preparación local
-
-Requiere Node.js `>=22.13.0`.
+Node.js >=22.13.0. React 19, Next.js/Vinext, Vite y Cloudflare Workers. Supabase conserva Auth, PostgreSQL y Storage existentes.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-La URL y la clave pública de Supabase están en `lib/supabase.ts`. La clave
-publicable está diseñada para usarse en aplicaciones web; la seguridad real la
-aplican las políticas RLS incluidas en las migraciones.
+Para revisar el build en Windows:
 
-## Base de datos
+```bash
+npm run build
+npm run start -- --port 3003
+```
 
-Las migraciones están en `supabase/migrations/` y deben ejecutarse en el orden
-indicado en `supabase/README.md`. El repositorio no contiene contraseñas, claves
-secretas ni la clave `service_role`.
+Los comandos de build/lint funcionan en Windows y conservan los verificadores Bash del entorno Linux. El preview de Windows sirve el Worker compilado y sus recursos estáticos; no publica nada. Supabase debe estar activo para operaciones reales.
 
 ## Comprobaciones
 
 ```bash
 npm run lint
-npm run build
+npm run typecheck
 npm test
+npm run validate:artifact
 ```
 
-`npm run build` también valida que el artefacto final incluya un Worker ESM
-compatible con Cloudflare.
+Las pruebas de flujos autenticados interceptan Supabase con datos sintéticos y no escriben en el proyecto remoto. Sus snapshots se guardan en `outputs/`, fuera del artefacto de despliegue.
 
-## Publicación gratuita en Cloudflare
+## Revisión antes de publicar
 
-El proyecto incluye `wrangler.jsonc` y puede conectarse al repositorio desde
-Cloudflare Workers Builds. Para una publicación manual, después de iniciar
-sesión con Wrangler:
+- [Entrega y auditoría](docs/MB-BEAUTY-ENTREGA.md)
+- [Informe de permisos pendiente de aprobación](docs/MB-BEAUTY-ACCESOS.md)
+- [Transición Cloudflare y rollback](docs/MB-BEAUTY-CLOUDFLARE.md)
 
-```bash
-npm run deploy:cloudflare
-```
+No hacer push, merge, cambiar permisos ni desplegar hasta la aprobación de Manuel. La configuración activa conserva el Worker antiguo y la candidata está en `wrangler.mb-beauty.jsonc`. El proyecto Supabase remoto está INACTIVE en la revisión del 8 de octubre de 2026; no se ha reactivado.
 
-Las imágenes se sirven directamente, sin utilizar Cloudflare Images ni añadir
-un servicio de pago.
+Las claves publicables existentes no se modifican. No incorporar claves secretas ni credenciales a código, commits o logs. Las migraciones y los datos históricos permanecen intactos.
