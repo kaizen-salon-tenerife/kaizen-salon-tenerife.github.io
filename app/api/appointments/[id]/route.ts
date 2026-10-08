@@ -84,7 +84,7 @@ export async function PATCH(
   const startsAt = `${date}T${time}:00`;
   const endsAt = addMinutes(startsAt, duration);
   if (blocksAvailability && !isWithinOpeningHours(startsAt, endsAt)) {
-    return Response.json({ error: "La cita debe estar dentro del horario de Kaizen." }, { status: 400 });
+    return Response.json({ error: "La cita debe estar dentro del horario de MB Beauty." }, { status: 400 });
   }
   if (blocksAvailability) {
     const conflict = await hasAppointmentConflict({

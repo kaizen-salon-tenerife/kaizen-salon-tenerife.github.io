@@ -49,7 +49,7 @@ export async function calculateBookingAvailability({
       slots: [],
       totalDuration: 0,
       reason: "closed",
-      message: "Kaizen permanece cerrado los domingos. Elige otro día.",
+      message: "MB Beauty permanece cerrado los domingos. Elige otro día.",
       professionals: [],
       selectedServices: [],
     };
@@ -84,7 +84,7 @@ export async function calculateBookingAvailability({
         0,
       ),
       reason: "professional_unavailable",
-      message: "Una de las profesionales necesarias no está disponible. Contacta con Kaizen.",
+      message: "Una de las profesionales necesarias no está disponible. Contacta con MB Beauty.",
       professionals: [],
       selectedServices,
     };

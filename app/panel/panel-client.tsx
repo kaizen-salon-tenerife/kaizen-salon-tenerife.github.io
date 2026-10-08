@@ -500,7 +500,7 @@ export default function PanelClient({
 
   async function deleteScheduleBlock(block: ScheduleBlockRow) {
     if (!block.professionalId && !isOwner) {
-      setNotice("Solo Sarai puede modificar los cierres generales del centro.");
+      setNotice("Tu cuenta no tiene permiso para modificar los cierres generales del centro.");
       return;
     }
     if (!window.confirm(`¿Eliminar el bloqueo “${block.title}”?`)) return;
@@ -773,8 +773,8 @@ export default function PanelClient({
     <main className="panel-page">
       <aside className="panel-sidebar">
         <Link className="panel-brand" href="/">
-          <Image src="/logo-kaizen.png" alt="Kaizen" width={54} height={54} unoptimized />
-          <span><strong>Kaizen</strong><small>Panel interno</small></span>
+          <Image src="/brand/logo/mb-beauty-mark.webp" alt="MB Beauty" width={54} height={54} unoptimized />
+          <span><strong>MB Beauty</strong><small>Panel interno</small></span>
         </Link>
         <nav aria-label="Secciones del panel">
           {navigation.map((item) => (
@@ -802,19 +802,21 @@ export default function PanelClient({
           <div>{currentUser.name.slice(0, 1)}</div>
           <span>
             <strong>{currentUser.name}</strong>
-            <small>{currentUser.professionalKey === "adminleon" ? "Administrador" : isOwner ? "Propietaria" : "Profesional"}</small>
+            <small>{currentUser.professionalKey === "adminleon" ? "Administrador técnico principal" : currentUser.professionalKey === "nurme" ? "Propietaria · Administración operativa" : "Cuenta histórica"}</small>
           </span>
           <button type="button" onClick={logout} aria-label="Cerrar sesión">↪</button>
         </div>
       </aside>
 
       <section className="panel-main">
+        <div className="mb-panel-responsibilities"><strong>MB Beauty</strong><span>Nurme Martín · Propietaria y administradora operativa</span><span>Manuel · Administrador técnico principal y superadministrador</span><small>Los permisos de las cuentas se conservan hasta aprobar la migración de acceso.</small></div>
         <header className="panel-topbar">
           <div>
             <p>{formatLongDate(new Date())}</p>
             <h1>{view}</h1>
           </div>
           <div className="panel-top-actions">
+            <button className="mb-mobile-logout panel-secondary" type="button" onClick={logout} aria-label="Cerrar sesión">Salir ↪</button>
             <span className="secure-pill">● Acceso seguro</span>
             <button className="panel-secondary" type="button" onClick={() => { setModal("client"); setError(""); }}>
               + Nueva clienta
@@ -848,7 +850,7 @@ export default function PanelClient({
                 <article className="panel-card security-card">
                   <small>Configuración inicial</small>
                   <h2>Accesos del equipo</h2>
-                  <p>Sarai puede ver todo. Yeroha y Nurme solamente acceden a sus propias clientas y citas.</p>
+                  <p>Los permisos efectivos dependen de los perfiles activos y las políticas de acceso existentes. El cambio de marca no modifica esos permisos.</p>
                   <button type="button" onClick={() => setView("Equipo")}>Revisar cuentas →</button>
                 </article>
                 <article className="panel-card match-card">
@@ -1204,7 +1206,7 @@ export default function PanelClient({
             <section className="panel-card panel-full-card payment-dashboard-card">
               <div className="panel-card-heading payment-dashboard-heading">
                 <div>
-                  <small>{isOwner ? "Control general de Kaizen" : "Solo tus citas y clientas"}</small>
+                  <small>{isOwner ? "Control general de MB Beauty" : "Solo tus citas y clientas"}</small>
                   <h2>Cobros e ingresos</h2>
                   <p>Consulta pagos, revisa importes pendientes y corrige cualquier dato.</p>
                 </div>
@@ -1384,7 +1386,7 @@ export default function PanelClient({
                         required
                         placeholder="Ej. Impago pendiente o comportamiento inapropiado"
                       />
-                      <small>El motivo es privado y solamente lo verá el equipo de Kaizen.</small>
+                      <small>El motivo es privado y solamente lo verá el equipo de MB Beauty.</small>
                     </label>
                   )}
                 </section>
@@ -2106,15 +2108,15 @@ function whatsappDate(value: string) {
 }
 
 function confirmationWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en Kaizen está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en MB Beauty está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
 }
 
 function reminderWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en Kaizen.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nRespóndenos con una opción:\n1️⃣ Confirmo mi asistencia\n2️⃣ Necesito cancelar\n3️⃣ Quiero reprogramar\n\nRecuerda que puedes cancelar hasta 6 horas antes. ¡Te esperamos!`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en MB Beauty.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nRespóndenos con una opción:\n1️⃣ Confirmo mi asistencia\n2️⃣ Necesito cancelar\n3️⃣ Quiero reprogramar\n\nRecuerda que puedes cancelar hasta 6 horas antes. ¡Te esperamos!`;
 }
 
 function waitlistWhatsappMessage(appointment: AppointmentRow, offer: WaitlistOffer) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Ha quedado libre un hueco en Kaizen para ${appointment.service}.\n\n📅 ${whatsappDate(offer.date)}\n🕒 ${offer.time} h\n👩‍💼 ${appointment.professional}\n\nSi te interesa, responde SÍ durante la próxima hora. Si no recibimos respuesta, ofreceremos el hueco a la siguiente clienta. Tu cita actual seguirá guardada hasta que confirmemos el cambio contigo.`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Ha quedado libre un hueco en MB Beauty para ${appointment.service}.\n\n📅 ${whatsappDate(offer.date)}\n🕒 ${offer.time} h\n👩‍💼 ${appointment.professional}\n\nSi te interesa, responde SÍ durante la próxima hora. Si no recibimos respuesta, ofreceremos el hueco a la siguiente clienta. Tu cita actual seguirá guardada hasta que confirmemos el cambio contigo.`;
 }
 
 function whatsappWasSent(
@@ -2160,7 +2162,7 @@ function professionalLabel(professionalKey: string) {
     sarai: "Sarai",
     yeroha: "Yeroha",
     nurme: "Nurme",
-  }[professionalKey] ?? "Equipo Kaizen";
+  }[professionalKey] ?? "Equipo MB Beauty";
 }
 
 function durationText(minutes: number) {

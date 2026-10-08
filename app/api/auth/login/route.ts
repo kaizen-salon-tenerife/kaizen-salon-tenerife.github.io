@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const profile = await getStaffProfile(session.user.id, session.access_token);
     if (!profile) {
       return Response.json(
-        { error: "Esta cuenta no tiene acceso al panel de Kaizen." },
+        { error: "Esta cuenta no tiene acceso al panel de MB Beauty." },
         { status: 403 },
       );
     }

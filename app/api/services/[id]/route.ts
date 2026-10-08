@@ -23,7 +23,7 @@ export async function PATCH(
   ]);
   if (!user || user.role !== "owner" || !accessToken) {
     return Response.json(
-      { error: "Solo Sarai y administración pueden modificar los servicios." },
+      { error: "Tu cuenta no tiene permiso para modificar los servicios." },
       { status: 403 },
     );
   }

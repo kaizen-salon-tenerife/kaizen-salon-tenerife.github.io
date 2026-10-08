@@ -52,8 +52,8 @@ export default function ChangePasswordPage() {
     <main className="staff-auth-page single">
       <section className="staff-auth-card change-password-card">
         <div className="staff-auth-brand">
-          <Image src="/logo-kaizen.png" alt="Kaizen" width={72} height={72} unoptimized />
-          <span><strong>Kaizen</strong><small>Primer acceso</small></span>
+          <Image src="/brand/logo/mb-beauty-mark.webp" alt="MB Beauty" width={72} height={72} unoptimized />
+          <span><strong>MB Beauty</strong><small>Primer acceso</small></span>
         </div>
         <div className="staff-auth-heading">
           <p>Protege tu cuenta</p>
