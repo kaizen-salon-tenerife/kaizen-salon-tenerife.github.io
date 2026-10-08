@@ -105,3 +105,7 @@ Entradas al hacer scroll con IntersectionObserver y Web Animations API, una vez 
 ## Galería de manicuras
 
 Cuatro PNG originales suministrados por el propietario, copiados sin alterar en `public/brand/gallery/`. Sustituyen el texto provisional de la galería. Carrusel de una columna al lado de los comentarios, fotos completas de hasta 300 px de alto en ordenador y 270 px en móvil, flechas, indicadores, teclado y gestos táctiles. Transición y pequeño zoom respetan movimiento reducido.
+
+## Imágenes de Pedicura y Lash & Brows
+
+Dos nuevas imágenes generadas con aspecto fotográfico, piel natural y tonos marfil/champagne para las tarjetas de servicios. Originales PNG guardados junto a derivados WebP de 480/960 px. Comparten formato, carga diferida y microzoom con los demás servicios. Se conserva el aviso de imagen corporativa; no se presentan como trabajos reales del salón.

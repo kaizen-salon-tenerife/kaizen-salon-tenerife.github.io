@@ -8,8 +8,8 @@ import WorkGalleryCarousel from "./components/work-gallery-carousel";
 const services = [
   { number: "01", title: "Manicura y uñas", description: "Manicura tradicional, semipermanente, Softgel y acrílico. Un cuidado pensado para tu estilo.", image: "manicure", alt: "Imagen corporativa de manicura", tags: "MANICURA · SOFTGEL · ACRÍLICO" },
   { number: "02", title: "Cuidado facial", description: "Higiene facial profunda, limpieza con tratamiento y radiofrecuencia. Descubre las opciones de cuidado facial.", image: "facial", alt: "Imagen corporativa de cuidado facial", tags: "HIGIENE · LIMPIEZA · CUIDADO" },
-  { number: "03", title: "Pedicura", description: "Cuidado de tus pies con pedicura tradicional o semipermanente.", tags: "TRADICIONAL · SEMIPERMANENTE" },
-  { number: "04", title: "Lash & Brows", description: "Cejas y pestañas: depilación, extensiones, lifting con tinte, laminación y henna.", tags: "CEJAS · PESTAÑAS · LIFTING" },
+  { number: "03", title: "Pedicura", description: "Cuidado de tus pies con pedicura tradicional o semipermanente.", image: "pedicure", alt: "Imagen corporativa de pedicura con esmalte rosa sobre una toalla marfil", tags: "TRADICIONAL · SEMIPERMANENTE" },
+  { number: "04", title: "Lash & Brows", description: "Cejas y pestañas: depilación, extensiones, lifting con tinte, laminación y henna.", image: "lash-brows", alt: "Imagen corporativa de una mujer con cejas cuidadas y pestañas naturales", tags: "CEJAS · PESTAÑAS · LIFTING" },
 ];
 
 export default function Home() {
