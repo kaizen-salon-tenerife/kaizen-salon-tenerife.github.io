@@ -1,6 +1,17 @@
 # Cloudflare: transición a MB Beauty
 
-**Preparado para revisión. No se ha publicado, hecho push ni cambiado ningún Worker remoto.**
+**Publicado el 8 de octubre de 2026:** https://mb-beauty.leonforge.workers.dev. La solicitud #1 se fusionó tras la confirmación de Manuel; `main` quedó en `1707590c25dfa9650e76476ee7f79240482a6633`.
+
+## Estado verificado de producción
+
+- Worker nuevo `mb-beauty`: `02553077957345cfafe63e1ef6645048`; versión activa `e944f0b7-3d71-4e6e-9914-f81503ba3c34`.
+- Workers Builds sigue `main` del repositorio actual. Para el nuevo Worker, el comando de build es `cp wrangler.mb-beauty.jsonc wrangler.jsonc && npm run build`; el deploy es `npx wrangler deploy`. Así se selecciona la configuración candidata antes de generar el artefacto.
+- El Worker histórico continúa disponible, también con la versión de MB Beauty. No se ha eliminado ni redirigido.
+- Supabase `gwndpaeebjtoowuzkywz` fue reactivado por petición expresa de Manuel y confirmó `ACTIVE_HEALTHY`. No se modificaron datos, esquema, usuarios ni permisos.
+- Comprobaciones reales: portada HTTP 200, catálogo de 30 servicios, disponibilidad de manicura con 33 horas, Auth health HTTP 200, redirección del panel a acceso y fotografías privadas HTTP 401 sin sesión. El calendario del navegador también muestra horas disponibles.
+- No se creó una cita de prueba ni se inició sesión con una cuenta del personal. Esos dos recorridos completos aún no se han validado en producción.
+
+El resto del documento conserva el plan original de transición como referencia histórica; las acciones y autorizaciones anteriores ya se ejecutaron según el estado descrito arriba.
 
 ## Fuente de configuración
 
