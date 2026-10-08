@@ -1,8 +1,8 @@
-# Supabase · Kaizen
+# Supabase · MB Beauty
 
 ## Primera instalación
 
-1. Abrir el proyecto **Kaizen** en Supabase.
+1. Abrir el proyecto **MB Beauty** en Supabase.
 2. Entrar en **SQL Editor** y crear una consulta nueva.
 3. Copiar todo el contenido de `migrations/202608290001_initial_schema.sql`.
 4. Ejecutar la consulta una sola vez.

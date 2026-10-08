@@ -1,4 +1,4 @@
-import { addMinutes, KAIZEN_HOURS } from "@/lib/schedule";
+import { addMinutes, MB_BEAUTY_HOURS } from "@/lib/schedule";
 
 export type BusyInterval = {
   startsAt: string;
@@ -74,7 +74,7 @@ export function generateAvailableSlots({
   nowLocal: string;
 }) {
   const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
-  const openingHours = KAIZEN_HOURS[weekday];
+  const openingHours = MB_BEAUTY_HOURS[weekday];
   if (!openingHours) return [];
 
   const totalDuration = segments.reduce(

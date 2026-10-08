@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { supabaseRequest } from "@/lib/supabase";
 
-export const STAFF_SESSION_COOKIE = "kaizen_access_token";
-export const STAFF_REFRESH_COOKIE = "kaizen_refresh_token";
+export const STAFF_SESSION_COOKIE = "mb_beauty_access_token";
+export const STAFF_REFRESH_COOKIE = "mb_beauty_refresh_token";
 
 export type StaffUser = {
   id: string;

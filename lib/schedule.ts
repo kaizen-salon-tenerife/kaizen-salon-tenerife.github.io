@@ -1,4 +1,4 @@
-export const KAIZEN_HOURS: Record<number, { start: number; end: number } | null> = {
+export const MB_BEAUTY_HOURS: Record<number, { start: number; end: number } | null> = {
   0: null,
   1: { start: 9 * 60 + 30, end: 18 * 60 },
   2: { start: 9 * 60 + 30, end: 18 * 60 },
@@ -16,7 +16,7 @@ export function addMinutes(localDateTime: string, minutes: number) {
 
 export function isWithinOpeningHours(startsAt: string, endsAt: string) {
   const date = new Date(`${startsAt.slice(0, 10)}T12:00:00Z`);
-  const hours = KAIZEN_HOURS[date.getUTCDay()];
+  const hours = MB_BEAUTY_HOURS[date.getUTCDay()];
   if (!hours || startsAt.slice(0, 10) !== endsAt.slice(0, 10)) return false;
 
   const startMinutes = timeToMinutes(startsAt.slice(11, 16));

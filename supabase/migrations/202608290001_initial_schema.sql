@@ -1,4 +1,4 @@
--- Kaizen · esquema inicial para Supabase
+-- MB Beauty · esquema inicial para Supabase
 -- Ejecutar una sola vez desde SQL Editor.
 
 create extension if not exists pgcrypto;

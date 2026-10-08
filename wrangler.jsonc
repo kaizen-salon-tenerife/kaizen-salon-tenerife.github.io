@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "kaizen-salon-tenerife",
+  "name": "mb-beauty",
   "compatibility_date": "2026-08-29",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./worker/index.ts",
