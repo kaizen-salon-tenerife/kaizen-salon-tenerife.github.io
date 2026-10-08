@@ -207,3 +207,10 @@
   .mb-home :is(.mb-button, .mb-service-card, .mb-hero-art img, .mb-service-image img, .mb-portrait-frame img),
   .mb-home :is(.mb-button, .mb-text-link) > span { transform: none !important; }
 }
+
+.mb-work-image { display: grid; place-items: center; height: clamp(240px, 25vw, 300px); overflow: hidden; border-radius: 5px; background: #f8f4ec; }
+.mb-work-slide .mb-work-image img { width: 100%; height: inherit; max-width: 100%; object-fit: contain; transition: transform 1.1s var(--mb-motion-ease); }
+.mb-work-slide figcaption { text-align: center; color: #6e5b4b; font-size: 12px; line-height: 1.6; padding: 12px 4px 6px; }
+@media (hover: hover) and (pointer: fine) { .mb-work-image:hover img { transform: scale(1.025); } }
+@media (max-width: 760px) { .mb-work-image { height: 270px; } }
+@media (prefers-reduced-motion: reduce) { .mb-work-image:hover img { transform: none; } }

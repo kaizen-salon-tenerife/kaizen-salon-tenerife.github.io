@@ -101,3 +101,7 @@ La imagen proporcionada por el propietario se usa sin retoques en `public/brand/
 ## Movimiento de la portada
 
 Entradas al hacer scroll con IntersectionObserver y Web Animations API, una vez por elemento. El contenido sigue visible sin JavaScript. Zoom de fotos entre 2,5 % y 3,5 %, elevación de tarjetas de 4 px y botones de 2 px, easing suave y respuesta al pulsar. Hover solo en dispositivos con ratón; foco visible de teclado conservado. Movimiento reducido desactiva desplazamientos, zoom y entradas, incluso al cambiar la preferencia durante la sesión. Sin librerías ni movimientos continuos.
+
+## Galería de manicuras
+
+Cuatro PNG originales suministrados por el propietario, copiados sin alterar en `public/brand/gallery/`. Sustituyen el texto provisional de la galería. Carrusel de una columna al lado de los comentarios, fotos completas de hasta 300 px de alto en ordenador y 270 px en móvil, flechas, indicadores, teclado y gestos táctiles. Transición y pequeño zoom respetan movimiento reducido.
