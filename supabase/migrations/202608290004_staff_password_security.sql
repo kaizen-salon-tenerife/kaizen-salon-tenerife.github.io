@@ -1,4 +1,4 @@
--- Kaizen · cambio obligatorio de contraseña para cuentas internas
+-- MB Beauty · cambio obligatorio de contraseña para cuentas internas
 -- Ejecutar una sola vez después de 202608290003_staff_workflows.sql.
 
 alter table public.staff_profiles

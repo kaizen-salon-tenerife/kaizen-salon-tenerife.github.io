@@ -4,7 +4,7 @@ import {
   getCanaryLocalDateTime,
   type BusyInterval,
 } from "@/lib/availability";
-import { KAIZEN_HOURS } from "@/lib/schedule";
+import { MB_BEAUTY_HOURS } from "@/lib/schedule";
 import { getServiceCatalog } from "@/lib/service-catalog";
 import { supabaseRequest } from "@/lib/supabase";
 
@@ -44,7 +44,7 @@ export async function calculateBookingAvailability({
   preferredProfessional: string;
 }) {
   const weekday = new Date(`${date}T12:00:00Z`).getUTCDay();
-  if (!KAIZEN_HOURS[weekday]) {
+  if (!MB_BEAUTY_HOURS[weekday]) {
     return {
       slots: [],
       totalDuration: 0,

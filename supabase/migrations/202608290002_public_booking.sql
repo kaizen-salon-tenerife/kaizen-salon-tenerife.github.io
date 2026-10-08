@@ -1,4 +1,4 @@
--- Kaizen · reservas públicas seguras y horario local de Tenerife
+-- MB Beauty · reservas públicas seguras y horario local de Tenerife
 -- Ejecutar una sola vez después de 202608290001_initial_schema.sql.
 
 alter table public.booking_requests

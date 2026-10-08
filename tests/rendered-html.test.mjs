@@ -55,8 +55,8 @@ test('refresh requires session and logout clears existing session cookies', asyn
   assert.equal((await request('/api/auth/refresh', { method: 'POST', headers: { origin: 'http://localhost' } })).status, 401);
   const response = await request('/api/auth/logout', { method: 'POST', headers: { origin: 'http://localhost' } });
   assert.equal(response.status, 200);
-  assert.match(response.headers.get('set-cookie'), /kaizen_access_token=;.*Max-Age=0/);
-  assert.match(response.headers.get('set-cookie'), /kaizen_refresh_token=;.*Max-Age=0/);
+  assert.match(response.headers.get('set-cookie'), /mb_beauty_access_token=;.*Max-Age=0/);
+  assert.match(response.headers.get('set-cookie'), /mb_beauty_refresh_token=;.*Max-Age=0/);
 });
 
 for (const path of ['/api/auth/login', '/api/auth/refresh', '/api/auth/logout', '/api/auth/change-password', '/api/booking-requests']) {

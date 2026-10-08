@@ -1,4 +1,4 @@
--- Kaizen · cierre atómico de citas y permisos completos del equipo
+-- MB Beauty · cierre atómico de citas y permisos completos del equipo
 -- Ejecutar una sola vez después de 202608290002_public_booking.sql.
 
 update storage.buckets

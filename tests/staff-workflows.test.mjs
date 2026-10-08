@@ -38,7 +38,7 @@ globalThis.fetch = async (input, options = {}) => {
 const { default: worker } = await import("../dist/server/index.js");
 const env = { ASSETS: { fetch: async () => new Response(null, { status: 404 }) } };
 const ctx = { waitUntil() {}, passThroughOnException() {} };
-function request(path, method = "GET", payload, cookie = "kaizen_access_token=fixture-access; kaizen_refresh_token=fixture-refresh") {
+function request(path, method = "GET", payload, cookie = "mb_beauty_access_token=fixture-access; mb_beauty_refresh_token=fixture-refresh") {
   return worker.fetch(new Request(`http://localhost${path}`, { method, headers: { origin: "http://localhost", cookie, "Content-Type": "application/json" }, ...(payload ? { body: JSON.stringify(payload) } : {}) }), env, ctx);
 }
 const booking = { clientId: client.id, professionalId: "sarai", serviceName: service.name, date: "2099-10-08", time: "10:00", duration: 30, notes: "" };
@@ -48,7 +48,7 @@ test("login and refresh retain protected session cookies (mock Supabase)", async
     const response = await request(path, "POST", { email: profile.email, password: "fixture-only" });
     assert.equal(response.status, 200);
     const cookies = response.headers.get("set-cookie");
-    assert.match(cookies, /kaizen_access_token=fixture-access/);
+    assert.match(cookies, /mb_beauty_access_token=fixture-access/);
     assert.match(cookies, /HttpOnly/);
     assert.match(cookies, /SameSite=Strict/);
   }
