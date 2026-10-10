@@ -214,3 +214,14 @@
 @media (hover: hover) and (pointer: fine) { .mb-work-image:hover img { transform: scale(1.025); } }
 @media (max-width: 760px) { .mb-work-image { height: 270px; } }
 @media (prefers-reduced-motion: reduce) { .mb-work-image:hover img { transform: none; } }
+
+/* Instagram visible desde el inicio, con movimiento suave. */
+.mb-instagram-link { display: inline-flex; align-items: center; gap: 13px; margin-top: 24px; padding: 10px 16px 10px 10px; border: 1px solid #d8c6ae; border-radius: 16px; background: #fffaf3; color: #514032; text-decoration: none; transition: transform 450ms cubic-bezier(.22,1,.36,1), box-shadow 450ms ease, border-color 450ms ease; }
+.mb-instagram-icon { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; border-radius: 13px; color: white; background: linear-gradient(135deg,#8057ad 0%,#b75286 48%,#d89955 100%); }
+.mb-instagram-icon svg { width: 28px; height: 28px; }
+.mb-instagram-link strong { display: block; font-size: 14px; font-weight: 600; }
+.mb-instagram-link small { display: block; margin-top: 4px; font-size: 12px; color: #6e5b4b; }
+.mb-instagram-arrow { margin-left: 8px; font-size: 19px; }
+.mb-instagram-link:focus-visible { outline: 2px solid #8057ad; outline-offset: 4px; }
+@media (hover: hover) { .mb-instagram-link:hover { transform: translateY(-2px) scale(1.025); border-color: #b79a63; box-shadow: 0 9px 24px #6e5b4b14; } }
+@media (prefers-reduced-motion: reduce) { .mb-instagram-link { transition: none; } .mb-instagram-link:hover { transform: none; } }
