@@ -3,7 +3,7 @@ import {
   isActiveProfessional,
   isQuarterHour,
 } from "@/lib/appointment-access";
-import { addMinutes, isWithinOpeningHours } from "@/lib/schedule";
+import { addMinutes, isWithinStaffAppointmentHours } from "@/lib/schedule";
 import {
   getCurrentStaffAccessToken,
   getCurrentStaffUser,
@@ -83,7 +83,7 @@ export async function PATCH(
   }
   const startsAt = `${date}T${time}:00`;
   const endsAt = addMinutes(startsAt, duration);
-  if (blocksAvailability && !isWithinOpeningHours(startsAt, endsAt)) {
+  if (blocksAvailability && !isWithinStaffAppointmentHours(startsAt, endsAt, user, professionalKey)) {
     return Response.json({ error: "La cita debe estar dentro del horario de MB Beauty." }, { status: 400 });
   }
   if (blocksAvailability) {

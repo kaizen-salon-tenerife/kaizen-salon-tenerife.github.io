@@ -105,7 +105,7 @@ export default function AgendaWorkspace({
         <div>
           <small>Horario oficial de MB Beauty</small>
           <h2>{rangeTitle(anchor, mode)}</h2>
-          <p>L–V 09:30–18:00 · Sáb 09:30–13:30 · Dom cerrado</p>
+          <p>L–V 09:30–18:00 · Sáb y dom cerrado · Sábados: citas excepcionales solo por Nurme</p>
         </div>
         <div className="agenda-toolbar-actions">
           {isOwner && <button className="panel-secondary close-day-button" type="button" onClick={onCloseDay}>Cerrar día</button>}
@@ -307,8 +307,8 @@ function minuteTop(minute: number) {
 
 function openingHours(date: string) {
   const day = utcDay(date);
-  if (day === 0) return null;
-  return { start: OPENING_MINUTE, end: day === 6 ? 13 * 60 + 30 : CLOSING_MINUTE };
+  if (day === 0 || day === 6) return null;
+  return { start: OPENING_MINUTE, end: CLOSING_MINUTE };
 }
 
 function overlapsDay(block: ScheduleBlockRow, day: string) {
