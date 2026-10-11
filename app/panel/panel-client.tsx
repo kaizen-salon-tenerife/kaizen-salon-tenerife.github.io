@@ -811,14 +811,14 @@ export default function PanelClient({
           <div>{currentUser.name.slice(0, 1)}</div>
           <span>
             <strong>{currentUser.name}</strong>
-            <small>{currentUser.professionalKey === "adminleon" ? "Administrador técnico principal" : currentUser.professionalKey === "nurme" ? "Propietaria · Administración operativa" : "Cuenta histórica"}</small>
+            <small>{currentUser.professionalKey === "adminleon" ? "Administrador" : currentUser.professionalKey === "nurme" ? "Propietaria · Acceso completo" : "Cuenta del equipo"}</small>
           </span>
           <button type="button" onClick={logout} aria-label="Cerrar sesión">↪</button>
         </div>
       </aside>
 
       <section className="panel-main">
-        <div className="mb-panel-responsibilities"><strong>MB Beauty</strong><span>Nurme Martín · Propietaria y administradora operativa</span><span>Manuel · Administrador técnico principal y superadministrador</span><small>Los permisos de las cuentas se conservan hasta aprobar la migración de acceso.</small></div>
+        <div className="mb-panel-responsibilities"><strong>MB Beauty</strong><span>Nurme Martín · Propietaria</span><span>Manuel · Administrador</span></div>
         <header className="panel-topbar">
           <div>
             <p>{formatLongDate(new Date())}</p>
@@ -858,9 +858,9 @@ export default function PanelClient({
               />
               <aside className="panel-side-stack">
                 <article className="panel-card security-card">
-                  <small>Configuración inicial</small>
+                  <small>Gestión de MB Beauty</small>
                   <h2>Accesos del equipo</h2>
-                  <p>Los permisos efectivos dependen de los perfiles activos y las políticas de acceso existentes. El cambio de marca no modifica esos permisos.</p>
+                  <p>Nurme gestiona MB Beauty como propietaria con acceso completo. Manuel mantiene la administración de la página.</p>
                   <button type="button" onClick={() => setView("Equipo")}>Revisar cuentas →</button>
                 </article>
                 <article className="panel-card match-card">
@@ -1196,10 +1196,10 @@ export default function PanelClient({
           <section className="panel-card panel-full-card">
             <div className="panel-card-heading"><div><small>Permisos internos</small><h2>Cuentas del equipo</h2></div></div>
             <div className="staff-account-grid">
-              {staffAccounts.map((staff) => (
+              {staffAccounts.filter((staff) => staff.isActive).map((staff) => (
                 <article key={staff.id}>
                   <div className={`team-avatar mark-${staff.professionalKey}`}>{staff.name.slice(0, 1)}</div>
-                  <div><h3>{staff.name}</h3><p>{staff.email}</p><span>{staff.professionalKey === "adminleon" ? "Acceso administrativo completo" : staff.role === "owner" ? "Acceso completo" : "Solo sus citas y clientas"}</span></div>
+                  <div><h3>{staff.name}</h3><p>{staff.email}</p><span>{staff.professionalKey === "adminleon" ? "Administrador" : staff.role === "owner" ? "Propietaria · Acceso completo" : "Solo sus citas y clientas"}</span></div>
                   <b className={staff.mustChangePassword ? "pending-access" : "active-access"}>{staff.mustChangePassword ? "Primer acceso pendiente" : "Cuenta activada"}</b>
                 </article>
               ))}
