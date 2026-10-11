@@ -148,6 +148,7 @@ const navIcons: Record<string, string> = {
 };
 
 export default function PanelClient({
+  initialAppointmentId = "",
   currentUser,
   initialClients,
   initialAppointments,
@@ -157,6 +158,7 @@ export default function PanelClient({
   initialPayments,
   initialWhatsappNotifications,
 }: {
+  initialAppointmentId?: string;
   currentUser: CurrentUser;
   initialClients: ClientRow[];
   initialAppointments: AppointmentRow[];
@@ -167,14 +169,15 @@ export default function PanelClient({
   initialWhatsappNotifications: WhatsappNotificationRow[];
 }) {
   const isOwner = currentUser.role === "owner";
+  const linkedAppointment = initialAppointments.find((item) => item.id === initialAppointmentId);
   const navigation = isOwner ? ownerNavigation : professionalNavigation;
   const serviceStaffAccounts = staffAccounts.filter((staff) => staff.professionalKey === "nurme" && staff.isActive);
-  const [view, setView] = useState(isOwner ? "Resumen" : "Agenda");
+  const [view, setView] = useState(linkedAppointment ? "Agenda" : isOwner ? "Resumen" : "Agenda");
   const [professional, setProfessional] = useState("Todos");
   const [calendarProfessionalId, setCalendarProfessionalId] = useState(isOwner ? "all" : currentUser.id);
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState<PanelModal | null>(null);
-  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentRow | null>(null);
+  const [modal, setModal] = useState<PanelModal | null>(linkedAppointment ? "manage" : null);
+  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentRow | null>(linkedAppointment ?? null);
   const [selectedClient, setSelectedClient] = useState<ClientRow | null>(null);
   const [clientBlocked, setClientBlocked] = useState(false);
   const [clientBlockReason, setClientBlockReason] = useState("");
@@ -188,7 +191,7 @@ export default function PanelClient({
   const [appointmentPrefill, setAppointmentPrefill] = useState<AppointmentPrefill | null>(null);
   const [allDayBlock, setAllDayBlock] = useState(false);
   const [blockScope, setBlockScope] = useState<"professional" | "center">("professional");
-  const [appointmentStatus, setAppointmentStatus] = useState<AppointmentRow["status"]>("pending");
+  const [appointmentStatus, setAppointmentStatus] = useState<AppointmentRow["status"]>(linkedAppointment?.status ?? "pending");
   const [photoAuthorization, setPhotoAuthorization] = useState<"authorized" | "declined" | null>(null);
   const [beforePhoto, setBeforePhoto] = useState<File | null>(null);
   const [afterPhoto, setAfterPhoto] = useState<File | null>(null);
@@ -876,6 +879,7 @@ export default function PanelClient({
 
         {view === "Agenda" && (
           <AgendaWorkspace
+            initialDate={linkedAppointment?.startsAt.slice(0, 10)}
             appointments={initialAppointments}
             blocks={initialScheduleBlocks}
             isOwner={isOwner}

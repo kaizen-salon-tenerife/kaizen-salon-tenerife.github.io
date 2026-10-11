@@ -48,6 +48,7 @@ const SLOT_HEIGHT = 52;
 const DAY_HEIGHT = ((CLOSING_MINUTE - OPENING_MINUTE) / 30) * SLOT_HEIGHT;
 
 export default function AgendaWorkspace({
+  initialDate,
   appointments,
   blocks,
   professionals,
@@ -59,6 +60,7 @@ export default function AgendaWorkspace({
   onNewBlock,
   onCloseDay,
 }: {
+  initialDate?: string;
   appointments: AppointmentRow[];
   blocks: ScheduleBlockRow[];
   professionals: AgendaProfessional[];
@@ -71,7 +73,7 @@ export default function AgendaWorkspace({
   onCloseDay: () => void;
 }) {
   const [mode, setMode] = useState<CalendarMode>("week");
-  const [anchor, setAnchor] = useState(todayKey);
+  const [anchor, setAnchor] = useState(initialDate ?? todayKey);
 
   const filteredAppointments = useMemo(
     () => appointments.filter((item) =>

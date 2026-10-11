@@ -5,6 +5,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import PasswordField from "../password-field";
 
+function panelDestination() {
+  const id = new URLSearchParams(window.location.search).get("cita") ?? "";
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id) ? `/panel?cita=${encodeURIComponent(id)}` : "/panel";
+}
+
 export default function StaffLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +25,7 @@ export default function StaffLoginPage() {
         const result = await response.json() as { mustChangePassword?: boolean };
         window.location.href = result.mustChangePassword
           ? "/panel/cambiar-clave"
-          : "/panel";
+          : panelDestination();
       })
       .catch(() => null);
     return () => controller.abort();
@@ -56,7 +61,7 @@ export default function StaffLoginPage() {
 
       window.location.href = result?.mustChangePassword
         ? "/panel/cambiar-clave"
-        : "/panel";
+        : panelDestination();
     } catch (requestError) {
       setError(
         requestError instanceof DOMException && requestError.name === "AbortError"
