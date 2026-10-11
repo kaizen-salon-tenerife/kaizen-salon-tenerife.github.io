@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { canEditService } from "@/lib/service-access";
+import AppointmentForm from "./appointment-form";
 import AgendaWorkspace, {
   type AgendaProfessional,
   type AppointmentRow,
@@ -1412,26 +1413,7 @@ export default function PanelClient({
                 <footer><button type="button" onClick={() => setModal(null)}>Cancelar</button><button type="submit">Guardar cambios</button></footer>
               </form>
             ) : modal === "appointment" ? (
-              <form onSubmit={addAppointment}>
-                {appointmentPrefill && (
-                  <section className="follow-up-prefill-note">
-                    <span>Próxima visita recomendada</span>
-                    <strong>Datos preparados</strong>
-                    <p>Revisa la fecha, elige una hora disponible y confirma la nueva cita.</p>
-                  </section>
-                )}
-                <label className="field"><span>Clienta</span><select name="clientId" required defaultValue={appointmentPrefill?.clientId ?? ""}><option value="" disabled>Seleccionar</option>{initialClients.map((client) => <option value={client.id} key={client.id}>{client.name}</option>)}</select></label>
-                <label className="field"><span>Servicio</span><input name="serviceName" required defaultValue={appointmentPrefill?.serviceName ?? ""} placeholder="Ej. Manicura semipermanente" /></label>
-                {isOwner && <label className="field"><span>Profesional</span><select name="professionalId" required defaultValue={appointmentPrefill?.professionalId ?? ""}><option value="" disabled>Seleccionar</option>{serviceStaffAccounts.map((staff) => <option value={staff.id} key={staff.id}>{staff.name}</option>)}</select></label>}
-                <div className="field-grid">
-                  <label className="field"><span>Fecha</span><input name="date" required type="date" defaultValue={appointmentPrefill?.date ?? todayInputValue()} /></label>
-                  <label className="field"><span>{appointmentPrefill ? "Hora · elige una" : "Hora"}</span><input name="time" required type="time" min="09:30" max="18:00" step="900" defaultValue={appointmentPrefill ? "" : "09:30"} /></label>
-                </div>
-                <label className="field"><span>Duración</span><select name="duration" defaultValue={String(appointmentPrefill?.duration ?? 60)}>{durationOptions()}</select></label>
-                <label className="field"><span>Notas internas</span><textarea name="notes" rows={2} defaultValue={appointmentPrefill?.notes ?? ""} placeholder="Información útil para la cita" /></label>
-                {error && <p className="modal-form-error" role="alert">{error}</p>}
-                <footer><button type="button" onClick={() => { setAppointmentPrefill(null); setModal(null); }}>Cancelar</button><button type="submit">Añadir cita</button></footer>
-              </form>
+              <AppointmentForm services={services} clients={initialClients} professionals={serviceStaffAccounts} prefill={appointmentPrefill} isOwner={isOwner} error={error} onSubmit={addAppointment} onCancel={() => { setAppointmentPrefill(null); setModal(null); }} />
             ) : modal === "manage" && selectedAppointment ? (
               <form onSubmit={updateAppointment}>
                 <div className="appointment-modal-summary">
