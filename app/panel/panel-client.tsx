@@ -221,7 +221,7 @@ export default function PanelClient({
   }, []);
 
   const serviceGroups = useMemo(() => {
-    return services.reduce<Record<string, ServiceRow[]>>((groups, service) => {
+    return services.filter((service) => service.professionalKey === "nurme").reduce<Record<string, ServiceRow[]>>((groups, service) => {
       (groups[service.category] ??= []).push(service);
       return groups;
     }, {});

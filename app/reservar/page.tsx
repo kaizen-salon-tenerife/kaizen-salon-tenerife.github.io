@@ -43,6 +43,7 @@ const categoryPrices: Record<string, string> = {
   Pedicura: "Ver precios",
   Faciales: "Ver precios",
   "Cejas y pestañas": "Ver precios",
+  Micropigmentación: "Ver precios",
 };
 
 const categoryLabels: Record<string, string> = {
