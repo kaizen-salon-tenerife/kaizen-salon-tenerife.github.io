@@ -1,4 +1,5 @@
 import { formatServiceDuration } from "@/lib/service-definitions";
+import { canEditService } from "@/lib/service-access";
 import {
   mapService,
   type SupabaseService,
@@ -21,7 +22,7 @@ export async function PATCH(
     getCurrentStaffUser(),
     getCurrentStaffAccessToken(),
   ]);
-  if (!user || user.role !== "owner" || !accessToken) {
+  if (!user || !canEditService(user, "nurme") || !accessToken) {
     return Response.json(
       { error: "Tu cuenta no tiene permiso para modificar los servicios." },
       { status: 403 },
@@ -49,6 +50,16 @@ export async function PATCH(
 
   const { id } = await params;
   try {
+    const existing = await supabaseRequest<Array<{ professional_key: string }>>(
+      `/rest/v1/services?id=eq.${encodeURIComponent(id)}&select=professional_key`,
+      { accessToken },
+    );
+    if (!existing.length) {
+      return Response.json({ error: "Servicio no encontrado." }, { status: 404 });
+    }
+    if (!canEditService(user, existing[0].professional_key)) {
+      return Response.json({ error: "Tu cuenta no tiene permiso para modificar este servicio." }, { status: 403 });
+    }
     const rows = await supabaseRequest<SupabaseService[]>(
       `/rest/v1/services?id=eq.${encodeURIComponent(id)}&select=*`,
       {
