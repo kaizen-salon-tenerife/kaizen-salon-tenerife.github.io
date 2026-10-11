@@ -57,8 +57,8 @@ function result(body: unknown, status = 200) { return Response.json(body, {statu
 function back(status: string) { return new Response(null,{status:303,headers:{Location:ORIGIN+"/panel/google-calendar?result="+status,"Cache-Control":"no-store","Referrer-Policy":"no-referrer","Set-Cookie":COOKIE+"=; Path=/api/google-calendar; HttpOnly; Secure; SameSite=Lax; Max-Age=0"}}); }
 export async function calendarRoute(request: Request, env: CalendarConfig): Promise<Response> {
   const url = new URL(request.url);
-  if (url.origin !== ORIGIN) return result({error:"Usa la direcciÃ³n oficial de MB Beauty."},403);
-  if (!configured(env)) return result({error:"La conexiÃ³n con Google estÃ¡ pendiente de configuraciÃ³n."},503);
+  if (url.origin !== ORIGIN) return result({error:"Usa la dirección oficial de MB Beauty."},403);
+  if (!configured(env)) return result({error:"La conexión con Google está pendiente de configuración."},503);
   try {
     if (url.pathname.endsWith("/callback") && request.method === "GET") {
       const state = url.searchParams.get("state"), saved = cookie(request,COOKIE);
@@ -89,12 +89,12 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
       return back("connected");
     }
     const user = await operator(request,env);
-    if (!user) return result({error:"Acceso exclusivo para Nurme o el administrador tÃ©cnico."},403);
+    if (!user) return result({error:"Acceso exclusivo para Nurme o el administrador técnico."},403);
     const rows = await db<Connection[]>(env,"google_calendar_connection?id=eq.nurme&select=*");
     const connection = rows[0];
     if (url.pathname.endsWith("/status") && request.method === "GET") return result({connected:!!connection?.refresh_token,lastSync:connection?.last_synced_at,error:connection?.last_error});
-    if (request.method !== "POST") return result({error:"MÃ©todo no permitido."},405);
-    if (request.headers.get("origin") !== ORIGIN) return result({error:"Solicitud no vÃ¡lida."},403);
+    if (request.method !== "POST") return result({error:"Método no permitido."},405);
+    if (request.headers.get("origin") !== ORIGIN) return result({error:"Solicitud no válida."},403);
     if (url.pathname.endsWith("/connect")) {
       if (!connection) return result({error:"Falta preparar el almacenamiento."},503);
       const nonce = encode(crypto.getRandomValues(new Uint8Array(32)));
@@ -117,7 +117,7 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
       return back("disconnected");
     }
     return result({error:"Ruta no encontrada."},404);
-  } catch { return url.pathname.endsWith("/callback") ? back("failed") : result({error:"Google Calendar no estÃ¡ disponible. Vuelve a intentarlo."},502); }
+  } catch { return url.pathname.endsWith("/callback") ? back("failed") : result({error:"Google Calendar no está disponible. Vuelve a intentarlo."},502); }
 }
 export async function syncCalendar(env: CalendarConfig) {
   if (!configured(env)) return;
@@ -156,7 +156,7 @@ export async function syncCalendar(env: CalendarConfig) {
       last_synced_at:new Date().toISOString(),last_error:null,
     });
   } catch {
-    await db(env,"google_calendar_connection?id=eq.nurme","PATCH",{last_error:"SincronizaciÃ³n pendiente. Se reintentarÃ¡; si persiste, vuelve a conectar Google."});
+    await db(env,"google_calendar_connection?id=eq.nurme","PATCH",{last_error:"Sincronización pendiente. Se reintentará; si persiste, vuelve a conectar Google."});
     throw new Error("Calendar synchronization failed");
   } finally {
     await db(env,"google_calendar_connection?id=eq.nurme","PATCH",{lease_until:"1970-01-01T00:00:00Z"});

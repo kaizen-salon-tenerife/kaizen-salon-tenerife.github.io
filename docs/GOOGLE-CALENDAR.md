@@ -1,16 +1,18 @@
 # Google Calendar de MB Beauty
 
-Estado: código local verificado; configuración externa en curso. No está activada ni conectada a una cuenta real. La migración google_calendar_connection está aplicada en Supabase: RLS activa y lectura denegada a anon/authenticated, verificado el 11 de octubre de 2026.
+Estado: código publicado en el Worker oficial y configuración del servidor activada. No está conectada a una cuenta real. Cron */5 * * * * y acceso autenticado al estado verificados en producción. La migración google_calendar_connection está aplicada en Supabase: RLS activa y lectura denegada a anon/authenticated, verificado el 11 de octubre de 2026.
 
 Google Cloud: proyecto «MB Beauty», ID calm-bison-511312-g7, creado en la cuenta del administrador técnico. Google Calendar API habilitada el 11 de octubre de 2026. La marca OAuth «MB Beauty · Agenda» y el cliente web ya están creados. Solo se declara calendar.app.created, clasificado por Google como permiso no sensible. Nurme está añadida como usuaria de prueba con su correo. El calendario se autorizará posteriormente con su cuenta. GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_CALENDAR_ENCRYPTION_KEY están guardados en Cloudflare. SUPABASE_SECRET_KEY procede de una clave dedicada mb_beauty_google_calendar y está guardada solo como secreto de producción del Worker.
 
 ## Alcance
 
+La migración google_calendar_projection_grants concede a service_role SELECT solo sobre las columnas del perfil necesarias para autorizar y las siete columnas de cita necesarias para la proyección. No concede lectura de client_id, nombres, teléfonos ni notas. Verificado tras aplicarla en producción el 11 de octubre de 2026.
+
 Solo las citas confirmadas o finalizadas de Nurme. Las pendientes, canceladas, ausencias y las reasignadas a otra profesional se retiran del calendario dedicado. La web sigue siendo la fuente de verdad: los cambios hechos en Google no vuelven al panel. No se incluyen nombres, teléfonos, notas, fichas ni imágenes de clientas. Eventos privados con título del servicio y recordatorio 30 minutos antes.
 
 El calendario se crea como secundario con el permiso limitado calendar.app.created. No se solicita acceso al calendario personal. Colores: manicura rosa (4), pedicura verde (10), facial azul (9), cejas/pestañas violeta (3), otros gris (8). Horas locales de la agenda interpretadas en Atlantic/Canary, incluyendo horario de verano.
 
-## Configuración pendiente
+## Configuración y validación
 
 1. Crear o seleccionar un proyecto Google Cloud y activar Google Calendar API.
 2. Configurar Google Auth Platform para uso externo, con la marca MB Beauty. En pruebas añadir la cuenta de Nurme como usuario de prueba.
