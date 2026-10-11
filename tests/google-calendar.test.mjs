@@ -14,6 +14,8 @@ const env={GOOGLE_CALENDAR_ENABLED:'true',GOOGLE_CLIENT_ID:'test-id',GOOGLE_CLIE
 test('projection includes client first and appointment notes while excluding unrelated private fields',()=>{
  const event=projectEvent({...a,notes:'Quiero un diseño verde',client:{name:'Ana',phone:'DO NOT EXPORT',notes:'DO NOT EXPORT'},phone:'DO NOT EXPORT'});
  assert.equal(event.summary,'Ana · Manicura tradicional');
+ assert.equal(event.source.url,`https://mb-beauty.leonforge.workers.dev/panel?cita=${a.id}`);
+ assert.ok(event.description.includes(event.source.url));
  assert.ok(event.description.includes('Notas de la cita:\nQuiero un diseño verde'));
  assert.ok(!projectEvent({...a,notes:'  '}).description.includes('Notas de la cita'));
  assert.equal(projectEvent(a).summary,'Clienta · Manicura tradicional');
