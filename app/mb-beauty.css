@@ -9,6 +9,7 @@
 .mb-brand img { border-radius: 50%; }
 .mb-brand span { display: flex; flex-direction: column; gap: 8px; }
 .mb-brand strong { font: 25px Georgia, serif; }
+.mb-brand-owner { font-style: normal; }
 .mb-brand small { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e5b4b; }
 .mb-desktop-nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; }
 .mb-desktop-nav a { padding: 14px 0; }
@@ -111,6 +112,7 @@
   .mb-brand { gap: 8px; }
   .mb-brand img { width: 36px; height: 36px; }
   .mb-brand strong { font-size: 18px; }
+  .mb-brand-owner { display: block; font-size: 13px; margin-top: 3px; }
   .mb-brand small { font-size: 9px; }
   .mb-desktop-nav, .mb-book-full, .mb-book-arrow, .mb-menu-word { display: none; }
   .mb-book-mobile { display: inline; }

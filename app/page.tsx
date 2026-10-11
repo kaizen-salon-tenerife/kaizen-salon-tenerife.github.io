@@ -18,10 +18,10 @@ export default function Home() {
       <HomeMotion />
       <a className="skip-link" href="#contenido">Saltar al contenido</a>
       <header className="mb-header"><div className="shell mb-header-inner">
-        <Link className="mb-brand" href="/" aria-label="MB Beauty, inicio">
+        <Link className="mb-brand" href="/" aria-label="MB Beauty by Nurme, inicio">
 
           <img src="/brand/logo/mb-beauty-mark.webp" alt="" width="60" height="60" />
-          <span><strong>MB Beauty</strong><small>Estética · Tenerife</small></span>
+          <span><strong>MB Beauty <em className="mb-brand-owner">by Nurme</em></strong><small>Estética · Tenerife</small></span>
         </Link>
         <nav className="mb-desktop-nav" aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#nurme">Sobre Nurme</a><a href="#contacto">Contacto</a></nav>
         <Link className="mb-button mb-header-book" href="/reservar" aria-label="Reservar cita"><span className="mb-book-full">Reservar cita</span><span className="mb-book-mobile" aria-hidden="true">Reservar</span><span className="mb-book-arrow" aria-hidden="true">↗</span></Link><MobileNavigation />
