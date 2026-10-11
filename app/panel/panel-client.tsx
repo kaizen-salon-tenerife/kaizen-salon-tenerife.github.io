@@ -991,7 +991,7 @@ export default function PanelClient({
                 <>
                   <header className="whatsapp-list-heading">
                     <div><small>Se muestran automáticamente</small><h3>Citas de mañana</h3></div>
-                    <p>El mensaje incluye la hora, el servicio y las opciones Confirmar, Cancelar o Reprogramar.</p>
+                    <p>El mensaje incluye la hora, el servicio, la dirección y la petición de confirmar asistencia.</p>
                   </header>
                   <div className="whatsapp-message-list">
                     {reminderAppointments.map((appointment) => {
