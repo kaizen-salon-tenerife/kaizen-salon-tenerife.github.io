@@ -204,6 +204,8 @@ export default function PanelClient({
   const [waitlistOffers, setWaitlistOffers] = useState<Record<string, WaitlistOffer>>({});
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [services, setServices] = useState(initialServices);
+  const [serviceSaveStatus, setServiceSaveStatus] = useState<Record<string, "idle" | "saving" | "saved">>({});
   const [panelOpenedAt] = useState(() => Date.now());
 
   useEffect(() => {
@@ -219,11 +221,11 @@ export default function PanelClient({
   }, []);
 
   const serviceGroups = useMemo(() => {
-    return initialServices.reduce<Record<string, ServiceRow[]>>((groups, service) => {
+    return services.reduce<Record<string, ServiceRow[]>>((groups, service) => {
       (groups[service.category] ??= []).push(service);
       return groups;
     }, {});
-  }, [initialServices]);
+  }, [services]);
 
   const agendaProfessionals: AgendaProfessional[] = isOwner
     ? serviceStaffAccounts.filter((staff) => staff.isActive).map((staff) => ({ id: staff.id, name: staff.name, professionalKey: staff.professionalKey }))
@@ -521,22 +523,28 @@ export default function PanelClient({
     event.preventDefault();
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch(`/api/services/${serviceId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        durationMinutes: Number(form.get("durationMinutes")),
-        priceLabel: form.get("priceLabel"),
-        isActive: form.get("isActive") === "true",
-      }),
-    });
-    const result = (await response.json()) as { error?: string };
-    if (!response.ok) {
-      setError(result.error ?? "No se ha podido modificar el servicio.");
-      return;
+    setServiceSaveStatus((status) => ({ ...status, [serviceId]: "saving" }));
+    try {
+      const response = await fetch(`/api/services/${serviceId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          durationMinutes: Number(form.get("durationMinutes")),
+          priceLabel: form.get("priceLabel"),
+          isActive: form.get("isActive") === "true",
+        }),
+      });
+      const result = (await response.json()) as { error?: string; service?: ServiceRow };
+      if (!response.ok || !result.service) {
+        throw new Error(result.error ?? "No se ha podido modificar el servicio.");
+      }
+      const savedService = result.service;
+      setServices((rows) => rows.map((service) => service.id === serviceId ? savedService : service));
+      setServiceSaveStatus((status) => ({ ...status, [serviceId]: "saved" }));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "No se ha podido modificar el servicio.");
+      setServiceSaveStatus((status) => ({ ...status, [serviceId]: "idle" }));
     }
-    setNotice("Servicio actualizado correctamente.");
-    window.setTimeout(() => window.location.reload(), 500);
   }
 
   function openAppointment(appointment: AppointmentRow) {
@@ -1141,6 +1149,7 @@ export default function PanelClient({
                         className="service-manager-row"
                         key={service.id}
                         onSubmit={(event) => updateServiceSettings(event, service.id)}
+                        onChange={() => setServiceSaveStatus((status) => ({ ...status, [service.id]: "idle" }))}
                       >
                         <div>
                           <strong>{service.name}</strong>
@@ -1152,22 +1161,24 @@ export default function PanelClient({
                           <>
                             <label>
                               <span>Precio mostrado</span>
-                              <input name="priceLabel" defaultValue={service.priceLabel} maxLength={40} required />
+                              <input name="priceLabel" defaultValue={service.priceLabel} maxLength={40} required disabled={serviceSaveStatus[service.id] === "saving"} />
                             </label>
                             <label>
                               <span>Duración</span>
-                              <select name="durationMinutes" defaultValue={String(service.durationMinutes)}>
+                              <select name="durationMinutes" defaultValue={String(service.durationMinutes)} disabled={serviceSaveStatus[service.id] === "saving"}>
                                 {durationOptions()}
                               </select>
                             </label>
                             <label>
                               <span>Reservas</span>
-                              <select name="isActive" defaultValue={service.isActive ? "true" : "false"}>
+                              <select name="isActive" defaultValue={service.isActive ? "true" : "false"} disabled={serviceSaveStatus[service.id] === "saving"}>
                                 <option value="true">Disponible</option>
                                 <option value="false">Oculto</option>
                               </select>
                             </label>
-                            <button type="submit">Guardar</button>
+                            <button type="submit" className={serviceSaveStatus[service.id] === "saved" ? "service-saved" : undefined} disabled={serviceSaveStatus[service.id] === "saving"} aria-live="polite">
+                              {serviceSaveStatus[service.id] === "saving" ? "Guardando…" : serviceSaveStatus[service.id] === "saved" ? "✓ Guardado" : "Guardar"}
+                            </button>
                           </>
                         ) : (
                           <b>{service.durationLabel || durationText(service.durationMinutes)}</b>

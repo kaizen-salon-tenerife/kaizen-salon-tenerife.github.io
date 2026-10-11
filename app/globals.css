@@ -2019,6 +2019,9 @@ footer { padding: 26px 0; background: #25221F; color: white; }
 .service-manager-row label span { color: #6E5B4B; font-size: 12px; font-weight: 800; text-transform: uppercase; }
 .service-manager-row select, .service-manager-row input { min-width: 0; min-height: 34px; padding: 0 9px; border: 1px solid #F8F4EC; border-radius: 9px; background: white; color: #6E5B4B; font-size: 12px; }
 .service-manager-row button { min-height: 34px; border: 0; border-radius: 9px; background: var(--navy-800); color: white; font-size: 12px; font-weight: 800; cursor: pointer; }
+.service-manager-row button { transition: background-color 240ms ease; }
+.service-manager-row button.service-saved { background: #26734D; }
+.service-manager-row button:disabled { opacity: .7; cursor: wait; }
 .service-manager-row > b { grid-column: 5; justify-self: end; padding: 7px 9px; border-radius: 999px; background: #F8F4EC; color: #6E5B4B; font-size: 12px; }
 .pending-access { background: #fff2db; color: #96671f; }
 .active-access { background: #e7f5ed; color: #3f7658; }
