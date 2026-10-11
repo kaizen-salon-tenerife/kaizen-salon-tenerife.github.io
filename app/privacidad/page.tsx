@@ -20,8 +20,7 @@ export default function PrivacyPage() {
         <section>
           <h2>Responsable</h2>
           <p>
-            Nurme Martín · MB Beauty.<br />Dirección registrada (pendiente de confirmar): Ctra. General de Taco, 14, local 14, Barranco Grande,
-            Tenerife.<br />
+            Nurme Martín · MB Beauty.<br />
             Contacto: <a href="tel:+34652430072">+34 652 43 00 72</a> o
             <a href="https://wa.me/34652430072"> WhatsApp</a>.
           </p>
@@ -58,6 +57,18 @@ export default function PrivacyPage() {
         </section>
 
         <section>
+          <h2>Agenda en Google Calendar</h2>
+          <p>
+            Cuando la profesional conecta su cuenta de Google, la web envía el
+            servicio, la fecha y la duración de sus citas a un calendario privado
+            de MB Beauty. Esta conexión permite consultar la agenda en el móvil.
+            No se envían nombres, teléfonos, notas, fichas ni fotografías de las
+            clientas. La profesional puede desconectar la sincronización desde
+            el panel; las citas ya enviadas permanecen en su calendario de Google.
+          </p>
+        </section>
+
+        <section>
           <h2>Tus derechos</h2>
           <p>
             Puedes solicitar acceso, corrección o eliminación de tus datos, limitar
@@ -67,7 +78,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <p className="legal-version">Versión del aviso: 8 de octubre de 2026.</p>
+        <p className="legal-version">Versión del aviso: 11 de octubre de 2026.</p>
       </div>
     </main>
   );
