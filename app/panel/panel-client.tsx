@@ -2121,11 +2121,11 @@ function whatsappDate(value: string) {
 }
 
 function confirmationWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en MB Beauty está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en MB Beauty está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
 }
 
 function reminderWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en MB Beauty.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n👩‍💼 ${appointment.professional}\n📍 Edificio Airam, local 14, Barranco Grande\n\nRespóndenos con una opción:\n1️⃣ Confirmo mi asistencia\n2️⃣ Necesito cancelar\n3️⃣ Quiero reprogramar\n\nRecuerda que puedes cancelar hasta 6 horas antes. ¡Te esperamos!`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en MB Beauty by Nurme.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nAgradecemos confirmes la asistencia respondiendo a este mensaje para asegurar tu espacio. De lo contrario, la cita podría ser cancelada para darle la oportunidad a otra clienta.\n\nRecuerda que puedes cancelar hasta 6 horas antes.\n\nGracias por confiar en MB Nurme Beauty 💛`;
 }
 
 function waitlistWhatsappMessage(appointment: AppointmentRow, offer: WaitlistOffer) {
