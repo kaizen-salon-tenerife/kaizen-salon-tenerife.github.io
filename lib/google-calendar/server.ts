@@ -162,4 +162,3 @@ export async function syncCalendar(env: CalendarConfig) {
     await db(env,"google_calendar_connection?id=eq.nurme","PATCH",{lease_until:"1970-01-01T00:00:00Z"});
   }
 }
-

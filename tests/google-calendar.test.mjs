@@ -71,4 +71,3 @@ test('successful writes checkpoint individually and retries recover an insert co
  };
  try {await syncCalendar(env);assert.deepEqual(methods,['PUT','POST','PUT']);assert.ok(writes.some(w=>w?.cursor_id===a.id && w.cursor===a.updated_at));assert.ok(writes.some(w=>w?.last_synced_at));} finally {globalThis.fetch=original;}
 });
-

@@ -2,7 +2,7 @@
 
 Estado: código local verificado; configuración externa en curso. No está activada ni conectada a una cuenta real. La migración google_calendar_connection está aplicada en Supabase: RLS activa y lectura denegada a anon/authenticated, verificado el 11 de octubre de 2026.
 
-Google Cloud: proyecto «MB Beauty», ID calm-bison-511312-g7, creado en la cuenta del administrador técnico. Google Calendar API habilitada el 11 de octubre de 2026. La marca OAuth «MB Beauty · Agenda» y el cliente web ya están creados. Solo se declara calendar.app.created, clasificado por Google como permiso no sensible. El calendario se autorizará posteriormente con la cuenta de Nurme.
+Google Cloud: proyecto «MB Beauty», ID calm-bison-511312-g7, creado en la cuenta del administrador técnico. Google Calendar API habilitada el 11 de octubre de 2026. La marca OAuth «MB Beauty · Agenda» y el cliente web ya están creados. Solo se declara calendar.app.created, clasificado por Google como permiso no sensible. Nurme está añadida como usuaria de prueba con su correo. El calendario se autorizará posteriormente con su cuenta. GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_CALENDAR_ENCRYPTION_KEY están guardados en Cloudflare. SUPABASE_SECRET_KEY procede de una clave dedicada mb_beauty_google_calendar y está guardada solo como secreto de producción del Worker.
 
 ## Alcance
 
@@ -37,6 +37,3 @@ Si se renombra un servicio, las citas ya creadas conservan su service_name actua
 ## iPhone
 
 Instalar Google Calendar, iniciar sesión en la cuenta conectada, activar Citas MB Beauty y añadir su widget de eventos. Los colores se verifican en Google Calendar; su representación en el widget depende de iOS y de la app. No se instala un widget propio.
-
-
-
