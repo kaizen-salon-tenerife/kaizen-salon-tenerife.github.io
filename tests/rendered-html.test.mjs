@@ -28,7 +28,11 @@ for (const path of ['/reservar', '/privacidad', '/panel/acceso', '/panel/cambiar
       const html = await response.text();
       assert.match(html, /MB Beauty/);
       assert.doesNotMatch(html, /logo-kaizen|Kaizen/);
-      if (path === '/reservar') assert.doesNotMatch(html, /Micropigmentación de cejas|Tatuaje fine line|Sarai|Yeroha/);
+      if (path === '/reservar') {
+        assert.match(html, /Micropigmentación de cejas/);
+        assert.match(html, /Repaso de micropigmentación de labios/);
+        assert.doesNotMatch(html, /Micropuntura de estrías|Tatuaje fine line|Tatuaje personalizado|Sarai|Yeroha/);
+      }
     }
   });
 }

@@ -36,11 +36,8 @@ export const DEFAULT_SERVICE_DEFINITIONS: ServiceDefinition[] = [
   { id: "pestanas-lifting-tinte", category: "Cejas y pestañas", name: "Lifting de pestañas con tinte", durationMinutes: 45, durationLabel: "45 min aprox.", priceLabel: "25 €", professionalKey: "nurme", isActive: true, sortOrder: 190 },
   { id: "cejas-laminacion", category: "Cejas y pestañas", name: "Laminación de cejas", durationMinutes: 45, durationLabel: "45 min aprox.", priceLabel: "A consultar", professionalKey: "nurme", isActive: true, sortOrder: 200 },
   { id: "cejas-henna", category: "Cejas y pestañas", name: "Henna de cejas", durationMinutes: 45, durationLabel: "45 min aprox.", priceLabel: "A consultar", professionalKey: "nurme", isActive: true, sortOrder: 210 },
-  { id: "micro-cejas", category: "Micropigmentación", name: "Micropigmentación de cejas", durationMinutes: 120, durationLabel: "2 h aprox.", priceLabel: "A consultar", professionalKey: "sarai", isActive: true, sortOrder: 220 },
-  { id: "micro-labios", category: "Micropigmentación", name: "Micropigmentación de labios", durationMinutes: 120, durationLabel: "2 h aprox.", priceLabel: "A consultar", professionalKey: "sarai", isActive: true, sortOrder: 230 },
-  { id: "micro-estrias", category: "Micropigmentación", name: "Micropuntura de estrías", durationMinutes: 90, durationLabel: "Desde 1 h", priceLabel: "A consultar", professionalKey: "sarai", isActive: true, sortOrder: 240 },
-  { id: "tatuaje-fine-line", category: "Tatuajes", name: "Tatuaje fine line", durationMinutes: 120, durationLabel: "Tiempo a consultar", priceLabel: "A consultar", professionalKey: "yeroha", isActive: true, sortOrder: 250 },
-  { id: "tatuaje-personalizado", category: "Tatuajes", name: "Tatuaje personalizado", durationMinutes: 180, durationLabel: "Tiempo a consultar", priceLabel: "A consultar", professionalKey: "yeroha", isActive: true, sortOrder: 260 },
+  { id: "micro-cejas", category: "Micropigmentación", name: "Micropigmentación de cejas", durationMinutes: 120, durationLabel: "2 h aprox.", priceLabel: "A consultar", professionalKey: "nurme", isActive: true, sortOrder: 220 },
+  { id: "micro-labios", category: "Micropigmentación", name: "Repaso de micropigmentación de labios", durationMinutes: 120, durationLabel: "2 h aprox.", priceLabel: "A consultar", professionalKey: "nurme", isActive: true, sortOrder: 230 },
 ];
 
 export function formatServiceDuration(minutes: number) {
