@@ -817,6 +817,7 @@ export default function PanelClient({
           </div>
           <div className="panel-top-actions">
             <button className="mb-mobile-logout panel-secondary" type="button" onClick={logout} aria-label="Cerrar sesión">Salir ↪</button>
+            {["nurme", "adminleon"].includes(currentUser.professionalKey) && <a className="panel-secondary" href="/panel/google-calendar">Google Calendar ↗</a>}
             <span className="secure-pill">● Acceso seguro</span>
             <button className="panel-secondary" type="button" onClick={() => { setModal("client"); setError(""); }}>
               + Nueva clienta

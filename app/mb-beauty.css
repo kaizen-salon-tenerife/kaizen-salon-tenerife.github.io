@@ -225,3 +225,7 @@
 .mb-instagram-link:focus-visible { outline: 2px solid #8057ad; outline-offset: 4px; }
 @media (hover: hover) { .mb-instagram-link:hover { transform: translateY(-2px) scale(1.025); border-color: #b79a63; box-shadow: 0 9px 24px #6e5b4b14; } }
 @media (prefers-reduced-motion: reduce) { .mb-instagram-link { transition: none; } .mb-instagram-link:hover { transform: none; } }
+
+.mb-calendar-connection { border: 1px solid #d8c6ae; border-radius: 16px; padding: 24px; margin: 28px 0; background: #fffaf3; }
+.mb-calendar-connection form { margin-top: 16px; }
+.mb-calendar-connection button:disabled { opacity: .55; cursor: not-allowed; }
