@@ -152,7 +152,7 @@ export default function BookingPage() {
 
   useEffect(() => {
     if (!day || selected.length === 0) return;
-    if (isSunday) return;
+    if (isSunday || isSaturday) return;
 
     const controller = new AbortController();
     const params = new URLSearchParams({
@@ -190,7 +190,7 @@ export default function BookingPage() {
       });
 
     return () => controller.abort();
-  }, [availabilityRevision, day, effectiveProfessional, isSunday, selected]);
+  }, [availabilityRevision, day, effectiveProfessional, isSunday, isSaturday, selected]);
 
   const selectedProfessionalName =
     professionals.find((person) => person.key === effectiveProfessional)?.name ??
@@ -243,8 +243,8 @@ export default function BookingPage() {
   function selectDay(value: string) {
     setDay(value);
     clearAvailability(
-      getLocalDayOfWeek(value) === 0
-        ? "MB Beauty permanece cerrado los domingos. Elige otro día."
+      [0, 6].includes(getLocalDayOfWeek(value) ?? -1)
+        ? "MB Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes."
         : "",
     );
   }
@@ -465,7 +465,7 @@ export default function BookingPage() {
                 </label>
                 <div className="booking-hours-card">
                   <small>Horario del día</small>
-                  <strong>{isSunday ? "Cerrado" : isSaturday ? "09:30–13:30" : "09:30–18:00"}</strong>
+                  <strong>{isSunday || isSaturday ? "Cerrado" : "09:30–18:00"}</strong>
                 </div>
               </div>
 
@@ -473,9 +473,9 @@ export default function BookingPage() {
                 <p className="booking-availability-error" role="alert">
                   {availabilityError}
                 </p>
-              ) : isSaturday ? (
+              ) : isSaturday || isSunday ? (
                 <p className="booking-hours-note">
-                  El sistema descarta automáticamente cualquier cita que terminase después de las 13:30.
+                  Cerrado los sábados y domingos. Elige un día de lunes a viernes.
                 </p>
               ) : null}
 

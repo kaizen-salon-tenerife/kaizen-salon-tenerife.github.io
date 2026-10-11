@@ -49,7 +49,7 @@ export async function calculateBookingAvailability({
       slots: [],
       totalDuration: 0,
       reason: "closed",
-      message: "MB Beauty permanece cerrado los domingos. Elige otro día.",
+      message: "MB Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes.",
       professionals: [],
       selectedServices: [],
     };

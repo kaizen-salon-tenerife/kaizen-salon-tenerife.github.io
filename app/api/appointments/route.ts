@@ -3,7 +3,7 @@ import {
   isActiveProfessional,
   isQuarterHour,
 } from "@/lib/appointment-access";
-import { addMinutes, isWithinOpeningHours } from "@/lib/schedule";
+import { addMinutes, isWithinStaffAppointmentHours } from "@/lib/schedule";
 import {
   getCurrentStaffAccessToken,
   getCurrentStaffUser,
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
 
   const startsAt = `${date}T${time}:00`;
   const endsAt = addMinutes(startsAt, duration);
-  if (!isWithinOpeningHours(startsAt, endsAt)) {
+  if (!isWithinStaffAppointmentHours(startsAt, endsAt, user, professionalKey)) {
     return Response.json({ error: "La cita debe estar dentro del horario de MB Beauty." }, { status: 400 });
   }
   const conflict = await hasAppointmentConflict({

@@ -156,6 +156,33 @@ test("public reservation retains availability check and existing RPC payload", a
   assert.equal((await response.json()).reference, "fixture-booking");
 });
 
+test("Saturday is closed publicly and only Nurme can create or reschedule exceptions", async () => {
+  const original = { ...profile };
+  const saturday = { ...booking, professionalId: "nurme", date: "2099-10-10" };
+  try {
+    const availability = await request("/api/availability?date=2099-10-10&services=manicure-tradicional&professional=nurme");
+    assert.equal(availability.status, 200);
+    const result = await availability.json();
+    assert.deepEqual(result.slots, []);
+    assert.equal(result.reason, "closed");
+    assert.match(result.message, /sábados/);
+    calls.length = 0;
+    const publicBooking = await request("/api/booking-requests", "POST", { requestId: "00000000-0000-4000-8000-000000000001", serviceIds: [service.id], preferredProfessional: "nurme", startsAt: "2099-10-10T10:00:00", name: "Prueba", phone: "600000000", privacyAccepted: true });
+    assert.equal(publicBooking.status, 409);
+    assert.ok(!calls.some(call => call.path === "/rest/v1/rpc/create_public_booking"));
+    profile.role = "owner";
+    assert.equal((await request("/api/appointments", "POST", saturday)).status, 201);
+    assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", saturday)).status, 200);
+    Object.assign(profile, { professional_key: "adminleon", role: "admin" });
+    calls.length = 0;
+    assert.equal((await request("/api/appointments", "POST", saturday)).status, 400);
+    assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", saturday)).status, 400);
+    assert.ok(!calls.some(call => call.path === "/rest/v1/appointments" && ["POST", "PATCH"].includes(call.method)));
+    Object.assign(profile, { professional_key: "nurme", role: "owner" });
+    assert.equal((await request("/api/appointments", "POST", { ...saturday, date: "2099-10-11" })).status, 400);
+  } finally { Object.assign(profile, original); }
+});
+
 test("logout calls Auth and clears persistent session cookies", async () => {
   calls.length = 0;
   const response = await request("/api/auth/logout", "POST");
