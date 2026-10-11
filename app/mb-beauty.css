@@ -19,7 +19,7 @@
 .booking-calendar-weekday { text-align: center; padding: 6px 0; color: #6e5b4b; font-size: 12px; }
 .booking-calendar-grid button { min-width: 0; min-height: 44px; padding: 0; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #25221f; font: inherit; cursor: pointer; }
 .booking-calendar-grid button[aria-current="date"] { border-color: #b69760; }
-.booking-calendar-grid button:hover:not(:disabled) { background: #f0e8da; }
+.booking-calendar-grid button:hover:not(:disabled):not([aria-pressed="true"]) { background: #f0e8da; }
 .booking-calendar-grid button[aria-pressed="true"] { background: #6e5b4b; color: white; font-weight: 700; }
 .booking-calendar button:disabled { opacity: .35; cursor: not-allowed; }
 .booking-calendar-selection { margin: 12px 0 6px; color: #6e5b4b; font-size: 14px; }
