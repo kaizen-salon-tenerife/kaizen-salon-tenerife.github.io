@@ -10,6 +10,20 @@
 .mb-brand span { display: flex; flex-direction: column; gap: 8px; }
 .mb-brand strong { font: 25px Georgia, serif; }
 .mb-brand-owner { font-style: normal; }
+.booking-calendar { min-width: 0; padding: 16px; border: 1px solid #d8c6ae; border-radius: 16px; background: #fffdf8; }
+.booking-date-row > .booking-calendar, .booking-date-row > .booking-hours-card { grid-column: 1 / -1; }
+.booking-calendar header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.booking-calendar header strong { text-transform: capitalize; color: #6e5b4b; }
+.booking-calendar header button { width: 44px; min-height: 44px; border: 1px solid #d8c6ae; border-radius: 50%; background: transparent; color: #6e5b4b; }
+.booking-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 12px; }
+.booking-calendar-weekday { text-align: center; padding: 6px 0; color: #6e5b4b; font-size: 12px; }
+.booking-calendar-grid button { min-width: 0; min-height: 44px; padding: 0; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #25221f; font: inherit; cursor: pointer; }
+.booking-calendar-grid button[aria-current="date"] { border-color: #b69760; }
+.booking-calendar-grid button:hover:not(:disabled) { background: #f0e8da; }
+.booking-calendar-grid button[aria-pressed="true"] { background: #6e5b4b; color: white; font-weight: 700; }
+.booking-calendar button:disabled { opacity: .35; cursor: not-allowed; }
+.booking-calendar-selection { margin: 12px 0 6px; color: #6e5b4b; font-size: 14px; }
+.booking-calendar small { color: #6e5b4b; }
 .appointment-form-fields { display: grid; gap: 15px; }
 .appointment-form-fields[hidden] { display: none; }
 .appointment-service-trigger { width: 100%; min-height: 52px; padding: 14px; border: 1px solid #d8c6ae; border-radius: 13px; background: #fffdf8; color: #25221f; text-align: left; font: inherit; cursor: pointer; }

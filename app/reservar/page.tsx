@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import BookingDateCalendar from "../components/booking-date-calendar";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_SERVICE_DEFINITIONS,
@@ -79,7 +80,7 @@ function getLocalDayOfWeek(dateValue: string) {
 export default function BookingPage() {
   const [step, setStep] = useState(1);
   const [selected, setSelected] = useState<string[]>([]);
-  const [professional, setProfessional] = useState("any");
+  const [professional, setProfessional] = useState("nurme");
   const [day, setDay] = useState("");
   const [availability, setAvailability] = useState<AvailabilityResult>({ slots: [] });
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
@@ -455,18 +456,10 @@ export default function BookingPage() {
               </fieldset>
 
               <div className="booking-date-row">
-                <label className="field booking-date-field">
-                  <span>Día preferido</span>
-                  <input
-                    type="date"
-                    value={day}
-                    min={new Date().toLocaleDateString("en-CA")}
-                    onChange={(event) => selectDay(event.target.value)}
-                  />
-                </label>
+                <BookingDateCalendar value={day} onChange={selectDay} />
                 <div className="booking-hours-card">
                   <small>Horario del día</small>
-                  <strong>{isSunday || isSaturday ? "Cerrado" : "09:30–18:00"}</strong>
+                  <strong>{!day ? "Elige un día en el calendario" : isSunday || isSaturday ? "Cerrado" : "09:30–18:00"}</strong>
                 </div>
               </div>
 
