@@ -131,7 +131,7 @@ export async function syncCalendar(env: CalendarConfig) {
     const lower = connection.cursor_id
       ? "or=(updated_at.gt."+encodeURIComponent(connection.cursor)+",and(updated_at.eq."+encodeURIComponent(connection.cursor)+",id.gt."+connection.cursor_id+"))"
       : "updated_at=gte."+encodeURIComponent(connection.cursor);
-    const appointments = await db<CalendarAppointment[]>(env,"appointments?select=id,professional_key,service_name,starts_at,ends_at,status,updated_at&"+lower+"&updated_at=lt."+encodeURIComponent(now.toISOString())+"&order=updated_at.asc,id.asc&limit=10");
+    const appointments = await db<CalendarAppointment[]>(env,"appointments?select=id,professional_key,service_name,starts_at,ends_at,status,updated_at,notes,client:clients(name)&"+lower+"&updated_at=lt."+encodeURIComponent(now.toISOString())+"&order=updated_at.asc,id.asc&limit=10");
       for (const a of appointments) {
         const path = base+"/"+eventId(a.id)+"?sendUpdates=none";
         if (!shouldPublish(a)) {
