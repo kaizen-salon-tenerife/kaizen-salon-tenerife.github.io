@@ -60,9 +60,10 @@ export default function PrivacyPage() {
           <h2>Agenda en Google Calendar</h2>
           <p>
             Cuando la profesional conecta su cuenta de Google, la web envía el
-            servicio, la fecha y la duración de sus citas a un calendario privado
+            nombre de la clienta, el servicio, la fecha, la duración y las notas
+            de la cita a un calendario privado
             de MB Beauty. Esta conexión permite consultar la agenda en el móvil.
-            No se envían nombres, teléfonos, notas, fichas ni fotografías de las
+            No se envían teléfonos, fichas ni fotografías de las
             clientas. La profesional puede desconectar la sincronización desde
             el panel; las citas ya enviadas permanecen en su calendario de Google.
           </p>

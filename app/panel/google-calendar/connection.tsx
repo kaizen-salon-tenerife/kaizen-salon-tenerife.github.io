@@ -19,7 +19,8 @@ export default function CalendarConnection({ outcome = "" }: { outcome?: string 
     <p role="status">{!state ? "Comprobando conexión…" : state.connected ? "Google Calendar conectado." : available ? "Google Calendar aún no está conectado." : "Pendiente de configuración de Google Cloud."}</p>
     {state?.error && <p role="alert">{state.error}</p>}
     {state?.lastSync && <p>Última sincronización: {new Date(state.lastSync).toLocaleString("es-ES",{timeZone:"Atlantic/Canary"})}</p>}
-    <p>Al conectar autorizas enviar a Google el servicio, la fecha y la duración de las citas de Nurme. No se envían nombres, teléfonos, fichas ni notas de las clientas. No se accede a tu calendario personal.</p>
+    <p>Las citas se sincronizan automáticamente al reservar en la web o guardar cambios en el panel. El título muestra el nombre de la clienta y el servicio; las notas de la cita aparecen en la descripción. Si hay un fallo temporal, se reintenta cada cinco minutos.</p>
+    <p>Al conectar autorizas enviar a tu calendario privado de Google el nombre de la clienta, el servicio, la fecha, la duración y las notas de la cita. No se envían teléfonos, fichas ni fotografías. No se accede a tu calendario personal.</p>
     <form action="/api/google-calendar/connect" method="post"><button className="mb-button" disabled={!available}>{state?.connected ? "Volver a conectar Google" : "Conectar con Google"} ↗</button></form>
     {state?.connected && <><form action="/api/google-calendar/sync" method="post"><button className="mb-button">Sincronizar ahora</button></form><form action="/api/google-calendar/disconnect" method="post"><p>Desconectar detiene la sincronización y revoca el permiso. Las citas ya enviadas permanecen en Google.</p><button className="mb-button">Desconectar Google Calendar</button></form></>}
   </section>;

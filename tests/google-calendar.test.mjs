@@ -11,8 +11,12 @@ const serverCompiled = ts.transpileModule(serverSource,{compilerOptions:{module:
 const {seal,unseal,calendarRoute,syncCalendar}=await import('data:text/javascript;base64,'+Buffer.from(serverCompiled).toString('base64'));
 const a={id:'b72c89b0-a89e-474b-b5c9-ce5fca525a20',professional_key:'nurme',service_name:'Manicura tradicional',starts_at:'2026-07-10T10:00:00+00:00',ends_at:'2026-07-10T10:30:00+00:00',status:'confirmed',updated_at:'2026-07-09T08:00:00Z'};
 const env={GOOGLE_CALENDAR_ENABLED:'true',GOOGLE_CLIENT_ID:'test-id',GOOGLE_CLIENT_SECRET:'test-secret',SUPABASE_SECRET_KEY:'fake-key',GOOGLE_CALENDAR_ENCRYPTION_KEY:'ab'.repeat(32)};
-test('projection preserves studio wall time, uses Tenerife DST and exports no client data',()=>{
- const event=projectEvent({...a,notes:'DO NOT EXPORT',phone:'DO NOT EXPORT',client_name:'DO NOT EXPORT'});
+test('projection includes client first and appointment notes while excluding unrelated private fields',()=>{
+ const event=projectEvent({...a,notes:'Quiero un diseño verde',client:{name:'Ana',phone:'DO NOT EXPORT',notes:'DO NOT EXPORT'},phone:'DO NOT EXPORT'});
+ assert.equal(event.summary,'Ana · Manicura tradicional');
+ assert.ok(event.description.includes('Notas de la cita:\nQuiero un diseño verde'));
+ assert.ok(!projectEvent({...a,notes:'  '}).description.includes('Notas de la cita'));
+ assert.equal(projectEvent(a).summary,'Clienta · Manicura tradicional');
  assert.equal(event.start.dateTime,'2026-07-10T10:00:00');assert.equal(event.start.timeZone,'Atlantic/Canary');
  assert.equal(event.visibility,'private');assert.equal(event.colorId,'4');assert.ok(!JSON.stringify(event).includes('DO NOT EXPORT'));
  assert.equal(projectEvent({...a,starts_at:'2026-01-10T10:00:00Z'}).start.dateTime,'2026-01-10T10:00:00');
@@ -64,10 +68,25 @@ test('successful writes checkpoint individually and retries recover an insert co
   const u=new URL(url);
   if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
   if(u.hostname==='www.googleapis.com') {methods.push(options.method); const n=methods.length; return Response.json({}, {status:n===1 ? 404 : n===2 ? 409 : 200});}
-  if(u.pathname.endsWith('/appointments')) return Response.json([a]);
+  if(u.pathname.endsWith('/appointments')) {
+   assert.equal(u.searchParams.get('select'),'id,professional_key,service_name,starts_at,ends_at,status,updated_at,notes,client:clients(name)');
+   return Response.json([a]);
+  }
   const body=options.body ? JSON.parse(options.body) : null;
   if(body?.lease_until && body.lease_until!=='1970-01-01T00:00:00Z') return Response.json([{id:'nurme',refresh_token:refresh,calendar_id:'calendar',cursor:'1970-01-01T00:00:00Z',cursor_id:null}]);
   writes.push(body);return Response.json([]);
  };
  try {await syncCalendar(env);assert.deepEqual(methods,['PUT','POST','PUT']);assert.ok(writes.some(w=>w?.cursor_id===a.id && w.cursor===a.updated_at));assert.ok(writes.some(w=>w?.last_synced_at));} finally {globalThis.fetch=original;}
+});
+
+test('automatic sync covers public bookings and panel writes, excluding failed or unrelated requests',async()=>{
+ const triggerSource=await readFile(new URL('../lib/google-calendar/trigger.ts',import.meta.url),'utf8');
+ const triggerCompiled=ts.transpileModule(triggerSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
+ const {shouldSyncAfterWrite}=await import('data:text/javascript;base64,'+Buffer.from(triggerCompiled).toString('base64'));
+ const request=(path,method='POST',origin='https://mb-beauty.leonforge.workers.dev')=>new Request(origin+path,{method});
+ for(const [path,method] of [['/api/booking-requests','POST'],['/api/appointments','POST'],['/api/appointments/'+a.id,'PATCH'],['/api/appointments/'+a.id+'/complete','POST']]) {
+  assert.equal(shouldSyncAfterWrite(request(path,method),new Response(null,{status:201})),true);
+  assert.equal(shouldSyncAfterWrite(request(path,method),new Response(null,{status:409})),false);
+ }
+ for(const r of [request('/api/booking-requests','GET'),request('/api/availability'),request('/api/appointments-extra'),request('/api/appointments','POST','https://old.invalid')]) assert.equal(shouldSyncAfterWrite(r,new Response()),false);
 });

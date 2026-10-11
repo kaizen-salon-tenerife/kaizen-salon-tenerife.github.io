@@ -1,6 +1,7 @@
 export type CalendarAppointment = {
   id: string; professional_key: string; service_name: string;
   starts_at: string; ends_at: string; status: string; updated_at: string;
+  notes?: string | null; client?: { name: string } | null;
 };
 export const CALENDAR_SCOPE = "https://www.googleapis.com/auth/calendar.app.created";
 export function eventId(id: string) {
@@ -22,8 +23,11 @@ export function projectEvent(a: CalendarAppointment) {
   // Existing agenda stores the studio's wall-clock time in its timestamp fields.
   // Google resolves these local times with Tenerife DST rules, not the server's timezone.
   return {
-    id: eventId(a.id), summary: a.service_name + " · MB Beauty",
-    description: "Cita de Nurme. Gestionar cambios y cancelaciones desde el panel de MB Beauty.",
+    id: eventId(a.id), summary: (a.client?.name?.trim() || "Clienta") + " · " + a.service_name,
+    description: [
+      "Cita de Nurme. Gestionar cambios y cancelaciones desde el panel de MB Beauty.",
+      a.notes?.trim() ? "Notas de la cita:\n" + a.notes.trim() : "",
+    ].filter(Boolean).join("\n\n"),
     start: { dateTime: a.starts_at.slice(0, 19), timeZone: "Atlantic/Canary" },
     end: { dateTime: a.ends_at.slice(0, 19), timeZone: "Atlantic/Canary" },
     colorId: serviceColor(a.service_name), status: "confirmed", visibility: "private", transparency: "opaque",
