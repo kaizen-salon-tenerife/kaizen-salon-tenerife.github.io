@@ -143,3 +143,33 @@ test("logout calls Auth and clears persistent session cookies", async () => {
   assert.ok(calls.some((call) => call.path === "/auth/v1/logout"));
   assert.match(response.headers.get("set-cookie"), /Max-Age=0/);
 });
+
+test("Nurme can save her service prices and durations with her professional account", async () => {
+  calls.length = 0;
+  const response = await request(`/api/services/${service.id}`, "PATCH", { durationMinutes: 45, priceLabel: "23 €", isActive: true });
+  assert.equal(response.status, 200);
+  const write = calls.find(call => call.path === "/rest/v1/services" && call.method === "PATCH");
+  assert.equal(write.payload.price_label, "23 €");
+  assert.equal(write.payload.duration_minutes, 45);
+  assert.equal(write.headers.Authorization, "Bearer fixture-access");
+});
+
+test("service editing rejects other professionals and Nurme editing another catalog", async () => {
+  const originalProfile = { ...profile };
+  const originalKey = service.professional_key;
+  const payload = { durationMinutes: 30, priceLabel: "20 €", isActive: true };
+  try {
+    profile.professional_key = "yeroha";
+    calls.length = 0;
+    assert.equal((await request(`/api/services/${service.id}`, "PATCH", payload)).status, 403);
+    assert.ok(!calls.some(call => call.method === "PATCH"));
+    Object.assign(profile, originalProfile);
+    service.professional_key = "yeroha";
+    calls.length = 0;
+    assert.equal((await request(`/api/services/${service.id}`, "PATCH", payload)).status, 403);
+    assert.ok(!calls.some(call => call.method === "PATCH"));
+  } finally {
+    Object.assign(profile, originalProfile);
+    service.professional_key = originalKey;
+  }
+});

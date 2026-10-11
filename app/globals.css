@@ -2549,6 +2549,14 @@ footer { padding: 26px 0; background: #25221F; color: white; }
   .whatsapp-message-row { grid-template-columns: minmax(220px, 0.9fr) minmax(260px, 1.1fr); }
   .whatsapp-message-actions { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr 1fr; align-items: center; }
   .waitlist-message-row { grid-template-columns: minmax(220px, 1fr) minmax(240px, 1fr); }
+  .service-manager-heading { flex-direction: column; }
+  .service-manager-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .service-manager-row > div, .service-manager-row > button { grid-column: 1 / -1; }
+  .service-manager-row > div strong { white-space: normal; }
+  .service-manager-row label { min-width: 0; }
+  .service-manager-row input, .service-manager-row select { width: 100%; min-height: 44px; font-size: 16px; }
+  .service-manager-row button { min-height: 44px; }
+  .service-manager-row > b { grid-column: 2; }
 }
 
 @media (max-width: 760px) {

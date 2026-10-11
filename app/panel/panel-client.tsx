@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { canEditService } from "@/lib/service-access";
 import AgendaWorkspace, {
   type AgendaProfessional,
   type AppointmentRow,
@@ -1123,7 +1124,7 @@ export default function PanelClient({
                 </p>
               </div>
               <span className="service-editor-permission">
-                {isOwner ? "Puedes modificar precios y tiempos" : "Consulta de servicios"}
+                {canEditService(currentUser, "nurme") ? "Puedes modificar precios y tiempos" : "Consulta de servicios"}
               </span>
             </div>
             {error && <p className="modal-form-error" role="alert">{error}</p>}
@@ -1147,7 +1148,7 @@ export default function PanelClient({
                             {professionalLabel(service.professionalKey)} · {service.priceLabel} · {service.durationLabel}
                           </small>
                         </div>
-                        {isOwner ? (
+                        {canEditService(currentUser, service.professionalKey) ? (
                           <>
                             <label>
                               <span>Precio mostrado</span>
