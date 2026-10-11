@@ -2107,7 +2107,7 @@ function whatsappDate(value: string) {
 }
 
 function confirmationWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en MB Beauty está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Tu cita en MB Nurme Beauty está confirmada ✅\n\n📅 ${whatsappDate(appointment.startsAt)}\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nSi necesitas modificarla, escríbenos con antelación. ¡Te esperamos!`;
 }
 
 function reminderWhatsappMessage(appointment: AppointmentRow) {
