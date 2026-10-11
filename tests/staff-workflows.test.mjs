@@ -19,7 +19,7 @@ globalThis.fetch = async (input, options = {}) => {
   // Deliberately misleading metadata must never determine authorization.
   if (url.pathname === "/auth/v1/user") return Response.json({ id: profile.id, email: profile.email, user_metadata: { role: "owner" } });
   if (url.pathname === "/auth/v1/logout") return Response.json({});
-  if (url.pathname === "/rest/v1/staff_profiles") return Response.json([profile]);
+  if (url.pathname === "/rest/v1/staff_profiles") return Response.json(url.searchParams.get("is_active") === "eq.true" && !profile.is_active ? [] : [profile]);
   if (url.pathname === "/rest/v1/services") return Response.json([service]);
   if (url.pathname === "/rest/v1/clients") return Response.json([client]);
   if (url.pathname === "/rest/v1/appointments") {
@@ -60,8 +60,9 @@ test("persisted session renders Nurme's agenda and responsibility labels", async
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.match(html, /MB Beauty/);
-    assert.match(html, /Administración operativa/);
-    assert.match(html, /Administrador técnico principal y superadministrador/);
+    assert.match(html, /Propietaria/);
+    assert.match(html, /Manuel · Administrador/);
+    assert.doesNotMatch(html, /superadministrador|migración de acceso/);
     assert.match(html, /Agenda/);
     assert.doesNotMatch(html, /logo-kaizen|Kaizen/);
     if (i === 0) { await mkdir("outputs", { recursive: true }); await writeFile("outputs/panel-preview.html", html); }
@@ -79,9 +80,28 @@ test("Manuel's administrative panel retains historical staff workflows", async (
     assert.match(html, /Agenda/);
     assert.match(html, /Citas pendientes/);
     assert.match(html, /Servicios/);
-    assert.match(html, /Administrador técnico principal/);
+    assert.match(html, /Administrador/);
     await mkdir("outputs", { recursive: true });
     await writeFile("outputs/admin-preview.html", html);
+  } finally { Object.assign(profile, original); }
+});
+
+test("Nurme's owner profile unlocks management and inactive staff cannot access the panel", async () => {
+  const original = { ...profile };
+  try {
+    profile.role = "owner";
+    const response = await request("/panel");
+    assert.equal(response.status, 200);
+    const html = await response.text();
+    assert.match(html, /Resumen/);
+    assert.match(html, /Equipo/);
+    assert.match(html, /Propietaria/);
+    assert.doesNotMatch(html, /superadministrador|migración de acceso/);
+    Object.assign(profile, { professional_key: "sarai", is_active: false });
+    const denied = await request("/panel");
+    assert.equal(denied.status, 307);
+    assert.match(denied.headers.get("location"), /panel\/acceso/);
+    assert.equal((await request("/api/services/manicure-tradicional", "PATCH", { priceLabel: "25 €", durationMinutes: 30, isActive: true })).status, 403);
   } finally { Object.assign(profile, original); }
 });
 

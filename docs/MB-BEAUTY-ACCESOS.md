@@ -1,38 +1,21 @@
-# Accesos de MB Beauty: informe previo a cualquier migración
+# Accesos de MB Beauty
 
-Fecha: 8 de octubre de 2026. **Propuesta pendiente de aprobación; no ejecutada.**
+Actualizado el 11 de octubre de 2026 con autorización de Manuel.
 
-## Situación actual comprobada
+## Equipo vigente
 
-- El servidor valida la identidad con Supabase Auth y lee el perfil activo de `staff_profiles`. No autoriza usando `user_metadata`.
-- La tabla admite `owner`, `admin` y `professional`. Los identificadores profesionales existentes son `sarai`, `yeroha`, `nurme` y `adminleon`.
-- La aplicación transforma `owner` y `admin` en un mismo nivel interno de acceso general. Las políticas SQL también distinguen administración general y acceso por profesional.
-- La interfaz anterior describía a Sarai con acceso general y a Nurme/Yeroha con acceso a sus propias citas y clientas. Esto es evidencia del repositorio, no una comprobación de los perfiles remotos actuales.
-- Supabase Management confirmó el estado **INACTIVE** del proyecto el 8 de octubre. La consulta de perfiles solo de lectura terminó por timeout. Los roles reales y las políticas instaladas todavía deben contrastarse al restablecer el servicio.
-- El rediseño presenta a Nurme Martín como propietaria y administradora operativa, y a Manuel como administrador técnico principal y superadministrador. Estos textos **no conceden permisos**. Un aviso interno informa que los permisos existentes se conservan.
-- No se han borrado usuarios, citas, fichas, fotos ni cuentas históricas. No se ha ejecutado ninguna migración ni reactivado el proyecto.
+- Nurme (`nurme`): perfil activo, rol `owner`, propietaria con acceso completo a la gestión de MB Beauty.
+- Manuel (`adminleon`): perfil activo, rol `admin`, administrador de la página.
+- Sarai y Yeroha: perfiles inactivos. Se conservan sus cuentas y relaciones históricas; no aparecen en el equipo activo ni pueden entrar en el panel.
 
-## Cambio propuesto
+El servidor comprueba Supabase Auth y el perfil activo de `staff_profiles` en cada petición. Las políticas de la base de datos consultan el perfil activo; no se autorizan acciones mediante metadatos editables del usuario. `owner` y `admin` comparten las capacidades de gestión existentes, aunque la interfaz diferencia la propiedad de la administración.
 
-Después de identificar de forma segura las cuentas correctas: conceder a Nurme el nivel operativo aprobado para agenda, clientas, citas, bloqueos y catálogo. Mantener a Manuel como responsable técnico con el alcance de superadministración acordado. Conservar las cuentas históricas de Sarai y Yeroha y sus relaciones con los registros, sin modificar sus permisos sin una decisión expresa.
+## Cambio aplicado y verificación
 
-No sustituir identificadores profesionales de registros antiguos. Si se necesita separar superadministración de operaciones, diseñar una matriz de capacidades y una comprobación en servidor y RLS: el código actual agrupa `owner` y `admin` y no distingue todas esas capacidades.
+Se actualizó `nurme` de `professional` a `owner` y se marcó `is_active = false` para `sarai` y `yeroha`, en una transacción. Manuel conserva su rol `admin`. No se modificaron identificadores, contraseñas, citas, clientas ni registros de tratamientos. Las funciones `current_staff_role`, `current_professional_key` e `is_management` ya comprueban `is_active`; no se cambiaron políticas ni el esquema.
 
-## Riesgos
+Se verificaron los perfiles resultantes, el acceso de gestión de Nurme y la denegación de acceso para cuentas inactivas. El panel muestra solamente las cuentas activas y ya no presenta la migración de permisos como pendiente.
 
-Ampliar el rol de Nurme puede darle acceso a todas las fichas, fotos y datos de cobro. Cambiar permisos de cuentas antiguas afecta a la continuidad operativa. Cambiar identificadores rompería relaciones históricas. Reactivar el proyecto y configurar la nueva URL de Auth son acciones independientes de este rediseño.
+## Reversión de los perfiles
 
-## Migración necesaria, antes de autorizar su ejecución
-
-1. Restablecer Supabase con autorización independiente y verificar los perfiles efectivos, usuarios vinculados y políticas instaladas mediante consultas de lectura.
-2. Guardar un respaldo seguro de perfiles y políticas fuera del repositorio, sin contraseñas ni claves en logs.
-3. Acordar una matriz por acción y cuenta. Identificar los UUID reales de Nurme y Manuel; no identificarlos por metadatos editables.
-4. Preparar una migración mínima, transaccional y reversible. No producir ni ejecutar un SQL con usuarios supuestos.
-5. Probar en un entorno separado con cuentas de prueba: administración, restricciones por profesional, fotos privadas, reservas, bloqueos y cobros.
-6. Presentar la migración final, resultados y rollback a Manuel para su aprobación antes de aplicarla.
-
-## Reversión
-
-Restaurar únicamente los perfiles/capacidades y políticas modificados desde el respaldo. No borrar citas ni rehacer el catálogo. Invalidar/renovar sesiones según el mecanismo de autorización utilizado y volver a comprobar las restricciones por usuario. Mantener disponible la versión anterior del código.
-
-La recomendación de evitar `user_metadata` para autorización coincide con la [documentación oficial de Supabase](https://supabase.com/docs/guides/auth/users).
+Solo si se decide revertir este cambio: restaurar `nurme.role = 'professional'` y `is_active = true` para Sarai y Yeroha. Los roles históricos conservados son `owner` para Sarai y `professional` para Yeroha. No hace falta reconstruir datos históricos. Una recarga del panel obtiene los permisos vigentes del servidor.
