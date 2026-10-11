@@ -166,7 +166,7 @@ export default function PanelClient({
 }) {
   const isOwner = currentUser.role === "owner";
   const navigation = isOwner ? ownerNavigation : professionalNavigation;
-  const serviceStaffAccounts = staffAccounts.filter((staff) => staff.professionalKey !== "adminleon");
+  const serviceStaffAccounts = staffAccounts.filter((staff) => staff.professionalKey === "nurme" && staff.isActive);
   const [view, setView] = useState(isOwner ? "Resumen" : "Agenda");
   const [professional, setProfessional] = useState("Todos");
   const [calendarProfessionalId, setCalendarProfessionalId] = useState(isOwner ? "all" : currentUser.id);
