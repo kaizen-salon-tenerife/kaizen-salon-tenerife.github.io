@@ -15,7 +15,7 @@ test('renders MB Nurme Beauty metadata, accessible content and no former public 
   assert.match(html, /apple-mobile-web-app-title[^>]+MB Nurme Beauty/);
   assert.match(html, /manifest.webmanifest/);
   assert.match(html, /og:image" content="https:\/\/mb-beauty.leonforge.workers.dev\/brand\/logo\/mb-nurme-beauty-share.jpg/);
-  assert.match(html, /mbstetic17/);
+  assert.match(html, /nurmebeauty17/);
   assert.match(html, /Nurme Martín/);
   assert.doesNotMatch(html, /Kaizen|Sarai|Yeroha|codex-preview/);
 });

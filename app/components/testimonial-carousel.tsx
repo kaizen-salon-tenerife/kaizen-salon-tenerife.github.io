@@ -47,7 +47,7 @@ export default function TestimonialCarousel() {
           <button type="button" onClick={() => move(1)} aria-label="Comentario siguiente">→</button>
         </div>
       </div>
-      <div className="mb-reviews-footer"><a className="mb-text-link" href="https://www.instagram.com/mbstetic17/" target="_blank" rel="noreferrer">Más en nuestro Instagram ↗</a></div>
+      <div className="mb-reviews-footer"><a className="mb-text-link" href="https://www.instagram.com/nurmebeauty17/" target="_blank" rel="noreferrer">Más en nuestro Instagram ↗</a></div>
     </section>
   );
 }
