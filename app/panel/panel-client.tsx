@@ -786,8 +786,8 @@ export default function PanelClient({
     <main className="panel-page">
       <aside className="panel-sidebar">
         <Link className="panel-brand" href="/">
-          <Image src="/brand/logo/mb-beauty-mark.webp" alt="MB Beauty" width={54} height={54} unoptimized />
-          <span><strong>MB Beauty</strong><small>Panel interno</small></span>
+          <Image src="/brand/logo/mb-nurme-beauty-mark.webp" alt="MB Nurme Beauty" width={54} height={54} unoptimized />
+          <span><strong>MB Nurme Beauty</strong><small>Panel interno</small></span>
         </Link>
         <nav aria-label="Secciones del panel">
           {navigation.map((item) => (
@@ -822,7 +822,7 @@ export default function PanelClient({
       </aside>
 
       <section className="panel-main">
-        <div className="mb-panel-responsibilities"><strong>MB Beauty</strong><span>Nurme Martín · Propietaria</span><span>Manuel · Administrador</span></div>
+        <div className="mb-panel-responsibilities"><strong>MB Nurme Beauty</strong><span>Nurme Martín · Propietaria</span><span>Manuel · Administrador</span></div>
         <header className="panel-topbar">
           <div>
             <p>{formatLongDate(new Date())}</p>
@@ -862,9 +862,9 @@ export default function PanelClient({
               />
               <aside className="panel-side-stack">
                 <article className="panel-card security-card">
-                  <small>Gestión de MB Beauty</small>
+                  <small>Gestión de MB Nurme Beauty</small>
                   <h2>Accesos del equipo</h2>
-                  <p>Nurme gestiona MB Beauty como propietaria con acceso completo. Manuel mantiene la administración de la página.</p>
+                  <p>Nurme gestiona MB Nurme Beauty como propietaria con acceso completo. Manuel mantiene la administración de la página.</p>
                   <button type="button" onClick={() => setView("Equipo")}>Revisar cuentas →</button>
                 </article>
                 <article className="panel-card match-card">
@@ -1224,7 +1224,7 @@ export default function PanelClient({
             <section className="panel-card panel-full-card payment-dashboard-card">
               <div className="panel-card-heading payment-dashboard-heading">
                 <div>
-                  <small>{isOwner ? "Control general de MB Beauty" : "Solo tus citas y clientas"}</small>
+                  <small>{isOwner ? "Control general de MB Nurme Beauty" : "Solo tus citas y clientas"}</small>
                   <h2>Cobros e ingresos</h2>
                   <p>Consulta pagos, revisa importes pendientes y corrige cualquier dato.</p>
                 </div>
@@ -1404,7 +1404,7 @@ export default function PanelClient({
                         required
                         placeholder="Ej. Impago pendiente o comportamiento inapropiado"
                       />
-                      <small>El motivo es privado y solamente lo verá el equipo de MB Beauty.</small>
+                      <small>El motivo es privado y solamente lo verá el equipo de MB Nurme Beauty.</small>
                     </label>
                   )}
                 </section>
@@ -2111,11 +2111,11 @@ function confirmationWhatsappMessage(appointment: AppointmentRow) {
 }
 
 function reminderWhatsappMessage(appointment: AppointmentRow) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en MB Beauty by Nurme.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nAgradecemos confirmes la asistencia respondiendo a este mensaje para asegurar tu espacio. De lo contrario, la cita podría ser cancelada para darle la oportunidad a otra clienta.\n\nRecuerda que puedes cancelar hasta 6 horas antes.\n\nGracias por confiar en MB Nurme Beauty 💛`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Te recordamos que mañana tienes una cita en MB Nurme Beauty.\n\n🕒 ${appointment.startsAt.slice(11, 16)} h\n✨ ${appointment.service}\n📍 C. María Luisa, 5, 38108 La Laguna, Santa Cruz de Tenerife, España.\n\nAgradecemos confirmes la asistencia respondiendo a este mensaje para asegurar tu espacio. De lo contrario, la cita podría ser cancelada para darle la oportunidad a otra clienta.\n\nRecuerda que puedes cancelar hasta 6 horas antes.\n\nGracias por confiar en MB Nurme Beauty 💛`;
 }
 
 function waitlistWhatsappMessage(appointment: AppointmentRow, offer: WaitlistOffer) {
-  return `Hola ${whatsappFirstName(appointment.client)} 👋 Ha quedado libre un hueco en MB Beauty para ${appointment.service}.\n\n📅 ${whatsappDate(offer.date)}\n🕒 ${offer.time} h\n👩‍💼 ${appointment.professional}\n\nSi te interesa, responde SÍ durante la próxima hora. Si no recibimos respuesta, ofreceremos el hueco a la siguiente clienta. Tu cita actual seguirá guardada hasta que confirmemos el cambio contigo.`;
+  return `Hola ${whatsappFirstName(appointment.client)} 👋 Ha quedado libre un hueco en MB Nurme Beauty para ${appointment.service}.\n\n📅 ${whatsappDate(offer.date)}\n🕒 ${offer.time} h\n👩‍💼 ${appointment.professional}\n\nSi te interesa, responde SÍ durante la próxima hora. Si no recibimos respuesta, ofreceremos el hueco a la siguiente clienta. Tu cita actual seguirá guardada hasta que confirmemos el cambio contigo.`;
 }
 
 function whatsappWasSent(
@@ -2161,7 +2161,7 @@ function professionalLabel(professionalKey: string) {
     sarai: "Sarai",
     yeroha: "Yeroha",
     nurme: "Nurme",
-  }[professionalKey] ?? "Equipo MB Beauty";
+  }[professionalKey] ?? "Equipo MB Nurme Beauty";
 }
 
 function durationText(minutes: number) {

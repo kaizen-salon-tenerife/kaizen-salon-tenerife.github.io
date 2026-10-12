@@ -26,7 +26,7 @@ export function projectEvent(a: CalendarAppointment) {
   return {
     id: eventId(a.id), summary: (a.client?.name?.trim() || "Clienta") + " · " + a.service_name,
     description: [
-      "Cita de Nurme. Gestionar cambios y cancelaciones desde el panel de MB Beauty.",
+      "Cita de Nurme. Gestionar cambios y cancelaciones desde el panel de MB Nurme Beauty.",
       "Ver o modificar esta cita:\n" + appointmentUrl,
       a.notes?.trim() ? "Notas de la cita:\n" + a.notes.trim() : "",
     ].filter(Boolean).join("\n\n"),
@@ -34,7 +34,7 @@ export function projectEvent(a: CalendarAppointment) {
     end: { dateTime: a.ends_at.slice(0, 19), timeZone: "Atlantic/Canary" },
     colorId: serviceColor(a.service_name), status: "confirmed", visibility: "private", transparency: "opaque",
     extendedProperties: { private: { mbBeautyAppointment: a.id } },
-    source: { title: "Ver o modificar la cita en MB Beauty", url: appointmentUrl },
+    source: { title: "Ver o modificar la cita en MB Nurme Beauty", url: appointmentUrl },
     reminders: { useDefault: false, overrides: [{ method: "popup", minutes: 30 }] },
   };
 }

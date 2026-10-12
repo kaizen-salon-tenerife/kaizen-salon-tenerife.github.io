@@ -1,10 +1,10 @@
-# MB Beauty: estado de entrega
+# MB Nurme Beauty: estado de entrega
 
 La web oficial está publicada en https://mb-beauty.leonforge.workers.dev.
 
 ## Identidad y accesos
 
-La portada, reservas, privacidad, mensajes y panel utilizan MB Beauty. El equipo conserva sus identificadores de registro, contraseñas, historial y permisos. Los identificadores internos de acceso se actualizaron en Auth y en los perfiles; no se publican en este documento ni son buzones de correo reales. El acceso administrativo conserva el correo personal del propietario.
+La portada, reservas, privacidad, mensajes y panel utilizan MB Nurme Beauty. El equipo conserva sus identificadores de registro, contraseñas, historial y permisos. Los identificadores internos de acceso se actualizaron en Auth y en los perfiles; no se publican en este documento ni son buzones de correo reales. El acceso administrativo conserva el correo personal del propietario.
 
 Las cookies son `mb_beauty_access_token` y `mb_beauty_refresh_token`. El cambio exige iniciar sesión de nuevo. La constante de horario es `MB_BEAUTY_HOURS`; el horario no cambia.
 

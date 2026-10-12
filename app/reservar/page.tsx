@@ -208,7 +208,7 @@ export default function BookingPage() {
 
   const whatsappUrl = useMemo(() => {
     const message = [
-      "Hola MB Beauty, tengo una cita confirmada desde la web.",
+      "Hola MB Nurme Beauty, tengo una cita confirmada desde la web.",
       "Nombre: " + (name || "Por completar"),
       "WhatsApp: " + (phone || "Por completar"),
       "Servicios: " + selectedText,
@@ -246,7 +246,7 @@ export default function BookingPage() {
     setDay(value);
     clearAvailability(
       [0, 6].includes(getLocalDayOfWeek(value) ?? -1)
-        ? "MB Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes."
+        ? "MB Nurme Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes."
         : "",
     );
   }
@@ -304,7 +304,7 @@ export default function BookingPage() {
       setBookingReference(result.reference ?? "KZ-GUARDADA");
     } catch {
       setBookingError(
-        "No hemos podido conectar con MB Beauty. Comprueba tu conexión e inténtalo de nuevo.",
+        "No hemos podido conectar con MB Nurme Beauty. Comprueba tu conexión e inténtalo de nuevo.",
       );
     } finally {
       setSubmitting(false);
@@ -317,13 +317,13 @@ export default function BookingPage() {
         <div className="booking-shell booking-header-inner">
           <Link className="booking-brand" href="/">
             <Image
-              src="/brand/logo/mb-beauty-mark.webp"
-              alt="MB Beauty"
+              src="/brand/logo/mb-nurme-beauty-mark.webp"
+              alt="MB Nurme Beauty"
               width={52}
               height={52}
               unoptimized
             />
-            <span><strong>MB Beauty</strong><small>Reserva de cita</small></span>
+            <span><strong>MB Nurme Beauty</strong><small>Reserva de cita</small></span>
           </Link>
           <Link className="booking-close" href="/" aria-label="Cerrar y volver al inicio">
             ×
@@ -337,7 +337,7 @@ export default function BookingPage() {
           <h1>Cuéntanos qué necesitas.</h1>
           <p>
             No necesitas crear una cuenta. Al terminar, tu cita quedará
-            confirmada directamente en la agenda de MB Beauty.
+            confirmada directamente en la agenda de MB Nurme Beauty.
           </p>
           <ol className="steps" aria-label="Progreso de la reserva">
             {["Servicios", "Preferencias", "Tus datos", "Confirmación"].map(
@@ -357,7 +357,7 @@ export default function BookingPage() {
           </ol>
           <a
             className="help-link"
-            href="https://wa.me/34652430072?text=Hola%20MB%20Beauty%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
+            href="https://wa.me/34652430072?text=Hola%20MB%20Nurme%20Beauty%2C%20necesito%20ayuda%20para%20reservar%20una%20cita."
             target="_blank"
             rel="noreferrer"
           >
@@ -586,7 +586,7 @@ export default function BookingPage() {
                     onChange={(event) => setPrivacyAccepted(event.target.checked)}
                   />
                   <span>
-                    Acepto que MB Beauty utilice mis datos para gestionar esta cita.
+                    Acepto que MB Nurme Beauty utilice mis datos para gestionar esta cita.
                     He leído el <Link href="/privacidad" target="_blank" rel="noreferrer">aviso de privacidad</Link>.
                   </span>
                 </label>
@@ -602,7 +602,7 @@ export default function BookingPage() {
                   <small>Cita registrada</small>
                   <h2>Tu cita está confirmada.</h2>
                   <p>
-                    La hemos añadido directamente a la agenda de MB Beauty. Si el
+                    La hemos añadido directamente a la agenda de MB Nurme Beauty. Si el
                     centro necesita hacer algún cambio, se pondrá en contacto contigo.
                   </p>
                   <div className="booking-reference">
@@ -639,7 +639,7 @@ export default function BookingPage() {
                     <span>✓</span>
                     <p>
                       Al confirmar, la cita aparecerá inmediatamente en la agenda de
-                      MB Beauty como confirmada y ese horario dejará de estar disponible.
+                      MB Nurme Beauty como confirmada y ese horario dejará de estar disponible.
                     </p>
                   </div>
                   {bookingError && (
@@ -680,7 +680,7 @@ export default function BookingPage() {
                 target="_blank"
                 rel="noreferrer"
               >
-                Escribir a MB Beauty →
+                Escribir a MB Nurme Beauty →
               </a>
             ) : (
               <button

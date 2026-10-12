@@ -77,9 +77,9 @@ export default function StaffLoginPage() {
   return (
     <main className="staff-auth-page">
       <section className="staff-auth-card">
-        <Link href="/" className="staff-auth-brand" aria-label="Volver a MB Beauty">
-          <Image src="/brand/logo/mb-beauty-mark.webp" alt="MB Beauty" width={82} height={82} unoptimized />
-          <span><strong>MB Beauty</strong><small>Panel del equipo</small></span>
+        <Link href="/" className="staff-auth-brand" aria-label="Volver a MB Nurme Beauty">
+          <Image src="/brand/logo/mb-nurme-beauty-mark.webp" alt="MB Nurme Beauty" width={82} height={82} unoptimized />
+          <span><strong>MB Nurme Beauty</strong><small>Panel del equipo</small></span>
         </Link>
         <div className="staff-auth-heading">
           <p>Acceso privado</p>
@@ -93,10 +93,10 @@ export default function StaffLoginPage() {
           <button type="submit" disabled={loading}>{loading ? "Comprobando…" : "Entrar al panel"}</button>
         </form>
         <Link className="staff-recovery-link" href="/panel/recuperar-clave">¿Has olvidado tu contraseña?</Link>
-        <p className="staff-auth-help">Acceso exclusivo para el equipo de MB Beauty.</p>
+        <p className="staff-auth-help">Acceso exclusivo para el equipo de MB Nurme Beauty.</p>
       </section>
       <aside className="staff-auth-visual" aria-hidden="true">
-        <div><small>MB Beauty · Tenerife</small><strong>Tu agenda,<br />siempre clara.</strong><span>Clientes, citas y organización en un único espacio seguro.</span></div>
+        <div><small>MB Nurme Beauty · Tenerife</small><strong>Tu agenda,<br />siempre clara.</strong><span>Clientes, citas y organización en un único espacio seguro.</span></div>
       </aside>
     </main>
   );

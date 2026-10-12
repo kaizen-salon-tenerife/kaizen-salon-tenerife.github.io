@@ -59,7 +59,7 @@ test("persisted session renders Nurme's agenda and responsibility labels", async
     const response = await request("/panel");
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /MB Beauty/);
+    assert.match(html, /MB Nurme Beauty/);
     assert.match(html, /Propietaria/);
     assert.match(html, /Manuel · Administrador/);
     assert.doesNotMatch(html, /superadministrador|migración de acceso/);

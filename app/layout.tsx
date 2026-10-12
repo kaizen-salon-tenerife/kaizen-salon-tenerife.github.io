@@ -5,25 +5,25 @@ import "./mb-beauty.css";
 export const metadata: Metadata = {
   // Prepared target; activate the Worker only after Manuel approves deployment.
   metadataBase: new URL("https://mb-beauty.leonforge.workers.dev"),
-  title: "MB Beauty | Estética y cuidado personalizado",
+  title: "MB Nurme Beauty | Estética y cuidado personalizado",
   description:
     "Estética, manicura y cuidado personalizado en La Cuesta, Tenerife.",
-  applicationName: "MB Beauty",
+  applicationName: "MB Nurme Beauty",
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "MB Beauty", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "MB Nurme Beauty", statusBarStyle: "default" },
   openGraph: {
-    title: "MB Beauty",
+    title: "MB Nurme Beauty",
     description: "Estética, manicura y cuidado personalizado en La Cuesta, Tenerife.",
-    siteName: "MB Beauty",
+    siteName: "MB Nurme Beauty",
     locale: "es_ES",
     type: "website",
-    images: [{ url: "https://mb-beauty.leonforge.workers.dev/brand/social/mb-beauty-share.jpg", width: 1200, height: 1200, alt: "MB Beauty Estética" }],
+    images: [{ url: "https://mb-beauty.leonforge.workers.dev/brand/logo/mb-nurme-beauty-share.jpg", width: 1200, height: 1200, alt: "MB Nurme Beauty Estética" }],
   },
-  twitter: { card: "summary_large_image", title: "MB Beauty", description: "Estética, manicura y cuidado personalizado en La Cuesta, Tenerife.", images: ["https://mb-beauty.leonforge.workers.dev/brand/social/mb-beauty-share.jpg"] },
+  twitter: { card: "summary_large_image", title: "MB Nurme Beauty", description: "Estética, manicura y cuidado personalizado en La Cuesta, Tenerife.", images: ["https://mb-beauty.leonforge.workers.dev/brand/logo/mb-nurme-beauty-share.jpg"] },
   icons: {
-    icon: "/brand/logo/favicon-32.png",
-    shortcut: "/brand/logo/favicon-32.png",
-    apple: "/brand/logo/apple-touch-icon.png",
+    icon: "/brand/logo/mb-nurme-beauty-favicon-32.png",
+    shortcut: "/brand/logo/mb-nurme-beauty-favicon-32.png",
+    apple: "/brand/logo/mb-nurme-beauty-apple-touch-icon.png",
   },
 };
 

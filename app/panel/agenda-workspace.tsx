@@ -105,7 +105,7 @@ export default function AgendaWorkspace({
     <section className="panel-card agenda-workspace">
       <div className="agenda-toolbar">
         <div>
-          <small>Horario oficial de MB Beauty</small>
+          <small>Horario oficial de MB Nurme Beauty</small>
           <h2>{rangeTitle(anchor, mode)}</h2>
           <p>L–V 09:30–18:00 · Sáb y dom cerrado · Sábados: citas excepcionales solo por Nurme</p>
         </div>

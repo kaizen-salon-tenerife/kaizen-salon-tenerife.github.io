@@ -1,4 +1,4 @@
-# Publicación de MB Beauty en Cloudflare
+# Publicación de MB Nurme Beauty en Cloudflare
 
 URL oficial: https://mb-beauty.leonforge.workers.dev.
 
