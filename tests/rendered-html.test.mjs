@@ -7,14 +7,14 @@ const env = { ASSETS: { fetch: async () => new Response('Not found', { status: 4
 const ctx = { waitUntil() {}, passThroughOnException() {} };
 const request = (path, options = {}) => worker.fetch(new Request(`http://localhost${path}`, options), env, ctx);
 
-test('renders MB Beauty metadata, accessible content and no former public identity', async () => {
+test('renders MB Nurme Beauty metadata, accessible content and no former public identity', async () => {
   const response = await request('/');
   assert.equal(response.status, 200);
   const html = await response.text();
-  assert.match(html, /<title>MB Beauty \| Estética y cuidado personalizado<\/title>/i);
-  assert.match(html, /apple-mobile-web-app-title[^>]+MB Beauty/);
+  assert.match(html, /<title>MB Nurme Beauty \| Estética y cuidado personalizado<\/title>/i);
+  assert.match(html, /apple-mobile-web-app-title[^>]+MB Nurme Beauty/);
   assert.match(html, /manifest.webmanifest/);
-  assert.match(html, /og:image" content="https:\/\/mb-beauty.leonforge.workers.dev\/brand\/social\/mb-beauty-share.jpg/);
+  assert.match(html, /og:image" content="https:\/\/mb-beauty.leonforge.workers.dev\/brand\/logo\/mb-nurme-beauty-share.jpg/);
   assert.match(html, /mbstetic17/);
   assert.match(html, /Nurme Martín/);
   assert.doesNotMatch(html, /Kaizen|Sarai|Yeroha|codex-preview/);
@@ -26,7 +26,7 @@ for (const path of ['/reservar', '/privacidad', '/panel/acceso', '/panel/cambiar
       const response = await request(path);
       assert.equal(response.status, 200);
       const html = await response.text();
-      assert.match(html, /MB Beauty/);
+      assert.match(html, /MB Nurme Beauty/);
       assert.doesNotMatch(html, /logo-kaizen|Kaizen/);
       if (path === '/reservar') {
         assert.match(html, /Micropigmentación de cejas/);
@@ -46,7 +46,7 @@ test('private panel requires session', async () => {
 test('unknown pages have branded 404', async () => {
   const response = await request('/pagina-inexistente');
   assert.equal(response.status, 404);
-  assert.match(await response.text(), /MB Beauty/);
+  assert.match(await response.text(), /MB Nurme Beauty/);
 });
 
 for (const path of ['/api/appointments', '/api/clients', '/api/payments', '/api/schedule-blocks', '/api/whatsapp-notifications']) {
@@ -75,8 +75,9 @@ test('invalid availability input does not contact Supabase', async () => {
 
 test('manifest and all installed-app icons are valid', async () => {
   const manifest = JSON.parse(await readFile('public/manifest.webmanifest', 'utf8'));
-  assert.equal(manifest.name, 'MB Beauty');
+  assert.equal(manifest.name, 'MB Nurme Beauty');
   assert.equal(manifest.start_url, '/');
   for (const icon of manifest.icons) assert.ok((await readFile(`public${icon.src}`)).length > 0);
-  assert.ok((await readFile('public/brand/logo/apple-touch-icon.png')).length > 0);
+  assert.ok((await readFile('public/brand/logo/mb-nurme-beauty-apple-touch-icon.png')).length > 0);
 });
+

@@ -49,7 +49,7 @@ export async function calculateBookingAvailability({
       slots: [],
       totalDuration: 0,
       reason: "closed",
-      message: "MB Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes.",
+      message: "MB Nurme Beauty permanece cerrado los sábados y domingos. Elige un día de lunes a viernes.",
       professionals: [],
       selectedServices: [],
     };
@@ -84,7 +84,7 @@ export async function calculateBookingAvailability({
         0,
       ),
       reason: "professional_unavailable",
-      message: "Una de las profesionales necesarias no está disponible. Contacta con MB Beauty.",
+      message: "Una de las profesionales necesarias no está disponible. Contacta con MB Nurme Beauty.",
       professionals: [],
       selectedServices,
     };

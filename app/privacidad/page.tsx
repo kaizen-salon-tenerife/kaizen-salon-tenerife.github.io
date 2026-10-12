@@ -1,26 +1,26 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacidad | MB Beauty",
-  description: "Información sobre el uso de datos personales en MB Beauty.",
+  title: "Privacidad | MB Nurme Beauty",
+  description: "Información sobre el uso de datos personales en MB Nurme Beauty.",
 };
 
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
       <div className="legal-shell">
-        <Link className="legal-back" href="/">← Volver a MB Beauty</Link>
+        <Link className="legal-back" href="/">← Volver a MB Nurme Beauty</Link>
         <p className="eyebrow eyebrow-dark">Información clara y sencilla</p>
         <h1>Aviso de privacidad</h1>
         <p className="legal-intro">
-          MB Beauty utiliza únicamente los datos necesarios para organizar las citas,
+          MB Nurme Beauty utiliza únicamente los datos necesarios para organizar las citas,
           prestar los tratamientos y mantener un historial profesional seguro.
         </p>
 
         <section>
           <h2>Responsable</h2>
           <p>
-            Nurme Martín · MB Beauty.<br />
+            Nurme Martín · MB Nurme Beauty.<br />
             Contacto: <a href="tel:+34652430072">+34 652 43 00 72</a> o
             <a href="https://wa.me/34652430072"> WhatsApp</a>.
           </p>
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
           <p>
             Los datos de la cita se tratan para gestionar el servicio solicitado;
             las fotografías, mediante tu consentimiento. Solo accederá el personal
-            autorizado de MB Beauty y los proveedores técnicos imprescindibles. No se
+            autorizado de MB Nurme Beauty y los proveedores técnicos imprescindibles. No se
             venderán tus datos y se conservarán únicamente durante el tiempo
             necesario para estas finalidades y las obligaciones aplicables.
           </p>
@@ -62,7 +62,7 @@ export default function PrivacyPage() {
             Cuando la profesional conecta su cuenta de Google, la web envía el
             nombre de la clienta, el servicio, la fecha, la duración y las notas
             de la cita a un calendario privado
-            de MB Beauty. Esta conexión permite consultar la agenda en el móvil.
+            de MB Nurme Beauty. Esta conexión permite consultar la agenda en el móvil.
             No se envían teléfonos, fichas ni fotografías de las
             clientas. La profesional puede desconectar la sincronización desde
             el panel; las citas ya enviadas permanecen en su calendario de Google.
@@ -74,7 +74,7 @@ export default function PrivacyPage() {
           <p>
             Puedes solicitar acceso, corrección o eliminación de tus datos, limitar
             su uso, o retirar una autorización de fotografías contactando con
-            MB Beauty. También puedes presentar una reclamación ante la Agencia
+            MB Nurme Beauty. También puedes presentar una reclamación ante la Agencia
             Española de Protección de Datos.
           </p>
         </section>

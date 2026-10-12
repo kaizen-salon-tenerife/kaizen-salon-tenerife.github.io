@@ -1,8 +1,8 @@
-# Google Calendar de MB Beauty
+# Google Calendar de MB Nurme Beauty
 
 Estado: cuenta real conectada. El usuario ha comprobado una cita en Google Calendar. Cron */5 * * * * y acceso autenticado al estado verificados en producción. La migración google_calendar_connection está aplicada en Supabase: RLS activa y lectura denegada a anon/authenticated, verificado el 11 de octubre de 2026.
 
-Google Cloud: proyecto «MB Beauty», ID calm-bison-511312-g7, creado en la cuenta del administrador técnico. Google Calendar API habilitada el 11 de octubre de 2026. La marca OAuth «MB Beauty · Agenda» y el cliente web están en producción. Solo se declara calendar.app.created. GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_CALENDAR_ENCRYPTION_KEY están guardados en Cloudflare. SUPABASE_SECRET_KEY procede de una clave dedicada mb_beauty_google_calendar y está guardada solo como secreto de producción del Worker.
+Google Cloud: proyecto «MB Nurme Beauty», ID calm-bison-511312-g7, creado en la cuenta del administrador técnico. Google Calendar API habilitada el 11 de octubre de 2026. La marca OAuth «MB Nurme Beauty · Agenda» y el cliente web están en producción. Solo se declara calendar.app.created. GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET y GOOGLE_CALENDAR_ENCRYPTION_KEY están guardados en Cloudflare. SUPABASE_SECRET_KEY procede de una clave dedicada mb_beauty_google_calendar y está guardada solo como secreto de producción del Worker.
 
 ## Alcance
 
@@ -15,7 +15,7 @@ El calendario se crea como secundario con el permiso limitado calendar.app.creat
 ## Configuración y validación
 
 1. Crear o seleccionar un proyecto Google Cloud y activar Google Calendar API.
-2. Configurar Google Auth Platform para uso externo, con la marca MB Beauty. En pruebas añadir la cuenta de Nurme como usuario de prueba.
+2. Configurar Google Auth Platform para uso externo, con la marca MB Nurme Beauty. En pruebas añadir la cuenta de Nurme como usuario de prueba.
 3. Crear un cliente OAuth de tipo Aplicación web con redirección exacta:
    https://mb-beauty.leonforge.workers.dev/api/google-calendar/callback
 4. Guardar solo en secretos del Worker oficial: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALENDAR_ENCRYPTION_KEY (32 bytes aleatorios expresados como 64 caracteres hexadecimales), SUPABASE_SECRET_KEY. Nunca compartirlos en el chat ni guardarlos en Git.
@@ -40,4 +40,4 @@ Si se renombra un servicio, las citas ya creadas conservan su service_name actua
 
 ## iPhone
 
-Instalar Google Calendar, iniciar sesión en la cuenta conectada, activar Citas MB Beauty y añadir su widget de eventos. Los colores se verifican en Google Calendar; su representación en el widget depende de iOS y de la app. No se instala un widget propio.
+Instalar Google Calendar, iniciar sesión en la cuenta conectada, activar Citas MB Nurme Beauty y añadir su widget de eventos. Los colores se verifican en Google Calendar; su representación en el widget depende de iOS y de la app. No se instala un widget propio.

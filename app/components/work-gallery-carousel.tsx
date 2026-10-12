@@ -19,7 +19,7 @@ export default function WorkGalleryCarousel() {
     <section className="mb-reviews" id="trabajos" aria-labelledby="trabajos-title">
       <div className="mb-reviews-heading">
         <div><p className="mb-eyebrow">Resultados y trabajos reales</p><h2 id="trabajos-title">Cada detalle tiene su historia.</h2></div>
-        <p>Una selección de manicuras, colores y detalles de MB Beauty.</p>
+        <p>Una selección de manicuras, colores y detalles de MB Nurme Beauty.</p>
       </div>
       <div className="mb-review-carousel mb-work-carousel" role="region" aria-roledescription="carrusel" aria-label="Fotografías de manicuras"
         onKeyDown={(event) => {

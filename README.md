@@ -1,4 +1,4 @@
-# MB Beauty
+# MB Nurme Beauty
 
 Plataforma de estética y cuidado personalizado de Nurme Martín en Tenerife.
 Web pública y panel privado para reservas, agenda, clientas, historial, tratamientos, fotografías, cobros y avisos de WhatsApp.
@@ -38,6 +38,6 @@ Las pruebas de flujos autenticados interceptan Supabase con datos sintéticos y 
 - [Informe de permisos pendiente de aprobación](docs/MB-BEAUTY-ACCESOS.md)
 - [Transición Cloudflare y rollback](docs/MB-BEAUTY-CLOUDFLARE.md)
 
-No hacer push, merge, cambiar permisos ni desplegar hasta la aprobación de Manuel. La configuración activa conserva el Worker antiguo y la candidata está en `wrangler.mb-beauty.jsonc`. El proyecto Supabase remoto está INACTIVE en la revisión del 8 de octubre de 2026; no se ha reactivado.
+La web oficial usa el Worker `mb-beauty` con `wrangler.jsonc` y el proyecto Supabase activo `gwndpaeebjtoowuzkywz`. La marca visible es MB Nurme Beauty; se conserva la URL existente para mantener los enlaces y el QR. Los cambios se publican tras la autorización de Manuel y la validación correspondiente.
 
 Las claves publicables existentes no se modifican. No incorporar claves secretas ni credenciales a código, commits o logs. Las migraciones y los datos históricos permanecen intactos.

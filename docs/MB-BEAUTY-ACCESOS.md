@@ -1,10 +1,10 @@
-# Accesos de MB Beauty
+# Accesos de MB Nurme Beauty
 
 Actualizado el 11 de octubre de 2026 con autorización de Manuel.
 
 ## Equipo vigente
 
-- Nurme (`nurme`): perfil activo, rol `owner`, propietaria con acceso completo a la gestión de MB Beauty.
+- Nurme (`nurme`): perfil activo, rol `owner`, propietaria con acceso completo a la gestión de MB Nurme Beauty.
 - Manuel (`adminleon`): perfil activo, rol `admin`, administrador de la página.
 - Sarai y Yeroha: perfiles inactivos. Se conservan sus cuentas y relaciones históricas; no aparecen en el equipo activo ni pueden entrar en el panel.
 

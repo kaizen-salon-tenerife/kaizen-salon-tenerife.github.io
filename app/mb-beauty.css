@@ -1,4 +1,4 @@
-/* MB Beauty: editorial typography, warm neutrals, restrained champagne accents. */
+/* MB Nurme Beauty: editorial typography, warm neutrals, restrained champagne accents. */
 .mb-home { color: #25221f; background: #f8f4ec; }
 .mb-home .shell { width: min(1180px, calc(100% - 64px)); }
 .skip-link { position: fixed; top: -100px; left: 20px; z-index: 200; padding: 16px; background: #25221f; color: white; }

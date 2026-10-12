@@ -57,7 +57,7 @@ function result(body: unknown, status = 200) { return Response.json(body, {statu
 function back(status: string) { return new Response(null,{status:303,headers:{Location:ORIGIN+"/panel/google-calendar?result="+status,"Cache-Control":"no-store","Referrer-Policy":"no-referrer","Set-Cookie":COOKIE+"=; Path=/api/google-calendar; HttpOnly; Secure; SameSite=Lax; Max-Age=0"}}); }
 export async function calendarRoute(request: Request, env: CalendarConfig): Promise<Response> {
   const url = new URL(request.url);
-  if (url.origin !== ORIGIN) return result({error:"Usa la dirección oficial de MB Beauty."},403);
+  if (url.origin !== ORIGIN) return result({error:"Usa la dirección oficial de MB Nurme Beauty."},403);
   if (!configured(env)) return result({error:"La conexión con Google está pendiente de configuración."},503);
   try {
     if (url.pathname.endsWith("/callback") && request.method === "GET") {
@@ -81,7 +81,7 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
         const check = await google(tokens.access_token,"calendars/"+encodeURIComponent(calendarId));
         if (!check.ok) return back("account");
       } else {
-        const response = await google(tokens.access_token,"calendars","POST",{summary:"Citas MB Beauty",timeZone:"Atlantic/Canary",description:"Citas de Nurme. Gestionadas desde el panel de MB Beauty."});
+        const response = await google(tokens.access_token,"calendars","POST",{summary:"Citas MB Nurme Beauty",timeZone:"Atlantic/Canary",description:"Citas de Nurme. Gestionadas desde el panel de MB Nurme Beauty."});
         if (!response.ok) return back("failed");
         calendarId = (await response.json() as {id:string}).id;
       }
@@ -127,6 +127,10 @@ export async function syncCalendar(env: CalendarConfig) {
   if (!connection?.refresh_token || !connection.calendar_id) return;
   try {
     const tokens = await token(env,{grant_type:"refresh_token",refresh_token:await unseal(connection.refresh_token,env)});
+    const calendarMetadata = await google(tokens.access_token,"calendars/"+encodeURIComponent(connection.calendar_id),"PATCH",{
+      summary:"Citas MB Nurme Beauty",description:"Citas de Nurme. Gestionadas desde el panel de MB Nurme Beauty.",
+    });
+    if (!calendarMetadata.ok) throw new Error("Google calendar metadata update failed");
     const base = "calendars/"+encodeURIComponent(connection.calendar_id)+"/events";
     const lower = connection.cursor_id
       ? "or=(updated_at.gt."+encodeURIComponent(connection.cursor)+",and(updated_at.eq."+encodeURIComponent(connection.cursor)+",id.gt."+connection.cursor_id+"))"

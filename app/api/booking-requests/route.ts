@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     if (message.includes("client_blocked")) {
       return Response.json(
         {
-          error: "No es posible realizar la reserva online con estos datos. Contacta directamente con MB Beauty.",
+          error: "No es posible realizar la reserva online con estos datos. Contacta directamente con MB Nurme Beauty.",
           code: "client_blocked",
         },
         { status: 403 },

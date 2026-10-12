@@ -69,7 +69,10 @@ test('successful writes checkpoint individually and retries recover an insert co
  globalThis.fetch=async(url,options={})=>{
   const u=new URL(url);
   if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
-  if(u.hostname==='www.googleapis.com') {methods.push(options.method); const n=methods.length; return Response.json({}, {status:n===1 ? 404 : n===2 ? 409 : 200});}
+  if(u.hostname==='www.googleapis.com') {
+   if(options.method==='PATCH') {assert.equal(JSON.parse(options.body).summary,'Citas MB Nurme Beauty'); return Response.json({});}
+   methods.push(options.method); const n=methods.length; return Response.json({}, {status:n===1 ? 404 : n===2 ? 409 : 200});
+  }
   if(u.pathname.endsWith('/appointments')) {
    assert.equal(u.searchParams.get('select'),'id,professional_key,service_name,starts_at,ends_at,status,updated_at,notes,client:clients(name)');
    return Response.json([a]);
