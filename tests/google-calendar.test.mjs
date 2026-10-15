@@ -20,6 +20,7 @@ test('projection includes client first and appointment notes while excluding unr
  assert.ok(!projectEvent({...a,notes:'  '}).description.includes('Notas de la cita'));
  assert.equal(projectEvent(a).summary,'Clienta · Manicura tradicional');
  assert.equal(event.start.dateTime,'2026-07-10T10:00:00');assert.equal(event.start.timeZone,'Atlantic/Canary');
+ assert.equal(event.end.dateTime,'2026-07-10T10:30:00');assert.equal(event.end.timeZone,'Atlantic/Canary');
  assert.equal(event.visibility,'private');assert.equal(event.colorId,'4');assert.ok(!JSON.stringify(event).includes('DO NOT EXPORT'));
  assert.equal(projectEvent({...a,starts_at:'2026-01-10T10:00:00Z'}).start.dateTime,'2026-01-10T10:00:00');
 });

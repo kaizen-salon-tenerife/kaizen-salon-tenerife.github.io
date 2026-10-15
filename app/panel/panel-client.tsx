@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { canEditService } from "@/lib/service-access";
 import AppointmentForm from "./appointment-form";
+import { refreshStaffSession, staffFetch } from "@/lib/staff-fetch";
 import AgendaWorkspace, {
   type AgendaProfessional,
   type AppointmentRow,
@@ -213,15 +214,12 @@ export default function PanelClient({
   const [panelOpenedAt] = useState(() => Date.now());
 
   useEffect(() => {
-    const refreshSession = () => {
-      fetch("/api/auth/refresh", { method: "POST" })
-        .then((response) => {
-          if (response.status === 401) window.location.href = "/panel/acceso";
-        })
-        .catch(() => null);
-    };
-    const interval = window.setInterval(refreshSession, 45 * 60 * 1000);
-    return () => window.clearInterval(interval);
+    const refreshSession = () => { void refreshStaffSession(); };
+    const onVisibility = () => { if (document.visibilityState === "visible") refreshSession(); };
+    refreshSession();
+    const interval = window.setInterval(refreshSession, 10 * 60 * 1000);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => { window.clearInterval(interval); document.removeEventListener("visibilitychange", onVisibility); };
   }, []);
 
   const serviceGroups = useMemo(() => {
@@ -344,7 +342,7 @@ export default function PanelClient({
     message: string;
     action: "opened" | "sent";
   }) {
-    const response = await fetch("/api/whatsapp-notifications", {
+    const response = await staffFetch("/api/whatsapp-notifications", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -389,7 +387,7 @@ export default function PanelClient({
     event.preventDefault();
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/clients", {
+    const response = await staffFetch("/api/clients", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -413,7 +411,7 @@ export default function PanelClient({
     event.preventDefault();
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/appointments", {
+    const response = await staffFetch("/api/appointments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -440,7 +438,7 @@ export default function PanelClient({
     if (!selectedAppointment) return;
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch(`/api/appointments/${selectedAppointment.id}`, {
+    const response = await staffFetch(`/api/appointments/${selectedAppointment.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -484,7 +482,7 @@ export default function PanelClient({
     event.preventDefault();
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/schedule-blocks", {
+    const response = await staffFetch("/api/schedule-blocks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -513,7 +511,7 @@ export default function PanelClient({
       return;
     }
     if (!window.confirm(`¿Eliminar el bloqueo “${block.title}”?`)) return;
-    const response = await fetch(`/api/schedule-blocks/${block.id}`, { method: "DELETE" });
+    const response = await staffFetch(`/api/schedule-blocks/${block.id}`, { method: "DELETE" });
     const result = (await response.json()) as { error?: string };
     if (!response.ok) {
       setNotice(result.error ?? "No se ha podido eliminar el bloqueo.");
@@ -531,7 +529,7 @@ export default function PanelClient({
     const form = new FormData(event.currentTarget);
     setServiceSaveStatus((status) => ({ ...status, [serviceId]: "saving" }));
     try {
-      const response = await fetch(`/api/services/${serviceId}`, {
+      const response = await staffFetch(`/api/services/${serviceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -597,7 +595,7 @@ export default function PanelClient({
           notes: "Seguimiento recomendado desde la ficha anterior.",
         }
       : undefined;
-    const response = await fetch(`/api/appointments/${selectedAppointment.id}/complete`, {
+    const response = await staffFetch(`/api/appointments/${selectedAppointment.id}/complete`, {
       method: "POST",
       body: form,
     });
@@ -635,7 +633,7 @@ export default function PanelClient({
     setTreatmentRecord(null);
     setRecordLoading(true);
     setModal("treatmentRecord");
-    const response = await fetch(`/api/treatment-records/${recordId}`);
+    const response = await staffFetch(`/api/treatment-records/${recordId}`);
     const result = (await response.json()) as {
       error?: string;
       record?: TreatmentRecordView;
@@ -680,7 +678,7 @@ export default function PanelClient({
       status: form.get("status"),
       notes: form.get("notes"),
     };
-    const response = await fetch(
+    const response = await staffFetch(
       selectedPayment ? `/api/payments/${selectedPayment.id}` : "/api/payments",
       {
         method: selectedPayment ? "PATCH" : "POST",
@@ -727,7 +725,7 @@ export default function PanelClient({
     if (!selectedClient) return;
     setError("");
     const form = new FormData(event.currentTarget);
-    const response = await fetch(`/api/clients/${selectedClient.id}`, {
+    const response = await staffFetch(`/api/clients/${selectedClient.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -766,7 +764,7 @@ export default function PanelClient({
     if (!clientPendingDeletion) return;
     setError("");
     const clientName = clientPendingDeletion.name;
-    const response = await fetch(`/api/clients/${clientPendingDeletion.id}`, {
+    const response = await staffFetch(`/api/clients/${clientPendingDeletion.id}`, {
       method: "DELETE",
     });
     const result = (await response.json()) as { error?: string };
@@ -1421,7 +1419,13 @@ export default function PanelClient({
             ) : modal === "appointment" ? (
               <AppointmentForm services={services} clients={initialClients} professionals={serviceStaffAccounts} prefill={appointmentPrefill} isOwner={isOwner} error={error} onSubmit={addAppointment} onCancel={() => { setAppointmentPrefill(null); setModal(null); }} />
             ) : modal === "manage" && selectedAppointment ? (
-              <form onSubmit={updateAppointment}>
+              <AppointmentForm
+                key={selectedAppointment.id}
+                services={services} clients={initialClients} professionals={serviceStaffAccounts}
+                isEditing isOwner={isOwner} error={error} onSubmit={updateAppointment} onCancel={() => setModal(null)}
+                submitLabel={appointmentStatus === "cancelled" ? "Confirmar cancelación" : "Guardar cambios"}
+                prefill={{ clientId: selectedAppointment.clientId, professionalId: selectedAppointment.professionalId, serviceName: selectedAppointment.service, date: selectedAppointment.startsAt.slice(0, 10), time: selectedAppointment.startsAt.slice(11, 16), duration: durationMinutes(selectedAppointment.startsAt, selectedAppointment.endsAt), notes: selectedAppointment.notes }}
+                summary={
                 <div className="appointment-modal-summary">
                   <span>{selectedAppointment.bookingRequestId ? (selectedAppointment.status === "confirmed" ? "Reserva web confirmada" : "Solicitud web pendiente") : selectedAppointment.professional}</span>
                   <strong>{selectedAppointment.client}</strong>
@@ -1430,24 +1434,15 @@ export default function PanelClient({
                     <small className="web-hold-status">{holdLabel(selectedAppointment.holdExpiresAt, panelOpenedAt)}</small>
                   )}
                 </div>
-                <label className="field"><span>Clienta</span><select name="clientId" required defaultValue={selectedAppointment.clientId}>{initialClients.map((client) => <option value={client.id} key={client.id}>{client.name}</option>)}</select></label>
-                <label className="field"><span>Servicio</span><input name="serviceName" required defaultValue={selectedAppointment.service} /></label>
-                {isOwner && <label className="field"><span>Profesional</span><select name="professionalId" required defaultValue={selectedAppointment.professionalId}>{serviceStaffAccounts.map((staff) => <option value={staff.id} key={staff.id}>{staff.name}</option>)}</select></label>}
-                <div className="field-grid">
-                  <label className="field"><span>Fecha</span><input name="date" required type="date" defaultValue={selectedAppointment.startsAt.slice(0, 10)} /></label>
-                  <label className="field"><span>Hora</span><input name="time" required type="time" min="09:30" max="18:00" step="900" defaultValue={selectedAppointment.startsAt.slice(11, 16)} /></label>
-                </div>
-                <div className="field-grid">
-                  <label className="field"><span>Duración</span><select name="duration" defaultValue={String(durationMinutes(selectedAppointment.startsAt, selectedAppointment.endsAt))}>{durationOptions()}</select></label>
+                }
+              >
                   <label className="field"><span>Estado</span><select name="status" value={appointmentStatus} onChange={(event) => setAppointmentStatus(event.target.value as AppointmentRow["status"])}><option value="pending">Pendiente</option><option value="confirmed">Confirmada</option>{selectedAppointment.status === "completed" && <option value="completed">Realizada</option>}<option value="cancelled">Cancelada</option><option value="no_show">No acudió</option></select></label>
-                </div>
                 {(appointmentStatus === "cancelled" || appointmentStatus === "no_show") && (
                   <label className="field appointment-status-reason">
                     <span>{appointmentStatus === "cancelled" ? "Motivo de la cancelación" : "Motivo de la ausencia"}</span>
                     <textarea autoFocus name="statusReason" rows={2} required defaultValue={selectedAppointment.statusReason} placeholder={appointmentStatus === "cancelled" ? "Ej. La clienta avisó con antelación" : "Ej. No acudió y no respondió"} />
                   </label>
                 )}
-                <label className="field"><span>Notas internas</span><textarea name="notes" rows={3} defaultValue={selectedAppointment.notes} placeholder="Información útil para la cita" /></label>
                 {selectedAppointment.status === "confirmed" && appointmentStatus !== "cancelled" && (
                   <section className="finish-appointment-section">
                     <div>
@@ -1466,9 +1461,7 @@ export default function PanelClient({
                       : <button type="button" onClick={() => { setAppointmentStatus("cancelled"); setError(""); }}>Cancelar cita</button>}
                   </section>
                 )}
-                {error && <p className="modal-form-error" role="alert">{error}</p>}
-                <footer><button type="button" onClick={() => setModal(null)}>Cerrar</button><button type="submit">{appointmentStatus === "cancelled" ? "Confirmar cancelación" : "Guardar cambios"}</button></footer>
-              </form>
+              </AppointmentForm>
             ) : modal === "completeAppointment" && selectedAppointment ? (
               <form className="completion-record-form" onSubmit={completeAppointment}>
                 <section className="completion-client-summary">
