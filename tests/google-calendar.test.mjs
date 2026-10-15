@@ -95,3 +95,21 @@ test('automatic sync covers public bookings and panel writes, excluding failed o
  }
  for(const r of [request('/api/booking-requests','GET'),request('/api/availability'),request('/api/appointments-extra'),request('/api/appointments','POST','https://old.invalid')]) assert.equal(shouldSyncAfterWrite(r,new Response()),false);
 });
+
+test('cancelled appointment deletes its Google event and checkpoints the change',async()=>{
+ const original=globalThis.fetch, methods=[], writes=[];
+ const refresh=await seal('fake-refresh',env);
+ globalThis.fetch=async(url,options={})=>{
+  const u=new URL(url);
+  if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
+  if(u.hostname==='www.googleapis.com') {
+   if(u.pathname.endsWith('/events/'+eventId(a.id))) { methods.push(options.method); return new Response(null,{status:204}); }
+   return Response.json({});
+  }
+  if(u.pathname.endsWith('/appointments')) return Response.json([{...a,status:'cancelled'}]);
+  const body=options.body ? JSON.parse(options.body) : null;
+  if(body?.lease_until && body.lease_until!=='1970-01-01T00:00:00Z') return Response.json([{id:'nurme',refresh_token:refresh,calendar_id:'calendar',cursor:'1970-01-01T00:00:00Z',cursor_id:null}]);
+  writes.push(body); return Response.json([]);
+ };
+ try {await syncCalendar(env);assert.deepEqual(methods,['DELETE']);assert.ok(writes.some(w=>w?.cursor_id===a.id));assert.ok(writes.some(w=>w?.last_synced_at));} finally {globalThis.fetch=original;}
+});

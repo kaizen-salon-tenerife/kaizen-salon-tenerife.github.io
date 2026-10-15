@@ -196,7 +196,7 @@ function TimeGrid({
           {times.map((time, index) => <span style={{ top: index * SLOT_HEIGHT }} key={time}>{time}</span>)}
         </div>
         {days.map((day) => {
-          const dayAppointments = appointments.filter((item) => item.startsAt.slice(0, 10) === day);
+          const dayAppointments = appointments.filter((item) => item.startsAt.slice(0, 10) === day && item.status !== "cancelled");
           const dayBlocks = blocks.filter((item) => overlapsDay(item, day));
           const allDayBlocks = dayBlocks.filter((item) => item.isAllDay);
           const partialBlocks = dayBlocks.filter((item) => !item.isAllDay);

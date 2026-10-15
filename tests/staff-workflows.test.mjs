@@ -157,6 +157,37 @@ test("appointments hidden by RLS cannot be edited", async () => {
   finally { hiddenAppointment = false; }
 });
 
+test("cancellation requires a reason and preserves the appointment history", async () => {
+  calls.length = 0;
+  assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", { status: "cancelled", statusReason: "" })).status, 400);
+  assert.ok(!calls.some((call) => call.path === "/rest/v1/appointments" && call.method === "PATCH"));
+  assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", { status: "cancelled", statusReason: "La clienta solicitó cancelar" })).status, 200);
+  const write = calls.find((call) => call.path === "/rest/v1/appointments" && call.method === "PATCH");
+  assert.equal(write.payload.status, "cancelled");
+  assert.equal(write.payload.status_reason, "La clienta solicitó cancelar");
+  assert.equal(write.payload.hold_expires_at, null);
+  assert.ok(!calls.some((call) => call.method === "DELETE"));
+});
+
+test("cancelled appointments disappear from the agenda time grid", async () => {
+  const previousStatus = appointment.status;
+  try {
+    appointment.status = "confirmed";
+    // Bring the fixture into the displayed week without changing stored data.
+    const today = new Date();
+    today.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    const originalStart = appointment.starts_at, originalEnd = appointment.ends_at;
+    try {
+      appointment.starts_at = `${date}T10:00:00`;
+      appointment.ends_at = `${date}T10:30:00`;
+      assert.match(await (await request("/panel")).text(), /class="calendar-event calendar-appointment/);
+      appointment.status = "cancelled";
+      assert.doesNotMatch(await (await request("/panel")).text(), /class="calendar-event calendar-appointment/);
+    } finally { appointment.starts_at = originalStart; appointment.ends_at = originalEnd; }
+  } finally { appointment.status = previousStatus; }
+});
+
 test("public reservation retains availability check and existing RPC payload", async () => {
   const availability = await request("/api/availability?date=2099-10-08&services=manicure-tradicional&professional=nurme");
   assert.equal(availability.status, 200);
