@@ -132,6 +132,17 @@ test("overlapping appointments are rejected before a database write", async () =
   } finally { conflict = false; }
 });
 
+test("panel appointments preserve multiple service names and quarter-hour durations", async () => {
+  const names = ["Manicura tradicional", "Pedicura", "Higiene facial", "Tratamiento personalizado ".repeat(10)].join(" + ");
+  for (const duration of [75, 105]) {
+    calls.length = 0;
+    assert.equal((await request("/api/appointments", "POST", { ...booking, serviceName: names, duration })).status, 201);
+    const write = calls.find((call) => call.path === "/rest/v1/appointments" && call.method === "POST");
+    assert.equal(write.payload.service_name, names.trim());
+    assert.equal(write.payload.ends_at, duration === 75 ? "2099-10-08T11:15:00" : "2099-10-08T11:45:00");
+  }
+});
+
 test("appointment editing continues to use authenticated user's professional key", async () => {
   calls.length = 0;
   const response = await request("/api/appointments/fixture-appointment", "PATCH", { ...booking, notes: "Edición simulada" });

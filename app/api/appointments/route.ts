@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   } | null;
   const clientId = payload?.clientId ?? "";
   const professionalKey = user.role === "owner" ? payload?.professionalId ?? "" : user.id;
-  const serviceName = payload?.serviceName?.trim().slice(0, 240) ?? "";
+  const serviceName = payload?.serviceName?.trim().slice(0, 2000) ?? "";
   const date = payload?.date ?? "";
   const time = payload?.time ?? "";
   const duration = Number(payload?.duration ?? 0);
