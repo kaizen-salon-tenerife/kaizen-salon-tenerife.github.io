@@ -35,6 +35,11 @@
 .appointment-service-list button { display: grid; gap: 7px; width: 100%; min-height: 65px; margin-bottom: 8px; padding: 14px; border: 1px solid #d8c6ae; border-radius: 12px; background: #fffdf8; text-align: left; color: #25221f; cursor: pointer; }
 .appointment-service-list button:hover, .appointment-service-list button:focus-visible { background: #f0e8da; }
 .appointment-service-list small { color: #6e5b4b; }
+.appointment-service-list button[aria-pressed="true"] { background: #f0e8da; border-color: #9c7845; box-shadow: inset 0 0 0 1px #9c7845; }
+.appointment-selected-services { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.appointment-selected-services li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px; border-radius: 10px; background: #f8f4ec; }
+.appointment-selected-services small { display: block; margin-top: 4px; }
+.appointment-selected-services button { flex-shrink: 0; width: 36px; height: 36px; border: 1px solid #d8c6ae; border-radius: 50%; background: white; color: #6e5b4b; cursor: pointer; }
 .mb-brand small { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e5b4b; }
 .mb-desktop-nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; }
 .mb-desktop-nav a { padding: 14px 0; }

@@ -2135,17 +2135,7 @@ function durationMinutes(start: string, end: string) {
 }
 
 function durationOptions() {
-  return [
-    [15, "15 minutos"],
-    [30, "30 minutos"],
-    [45, "45 minutos"],
-    [60, "1 hora"],
-    [90, "1 h 30 min"],
-    [120, "2 horas"],
-    [150, "2 h 30 min"],
-    [180, "3 horas"],
-    [240, "4 horas"],
-  ].map(([value, label]) => <option value={value} key={value}>{label}</option>);
+  return Array.from({ length: 32 }, (_, index) => (index + 1) * 15).map((minutes) => <option value={minutes} key={minutes}>{durationText(minutes)}</option>);
 }
 
 function todayInputValue() {

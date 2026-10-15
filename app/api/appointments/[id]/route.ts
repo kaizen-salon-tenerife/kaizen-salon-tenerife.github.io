@@ -52,7 +52,7 @@ export async function PATCH(
   const professionalKey = user.role === "owner"
     ? payload?.professionalId ?? existing.professional_key
     : user.id;
-  const serviceName = payload?.serviceName?.trim().slice(0, 240) ?? existing.service_name;
+  const serviceName = payload?.serviceName?.trim().slice(0, 2000) ?? existing.service_name;
   const date = payload?.date ?? existing.starts_at.slice(0, 10);
   const time = payload?.time ?? existing.starts_at.slice(11, 16);
   const duration = Number(payload?.duration ?? minutesBetween(existing.starts_at, existing.ends_at));
