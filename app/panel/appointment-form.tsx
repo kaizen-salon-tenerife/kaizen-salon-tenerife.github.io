@@ -16,7 +16,7 @@ export default function AppointmentForm({ services, clients, professionals, pref
   onCancel: () => void;
 }) {
   const available = services.filter((service) => service.isActive && professionals.some((person) => person.professionalKey === service.professionalKey));
-  const initialServices = available.filter((service) => prefill?.serviceName.split(" + ").includes(service.name));
+  const initialServices = available.filter((service) => prefill && ` + ${prefill.serviceName} + `.includes(` + ${service.name} + `));
   const [selectedServices, setSelectedServices] = useState<Service[]>(initialServices);
   const serviceName = selectedServices.map((service) => service.name).join(" + ");
   const catalogDuration = selectedServices.reduce((sum, service) => sum + service.durationMinutes, 0);
