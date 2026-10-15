@@ -228,17 +228,24 @@ function TimeGrid({
                 </button>
               ))}
               {dayAppointments.map((appointment) => (
-                <button
+                <a
                   className={`calendar-event calendar-appointment mark-card-${slug(appointment.professional)} status-card-${appointment.status}`}
                   style={{ ...eventStyle(appointment.startsAt, appointment.endsAt, day), ...laneStyle(appointment.professionalId, professionalIds) }}
-                  type="button"
-                  onClick={() => onSelectAppointment(appointment)}
+                  href={`/panel?cita=${encodeURIComponent(appointment.id)}`}
+                  aria-label={`Modificar cita de ${appointment.client}, ${day} a las ${formatTime(appointment.startsAt)}`}
+                  title="Modificar esta cita"
+                  onClick={(event) => {
+                    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    onSelectAppointment(appointment);
+                  }}
                   key={appointment.id}
                 >
                   <span>{formatTime(appointment.startsAt)} · {appointment.professional}</span>
                   <strong>{appointment.client}</strong>
                   <small>{appointment.service}{appointment.bookingRequestId ? " · Web" : ""}</small>
-                </button>
+                  <span className="calendar-edit-hint" aria-hidden="true">Editar ↗</span>
+                </a>
               ))}
             </div>
           );
