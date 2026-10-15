@@ -465,9 +465,11 @@ export default function PanelClient({
     setModal(null);
     setSelectedAppointment(null);
     setConfirmationDialog({
-      title: savedStatus === "confirmed" ? "Cita confirmada" : "Cambios guardados",
+      title: savedStatus === "cancelled" ? "Cita cancelada" : savedStatus === "confirmed" ? "Cita confirmada" : "Cambios guardados",
       message:
-        savedStatus === "confirmed"
+        savedStatus === "cancelled"
+          ? `La cita de ${clientName} se ha cancelado y ya no aparecerá en la agenda. La cancelación se sincronizará automáticamente con Google Calendar.`
+          : savedStatus === "confirmed"
           ? `La cita de ${clientName} ha sido confirmada y ya está anotada en la agenda.`
           : `Los cambios de la cita de ${clientName} se han guardado correctamente en la agenda.`,
     });
@@ -1442,11 +1444,11 @@ export default function PanelClient({
                 {(appointmentStatus === "cancelled" || appointmentStatus === "no_show") && (
                   <label className="field appointment-status-reason">
                     <span>{appointmentStatus === "cancelled" ? "Motivo de la cancelación" : "Motivo de la ausencia"}</span>
-                    <textarea name="statusReason" rows={2} required defaultValue={selectedAppointment.statusReason} placeholder={appointmentStatus === "cancelled" ? "Ej. La clienta avisó con antelación" : "Ej. No acudió y no respondió"} />
+                    <textarea autoFocus name="statusReason" rows={2} required defaultValue={selectedAppointment.statusReason} placeholder={appointmentStatus === "cancelled" ? "Ej. La clienta avisó con antelación" : "Ej. No acudió y no respondió"} />
                   </label>
                 )}
                 <label className="field"><span>Notas internas</span><textarea name="notes" rows={3} defaultValue={selectedAppointment.notes} placeholder="Información útil para la cita" /></label>
-                {selectedAppointment.status === "confirmed" && (
+                {selectedAppointment.status === "confirmed" && appointmentStatus !== "cancelled" && (
                   <section className="finish-appointment-section">
                     <div>
                       <strong>¿El tratamiento terminó antes?</strong>
@@ -1455,8 +1457,17 @@ export default function PanelClient({
                     <button type="button" onClick={openCompletionForm}>Finalizar y abrir ficha</button>
                   </section>
                 )}
+                {(["pending", "confirmed"] as string[]).includes(selectedAppointment.status) && (
+                  <section className="cancel-appointment-section">
+                    <strong>{appointmentStatus === "cancelled" ? "Confirmar la cancelación" : "¿Necesitas cancelar esta cita?"}</strong>
+                    <p>Se quitará de la agenda y de Google Calendar. El historial de la clienta se conservará.</p>
+                    {appointmentStatus === "cancelled"
+                      ? <p>Indica el motivo y pulsa «Confirmar cancelación» para terminar.</p>
+                      : <button type="button" onClick={() => { setAppointmentStatus("cancelled"); setError(""); }}>Cancelar cita</button>}
+                  </section>
+                )}
                 {error && <p className="modal-form-error" role="alert">{error}</p>}
-                <footer><button type="button" onClick={() => setModal(null)}>Cerrar</button><button type="submit">Guardar cambios</button></footer>
+                <footer><button type="button" onClick={() => setModal(null)}>Cerrar</button><button type="submit">{appointmentStatus === "cancelled" ? "Confirmar cancelación" : "Guardar cambios"}</button></footer>
               </form>
             ) : modal === "completeAppointment" && selectedAppointment ? (
               <form className="completion-record-form" onSubmit={completeAppointment}>

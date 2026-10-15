@@ -45,6 +45,9 @@
 .calendar-appointment:focus-visible { outline: 2px solid #6e5b4b; outline-offset: 2px; }
 .calendar-event > .calendar-edit-hint { position: absolute; top: 5px; right: 6px; margin: 0; padding: 2px 5px; border-radius: 5px; background: #fffdf8; color: #6e5b4b; font-size: 10px; opacity: 1; }
 .calendar-appointment > span:first-child { padding-right: 44px; }
+.cancel-appointment-section { display: grid; gap: 10px; padding: 16px; border: 1px solid #dec4bd; border-radius: 14px; background: #fff6f2; color: #753f35; }
+.cancel-appointment-section p { margin: 0; font-size: 13px; line-height: 1.5; }
+.cancel-appointment-section button { min-height: 44px; padding: 10px 16px; border: 1px solid #9e5345; border-radius: 10px; background: #fffdf8; color: #873f32; font: inherit; font-weight: 700; cursor: pointer; }
 .mb-brand small { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e5b4b; }
 .mb-desktop-nav { margin-left: auto; display: flex; gap: 28px; font-size: 14px; }
 .mb-desktop-nav a { padding: 14px 0; }
