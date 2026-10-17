@@ -1,10 +1,13 @@
+export const STUDIO_OPENING_MINUTE = 9 * 60;
+export const STUDIO_CLOSING_MINUTE = 19 * 60;
+
 export const MB_BEAUTY_HOURS: Record<number, { start: number; end: number } | null> = {
   0: null,
-  1: { start: 9 * 60 + 30, end: 18 * 60 },
-  2: { start: 9 * 60 + 30, end: 18 * 60 },
-  3: { start: 9 * 60 + 30, end: 18 * 60 },
-  4: { start: 9 * 60 + 30, end: 18 * 60 },
-  5: { start: 9 * 60 + 30, end: 18 * 60 },
+  1: { start: STUDIO_OPENING_MINUTE, end: STUDIO_CLOSING_MINUTE },
+  2: { start: STUDIO_OPENING_MINUTE, end: STUDIO_CLOSING_MINUTE },
+  3: { start: STUDIO_OPENING_MINUTE, end: STUDIO_CLOSING_MINUTE },
+  4: { start: STUDIO_OPENING_MINUTE, end: STUDIO_CLOSING_MINUTE },
+  5: { start: STUDIO_OPENING_MINUTE, end: STUDIO_CLOSING_MINUTE },
   6: null,
 };
 
@@ -33,8 +36,8 @@ export function isWithinStaffAppointmentHours(startsAt: string, endsAt: string, 
   const saturday = new Date(`${startsAt.slice(0, 10)}T12:00:00Z`).getUTCDay() === 6;
   return saturday && user.role === "owner" && user.professionalKey === "nurme" && professionalKey === "nurme"
     && startsAt.slice(0, 10) === endsAt.slice(0, 10)
-    && timeToMinutes(startsAt.slice(11, 16)) >= 9 * 60 + 30
-    && timeToMinutes(endsAt.slice(11, 16)) <= 18 * 60
+    && timeToMinutes(startsAt.slice(11, 16)) >= STUDIO_OPENING_MINUTE
+    && timeToMinutes(endsAt.slice(11, 16)) <= STUDIO_CLOSING_MINUTE
     && endsAt > startsAt;
 }
 

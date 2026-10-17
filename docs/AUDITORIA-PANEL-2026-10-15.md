@@ -18,3 +18,9 @@ Revisión de los ocho puntos enviados por Nurme. Se revisaron código, pruebas y
 La sesión y las escrituras se probaron con datos sintéticos y peticiones interceptadas; no se simula un iPhone real ni se afirman ocho altas reales en producción. Google Calendar se comprobó mediante estado remoto, programación de sincronización y pruebas de su proyección/operaciones. La base de datos, permisos y credenciales permanecen intactos.
 
 Validación: lint, TypeScript, build de producción y 54 pruebas automatizadas.
+
+## Actualización del 17 de octubre de 2026
+
+Nurme confirmó el punto 8: apertura de 09:00 a 19:00, de lunes a viernes. Se actualizan portada, reservas públicas, agenda interna, formularios y validación SQL de reservas. Los fines de semana siguen cerrados al público y Nurme conserva la excepción del sábado dentro de esa franja.
+
+Validación del cambio: 55 pruebas, build, TypeScript y lint. La función real de reservas se comprobó con operaciones revertidas: acepta 09:00 y 18:45 para un servicio de 15 minutos; rechaza 08:45, 19:00 y fines de semana. No quedaron citas de prueba guardadas.

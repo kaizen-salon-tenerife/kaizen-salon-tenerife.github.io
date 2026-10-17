@@ -1064,7 +1064,7 @@ export default function PanelClient({
                           <WhatsappClientSummary appointment={appointment} label="Acepta un hueco anterior" />
                           <div className="waitlist-offer-fields">
                             <label><span>Nuevo día</span><input type="date" min={todayPaymentKey} max={appointment.startsAt.slice(0, 10)} value={offer.date} onChange={(event) => setWaitlistOffers((current) => ({ ...current, [appointment.id]: { ...offer, date: event.target.value } }))} /></label>
-                            <label><span>Hora</span><input type="time" min="09:30" max="18:00" step="900" value={offer.time} onChange={(event) => setWaitlistOffers((current) => ({ ...current, [appointment.id]: { ...offer, time: event.target.value } }))} /></label>
+                            <label><span>Hora</span><input type="time" min="09:00" max="19:00" step="900" value={offer.time} onChange={(event) => setWaitlistOffers((current) => ({ ...current, [appointment.id]: { ...offer, time: event.target.value } }))} /></label>
                           </div>
                           <WhatsappMessageActions
                             appointment={appointment}
@@ -1715,8 +1715,8 @@ export default function PanelClient({
                   <label className="field"><span>Hasta</span><input name="endDate" required type="date" defaultValue={todayInputValue()} /></label>
                 </div>
                 {!allDayBlock && <div className="field-grid">
-                  <label className="field"><span>Hora inicial</span><input name="startTime" required type="time" min="09:30" max="18:00" step="900" defaultValue="09:30" /></label>
-                  <label className="field"><span>Hora final</span><input name="endTime" required type="time" min="09:30" max="18:00" step="900" defaultValue="10:00" /></label>
+                  <label className="field"><span>Hora inicial</span><input name="startTime" required type="time" min="09:00" max="19:00" step="900" defaultValue="09:00" /></label>
+                  <label className="field"><span>Hora final</span><input name="endTime" required type="time" min="09:00" max="19:00" step="900" defaultValue="10:00" /></label>
                 </div>}
                 {error && <p className="modal-form-error" role="alert">{error}</p>}
                 <footer><button type="button" onClick={() => setModal(null)}>Cancelar</button><button type="submit">{blockScope === "center" ? "Cerrar el centro" : "Bloquear horario"}</button></footer>
