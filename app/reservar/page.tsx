@@ -459,7 +459,7 @@ export default function BookingPage() {
                 <BookingDateCalendar value={day} onChange={selectDay} />
                 <div className="booking-hours-card">
                   <small>Horario del día</small>
-                  <strong>{!day ? "Elige un día en el calendario" : isSunday || isSaturday ? "Cerrado" : "09:30–18:00"}</strong>
+                  <strong>{!day ? "Elige un día en el calendario" : isSunday || isSaturday ? "Cerrado" : "09:00–19:00"}</strong>
                 </div>
               </div>
 

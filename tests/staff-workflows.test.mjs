@@ -225,6 +225,26 @@ test("Saturday is closed publicly and only Nurme can create or reschedule except
   } finally { Object.assign(profile, original); }
 });
 
+test("public and staff booking use 09:00–19:00 and require the whole treatment to fit", async () => {
+  const response = await request("/api/availability?date=2099-10-08&services=manicure-tradicional&professional=nurme");
+  const { slots } = await response.json();
+  assert.equal(slots[0].startsAt, "2099-10-08T09:00:00");
+  assert.equal(slots.at(-1).startsAt, "2099-10-08T18:30:00");
+  for (const time of ["09:00", "18:30"]) {
+    assert.equal((await request("/api/appointments", "POST", { ...booking, time })).status, 201);
+    assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", { ...booking, time })).status, 200);
+    assert.equal((await request("/api/booking-requests", "POST", { requestId: "00000000-0000-4000-8000-000000000001", serviceIds: [service.id], preferredProfessional: "nurme", startsAt: `2099-10-08T${time}:00`, name: "Prueba", phone: "600000000", privacyAccepted: true })).status, 201);
+  }
+  assert.equal((await request("/api/appointments", "POST", { ...booking, time: "18:45", duration: 15 })).status, 201);
+  for (const time of ["08:45", "18:45", "19:00"]) {
+    assert.equal((await request("/api/appointments", "POST", { ...booking, time })).status, 400);
+    assert.equal((await request("/api/appointments/fixture-appointment", "PATCH", { ...booking, time })).status, 400);
+    calls.length = 0;
+    assert.equal((await request("/api/booking-requests", "POST", { requestId: "00000000-0000-4000-8000-000000000001", serviceIds: [service.id], preferredProfessional: "nurme", startsAt: `2099-10-08T${time}:00`, name: "Prueba", phone: "600000000", privacyAccepted: true })).status, 409);
+    assert.ok(!calls.some(call => call.path === "/rest/v1/rpc/create_public_booking"));
+  }
+});
+
 test("logout calls Auth and clears persistent session cookies", async () => {
   calls.length = 0;
   const response = await request("/api/auth/logout", "POST");

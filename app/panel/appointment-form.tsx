@@ -58,7 +58,7 @@ export default function AppointmentForm({ services, clients, professionals, pref
         {isOwner && <label className="field"><span>Profesional</span><select name="professionalId" required value={professionalId} onChange={(event) => setProfessionalId(event.target.value)}>{professionals.map((person) => <option value={person.id} key={person.id}>{person.name}</option>)}</select></label>}
         <div className="field-grid">
           <label className="field"><span>Fecha</span><input name="date" required type="date" defaultValue={prefill?.date ?? today} /></label>
-          <label className="field"><span>{prefill && !isEditing ? "Hora · elige una" : "Hora"}</span><input name="time" required type="time" min="09:30" max="18:00" step="900" defaultValue={isEditing ? prefill?.time ?? "" : prefill ? "" : "09:30"} /></label>
+          <label className="field"><span>{prefill && !isEditing ? "Hora · elige una" : "Hora"}</span><input name="time" required type="time" min="09:00" max="19:00" step="900" defaultValue={isEditing ? prefill?.time ?? "" : prefill ? "" : "09:00"} /></label>
         </div>
         <label className="field"><span>Duración</span><select name="duration" value={duration} onChange={(event) => setDuration(Number(event.target.value))}>{durationChoices.map((minutes) => <option value={minutes} key={minutes}>{minutes < 60 ? `${minutes} minutos` : `${Math.floor(minutes / 60)} h${minutes % 60 ? ` ${minutes % 60} min` : ""}`}</option>)}</select></label>
         {duration > 480 && <p className="modal-form-error" role="alert">La cita puede durar hasta 8 horas. Ajusta la duración o quita algún servicio.</p>}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, type CSSProperties } from "react";
+import { STUDIO_OPENING_MINUTE, STUDIO_CLOSING_MINUTE } from "@/lib/schedule";
 
 export type AppointmentRow = {
   id: string;
@@ -42,8 +43,8 @@ export type AgendaProfessional = {
 
 type CalendarMode = "day" | "week" | "month";
 
-const OPENING_MINUTE = 9 * 60 + 30;
-const CLOSING_MINUTE = 18 * 60;
+const OPENING_MINUTE = STUDIO_OPENING_MINUTE;
+const CLOSING_MINUTE = STUDIO_CLOSING_MINUTE;
 const SLOT_HEIGHT = 52;
 const DAY_HEIGHT = ((CLOSING_MINUTE - OPENING_MINUTE) / 30) * SLOT_HEIGHT;
 
@@ -107,7 +108,7 @@ export default function AgendaWorkspace({
         <div>
           <small>Horario oficial de MB Nurme Beauty</small>
           <h2>{rangeTitle(anchor, mode)}</h2>
-          <p>L–V 09:30–18:00 · Sáb y dom cerrado · Sábados: citas excepcionales solo por Nurme</p>
+          <p>L–V 09:00–19:00 · Sáb y dom cerrado · Sábados: citas excepcionales solo por Nurme</p>
         </div>
         <div className="agenda-toolbar-actions">
           {isOwner && <button className="panel-secondary close-day-button" type="button" onClick={onCloseDay}>Cerrar día</button>}
