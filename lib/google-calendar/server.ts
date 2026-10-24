@@ -29,12 +29,12 @@ export async function unseal(value: string, env: CalendarConfig) {
   const bytes = await crypto.subtle.decrypt({ name: "AES-GCM", iv: decode(iv), additionalData: new TextEncoder().encode("mb-beauty-calendar-v1") }, await key(env), decode(data));
   return new TextDecoder().decode(bytes);
 }
-async function db<T>(env: CalendarConfig, path: string, method = "GET", body?: unknown): Promise<T> {
+export async function db<T>(env: CalendarConfig, path: string, method = "GET", body?: unknown): Promise<T> {
   const response = await fetch(DB + "/rest/v1/" + path, { method, headers: { apikey: env.SUPABASE_SECRET_KEY!, "Content-Type": "application/json", Prefer: "return=representation" }, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(10000) });
   if (!response.ok) throw new Error("Calendar storage unavailable");
   return response.status === 204 ? undefined as T : await response.json() as T;
 }
-async function token(env: CalendarConfig, params: Record<string,string>) {
+export async function token(env: CalendarConfig, params: Record<string,string>) {
   const response = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ ...params, client_id: env.GOOGLE_CLIENT_ID!, client_secret: env.GOOGLE_CLIENT_SECRET! }), signal: AbortSignal.timeout(10000) });
   if (!response.ok) throw new Error("Google authorization unavailable");
   return await response.json() as { access_token: string; refresh_token?: string; scope?: string };
@@ -43,7 +43,7 @@ async function google(access: string, path: string, method = "GET", body?: unkno
   return fetch("https://www.googleapis.com/calendar/v3/" + path, { method, headers: { Authorization: "Bearer " + access, "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(10000) });
 }
 function cookie(request: Request, name: string) { return request.headers.get("cookie")?.split(";").map(v=>v.trim()).find(v=>v.startsWith(name+"="))?.slice(name.length+1); }
-async function operator(request: Request, env: CalendarConfig) {
+export async function operator(request: Request, env: CalendarConfig) {
   const access = cookie(request, "mb_beauty_access_token");
   if (!access) return null;
   const response = await fetch(DB + "/auth/v1/user", { headers: { apikey: env.SUPABASE_SECRET_KEY!, Authorization: "Bearer " + access }, signal: AbortSignal.timeout(10000) });
@@ -63,8 +63,25 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
     if (url.pathname.endsWith("/callback") && request.method === "GET") {
       const state = url.searchParams.get("state"), saved = cookie(request,COOKIE);
       if (!state || !saved) return back("invalid");
-      const flow = JSON.parse(await unseal(saved,env)) as {nonce:string;uid:string;expires:number;verifier:string};
+      const flow = JSON.parse(await unseal(saved,env)) as {nonce:string;uid:string;expires:number;verifier:string;purpose?:string};
       if (flow.nonce !== state || flow.expires < Date.now()) return back("invalid");
+      if (flow.purpose === "email") {
+        const finish = (status: string) => new Response(null,{status:303,headers:{Location:ORIGIN+"/panel/avisos?result="+status,"Cache-Control":"no-store","Referrer-Policy":"no-referrer","Set-Cookie":COOKIE+"=; Path=/api/google-calendar; HttpOnly; Secure; SameSite=Lax; Max-Age=0"}});
+        const rows = await db<Array<{connected_by:string}>>(env,"owner_alert_settings?id=eq.nurme&nonce=eq."+encodeURIComponent(state)+"&nonce_expires_at=gt."+encodeURIComponent(new Date().toISOString()),"PATCH",{nonce:null,nonce_expires_at:null});
+        if (!rows.length || rows[0].connected_by !== flow.uid) return finish("invalid");
+        const p = (await db<Array<{is_active:boolean;must_change_password:boolean;professional_key:string;role:string}>>(env,"staff_profiles?id=eq."+encodeURIComponent(flow.uid)+"&select=is_active,must_change_password,professional_key,role"))[0];
+        if (!p?.is_active || p.must_change_password || (p.professional_key !== "nurme" && p.role !== "admin")) return finish("invalid");
+        const code = url.searchParams.get("code");
+        if (!code || url.searchParams.has("error")) return finish("cancelled");
+        const tokens = await token(env,{grant_type:"authorization_code",code,code_verifier:flow.verifier,redirect_uri:CALLBACK});
+        if (!tokens.refresh_token || !tokens.scope?.split(" ").includes("https://www.googleapis.com/auth/gmail.send")) return finish("failed");
+        const identity = await fetch("https://openidconnect.googleapis.com/v1/userinfo",{headers:{Authorization:"Bearer "+tokens.access_token},signal:AbortSignal.timeout(10000)});
+        if (!identity.ok) return finish("failed");
+        const profile = await identity.json() as {email?:string;email_verified?:boolean};
+        if (!profile.email_verified || profile.email?.toLowerCase() !== "nurmemartinbenitez@gmail.com") return finish("account");
+        await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{email_refresh_token:await seal(tokens.refresh_token,env),email_enabled:true});
+        return finish("connected");
+      }
       // Consume the nonce atomically. Replays and a second browser callback cannot connect.
       const rows = await db<Connection[]>(env,"google_calendar_connection?id=eq.nurme&nonce=eq."+encodeURIComponent(state)+"&nonce_expires_at=gt."+encodeURIComponent(new Date().toISOString()),"PATCH",{nonce:null,nonce_expires_at:null});
       if (!rows.length || rows[0].connected_by !== flow.uid) return back("invalid");
@@ -95,6 +112,15 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
     if (url.pathname.endsWith("/status") && request.method === "GET") return result({connected:!!connection?.refresh_token,lastSync:connection?.last_synced_at,error:connection?.last_error});
     if (request.method !== "POST") return result({error:"Método no permitido."},405);
     if (request.headers.get("origin") !== ORIGIN) return result({error:"Solicitud no válida."},403);
+    if (url.pathname.endsWith("/connect-email")) {
+      const nonce=encode(crypto.getRandomValues(new Uint8Array(32))), verifier=encode(crypto.getRandomValues(new Uint8Array(32)));
+      const challenge=encode(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(verifier))));
+      const expires=Date.now()+600000;
+      await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{nonce,nonce_expires_at:new Date(expires).toISOString(),connected_by:user.id});
+      const target=new URL("https://accounts.google.com/o/oauth2/v2/auth");
+      target.search=new URLSearchParams({client_id:env.GOOGLE_CLIENT_ID!,redirect_uri:CALLBACK,response_type:"code",scope:"openid email https://www.googleapis.com/auth/gmail.send",access_type:"offline",prompt:"consent select_account",login_hint:"nurmemartinbenitez@gmail.com",state:nonce,code_challenge:challenge,code_challenge_method:"S256"}).toString();
+      return new Response(null,{status:303,headers:{Location:target.toString(),"Cache-Control":"no-store","Set-Cookie":COOKIE+"="+await seal(JSON.stringify({nonce,uid:user.id,expires,verifier,purpose:"email"}),env)+"; Path=/api/google-calendar; HttpOnly; Secure; SameSite=Lax; Max-Age=600"}});
+    }
     if (url.pathname.endsWith("/connect")) {
       if (!connection) return result({error:"Falta preparar el almacenamiento."},503);
       const nonce = encode(crypto.getRandomValues(new Uint8Array(32)));
@@ -114,6 +140,8 @@ export async function calendarRoute(request: Request, env: CalendarConfig): Prom
         if (!revoke.ok && revoke.status !== 400) return result({error:"Google no pudo revocar el permiso. Vuelve a intentarlo."},502);
       }
       await db(env,"google_calendar_connection?id=eq.nurme","PATCH",{refresh_token:null,nonce:null,nonce_expires_at:null,last_error:null});
+      // Google revocation can invalidate other tokens issued to this same app.
+      await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{email_refresh_token:null,calendar_configured_at:null});
       return back("disconnected");
     }
     return result({error:"Ruta no encontrada."},404);
@@ -127,6 +155,26 @@ export async function syncCalendar(env: CalendarConfig) {
   if (!connection?.refresh_token || !connection.calendar_id) return;
   try {
     const tokens = await token(env,{grant_type:"refresh_token",refresh_token:await unseal(connection.refresh_token,env)});
+    // Calendar preferences belong to Nurme's app-created calendar only.
+    // A failure here must not stop appointment synchronization.
+    try {
+      const settings = (await db<Array<{calendar_configured_at:string|null}>>(env,"owner_alert_settings?id=eq.nurme&select=calendar_configured_at"))[0];
+      if (!settings?.calendar_configured_at) {
+        const path="users/me/calendarList/"+encodeURIComponent(connection.calendar_id);
+        const current=await google(tokens.access_token,path);
+        if (!current.ok) throw new Error("Calendar preferences unavailable");
+        const entry=await current.json() as {notificationSettings?:{notifications?:Array<{type:string;method:string}>}};
+        const notifications=entry.notificationSettings?.notifications ?? [];
+        for (const type of ["eventCreation","eventChange","eventCancellation"]) {
+          if (!notifications.some(n=>n.type===type && n.method==="email")) notifications.push({type,method:"email"});
+        }
+        const updated=await google(tokens.access_token,path,"PATCH",{notificationSettings:{notifications}});
+        if (!updated.ok) throw new Error("Calendar preferences unavailable");
+        await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{calendar_configured_at:new Date().toISOString(),calendar_error:null});
+      }
+    } catch {
+      await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{calendar_error:"No se pudieron configurar los avisos de Google. La sincronización de citas continúa."}).catch(()=>{});
+    }
     const calendarMetadata = await google(tokens.access_token,"calendars/"+encodeURIComponent(connection.calendar_id),"PATCH",{
       summary:"Citas MB Nurme Beauty",description:"Citas de Nurme. Gestionadas desde el panel de MB Nurme Beauty.",
     });

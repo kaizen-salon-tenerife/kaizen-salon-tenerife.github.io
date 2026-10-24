@@ -44,7 +44,7 @@ test('failed Google update retains cursor, records safe error and releases lease
  const original=globalThis.fetch;const writes=[];
  const refresh=await seal('fake-refresh',env);
  globalThis.fetch=async(url,options={})=>{
-  const u=new URL(url);const body=options.body ? JSON.parse(options.body instanceof URLSearchParams ? '{}' : options.body) : null;
+  const u=new URL(url); if(u.pathname.endsWith("/owner_alert_settings")) return Response.json([{calendar_configured_at:"2026-10-24T00:00:00Z"}]);const body=options.body ? JSON.parse(options.body instanceof URLSearchParams ? '{}' : options.body) : null;
   if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
   if(u.hostname==='www.googleapis.com') return Response.json({error:'unavailable'},{status:503});
   assert.equal(u.hostname,'gwndpaeebjtoowuzkywz.supabase.co');
@@ -68,7 +68,7 @@ test('successful writes checkpoint individually and retries recover an insert co
  const original=globalThis.fetch;const writes=[];const methods=[];
  const refresh=await seal('fake-refresh',env);
  globalThis.fetch=async(url,options={})=>{
-  const u=new URL(url);
+  const u=new URL(url); if(u.pathname.endsWith("/owner_alert_settings")) return Response.json([{calendar_configured_at:"2026-10-24T00:00:00Z"}]);
   if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
   if(u.hostname==='www.googleapis.com') {
    if(options.method==='PATCH') {assert.equal(JSON.parse(options.body).summary,'Citas MB Nurme Beauty'); return Response.json({});}
@@ -101,7 +101,7 @@ test('cancelled appointment deletes its Google event and checkpoints the change'
  const original=globalThis.fetch, methods=[], writes=[];
  const refresh=await seal('fake-refresh',env);
  globalThis.fetch=async(url,options={})=>{
-  const u=new URL(url);
+  const u=new URL(url); if(u.pathname.endsWith("/owner_alert_settings")) return Response.json([{calendar_configured_at:"2026-10-24T00:00:00Z"}]);
   if(u.hostname==='oauth2.googleapis.com') return Response.json({access_token:'fake-access'});
   if(u.hostname==='www.googleapis.com') {
    if(u.pathname.endsWith('/events/'+eventId(a.id))) { methods.push(options.method); return new Response(null,{status:204}); }
@@ -113,4 +113,52 @@ test('cancelled appointment deletes its Google event and checkpoints the change'
   writes.push(body); return Response.json([]);
  };
  try {await syncCalendar(env);assert.deepEqual(methods,['DELETE']);assert.ok(writes.some(w=>w?.cursor_id===a.id));assert.ok(writes.some(w=>w?.last_synced_at));} finally {globalThis.fetch=original;}
+});
+
+test('calendar notification preferences preserve existing choices and configure only the app calendar',async()=>{
+ const original=globalThis.fetch,writes=[];const refresh=await seal('fake-refresh',env);
+ globalThis.fetch=async(url,options={})=>{
+  const u=new URL(url),body=options.body&&!(options.body instanceof URLSearchParams)?JSON.parse(options.body):null;
+  if(u.hostname==='oauth2.googleapis.com')return Response.json({access_token:'token'});
+  if(u.hostname==='www.googleapis.com'){
+   if(u.pathname.includes('/calendarList/')){
+    assert.ok(u.pathname.endsWith('/calendarList/calendar'));
+    if(options.method==='GET')return Response.json({notificationSettings:{notifications:[{type:'agenda',method:'email'},{type:'eventCreation',method:'email'}]}});
+    writes.push(body);return Response.json({});
+   }
+   return Response.json({});
+  }
+  if(u.pathname.endsWith('/owner_alert_settings')){
+   if(options.method==='PATCH'){writes.push(body);return Response.json([]);}
+   return Response.json([{calendar_configured_at:null}]);
+  }
+  if(u.pathname.endsWith('/appointments'))return Response.json([]);
+  if(body?.lease_until&&body.lease_until!=='1970-01-01T00:00:00Z')return Response.json([{refresh_token:refresh,calendar_id:'calendar',cursor:'1970-01-01T00:00:00Z'}]);
+  return Response.json([]);
+ };
+ try{
+  await syncCalendar(env);
+  assert.deepEqual(writes.find(w=>w.notificationSettings).notificationSettings.notifications,[{type:'agenda',method:'email'},{type:'eventCreation',method:'email'},{type:'eventChange',method:'email'},{type:'eventCancellation',method:'email'}]);
+  assert.ok(writes.some(w=>w.calendar_configured_at));
+ }finally{globalThis.fetch=original;}
+});
+
+test('Gmail callback stores an encrypted sending credential only for Nurme and rejects replay',async()=>{
+ const original=globalThis.fetch;let exchanges=0,consumed=false;const writes=[];
+ const cookie=await seal(JSON.stringify({nonce:'mail-state',uid:a.id,verifier:'verifier',expires:Date.now()+60000,purpose:'email'}),env);
+ globalThis.fetch=async(url,options={})=>{
+  const u=new URL(url);
+  if(u.hostname==='oauth2.googleapis.com'){exchanges++;return Response.json({access_token:'token',refresh_token:'mail-refresh',scope:'openid email https://www.googleapis.com/auth/gmail.send'});}
+  if(u.hostname==='openidconnect.googleapis.com')return Response.json({email:'NurmeMartinBenitez@gmail.com',email_verified:true});
+  if(u.pathname.endsWith('/staff_profiles'))return Response.json([{is_active:true,must_change_password:false,professional_key:'nurme',role:'owner'}]);
+  assert.ok(u.pathname.endsWith('/owner_alert_settings'));
+  if(u.searchParams.has('nonce')){if(consumed)return Response.json([]);consumed=true;return Response.json([{connected_by:a.id}]);}
+  writes.push(JSON.parse(options.body));return Response.json([]);
+ };
+ try{
+  const request=()=>new Request('https://mb-beauty.leonforge.workers.dev/api/google-calendar/callback?state=mail-state&code=test',{headers:{cookie:'mb_google_connect='+cookie}});
+  assert.match((await calendarRoute(request(),env)).headers.get('location'),/\/panel\/avisos\?result=connected$/);
+  const saved=writes.find(w=>w.email_refresh_token);assert.equal(await unseal(saved.email_refresh_token,env),'mail-refresh');assert.notEqual(saved.email_refresh_token,'mail-refresh');
+  assert.match((await calendarRoute(request(),env)).headers.get('location'),/result=invalid$/);assert.equal(exchanges,1);
+ }finally{globalThis.fetch=original;}
 });

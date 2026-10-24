@@ -70,6 +70,24 @@ export default function PrivacyPage() {
         </section>
 
         <section>
+          <h2>Avisos de nuevas reservas</h2>
+          <p>
+            Al confirmarse una reserva web, se guarda un aviso privado para Nurme y
+            administración. Si activan estos canales, el aviso incluye el nombre,
+            servicio, fecha y hora de la cita por correo y por notificación en sus
+            dispositivos. Para ello se utilizan Gmail y los servicios de
+            notificaciones del navegador o dispositivo. No se incluyen teléfonos,
+            notas de tratamiento ni fotografías en estos avisos.
+          </p>
+          <p>
+            La conexión opcional con Gmail solicita permiso de envío y de
+            identificación de la cuenta de la profesional; no permite leer su
+            bandeja de entrada. Los permisos de notificación pueden desactivarse
+            desde el panel o los ajustes del dispositivo.
+          </p>
+        </section>
+
+        <section>
           <h2>Tus derechos</h2>
           <p>
             Puedes solicitar acceso, corrección o eliminación de tus datos, limitar
@@ -79,7 +97,7 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <p className="legal-version">Versión del aviso: 11 de octubre de 2026.</p>
+        <p className="legal-version">Versión del aviso: 24 de octubre de 2026.</p>
       </div>
     </main>
   );

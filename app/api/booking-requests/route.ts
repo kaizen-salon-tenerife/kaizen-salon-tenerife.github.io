@@ -90,7 +90,7 @@ export async function POST(request: Request) {
           p_phone: phone,
           p_notes: notes,
           p_waitlist: waitlist,
-          p_privacy_version: "2026-10-11",
+          p_privacy_version: "2026-10-24",
         }),
       },
     );
