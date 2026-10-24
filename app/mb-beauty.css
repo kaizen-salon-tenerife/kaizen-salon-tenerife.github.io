@@ -269,3 +269,9 @@
 .mb-calendar-connection { border: 1px solid #d8c6ae; border-radius: 16px; padding: 24px; margin: 28px 0; background: #fffaf3; }
 .mb-calendar-connection form { margin-top: 16px; }
 .mb-calendar-connection button:disabled { opacity: .55; cursor: not-allowed; }
+/* Owner notification setup and delivery history. */
+.mb-calendar-connection > .mb-button, .mb-calendar-connection > .mb-text-link { margin: 8px 12px 8px 0; }
+.mb-alert-item { padding: 20px 0; border-top: 1px solid #dfcbb0; overflow-wrap: anywhere; }
+.mb-alert-item .mb-text-link { margin-right: 18px; }
+.mb-alert-item li { margin: 8px 0; }
+.mb-alert-item li button { margin-left: 12px; }
