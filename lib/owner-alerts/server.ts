@@ -3,7 +3,7 @@ import { db, operator, seal, unseal, token, type CalendarConfig } from "../googl
 
 const ORIGIN = "https://mb-beauty.leonforge.workers.dev";
 const EMAIL = "nurmemartinbenitez@gmail.com";
-type Settings = { email_enabled:boolean; email_refresh_token:string|null; vapid_public_key:string|null; vapid_private_key:string|null; calendar_configured_at:string|null; calendar_error:string|null };
+type Settings = { email_enabled:boolean; email_refresh_token:string|null; vapid_public_key:string|null; vapid_private_key:string|null; calendar_configured_at:string|null; calendar_manual_verified_at:string|null; calendar_error:string|null };
 type Device = { id:string; user_id:string; active:boolean; subscription:PushSubscription };
 type Job = { id:string; alert_id:string; channel:"email"|"push"; target:string; attempts:number; claim_id:string };
 type Appointment = { id:string; status:string; starts_at:string; service_name:string; client:{name:string}|null };
@@ -107,7 +107,7 @@ export async function ownerAlertRoute(request:Request,env:CalendarConfig):Promis
       const devices=await db<Array<{id:string;last_test_at:string|null}>>(env,`owner_push_subscriptions?user_id=eq.${user.id}&active=eq.true&select=id,last_test_at`);
       const alerts=await db<unknown[]>(env,"owner_booking_alerts?select=id,created_at,seen_at,appointment:appointments(id,service_name,starts_at,status,client:clients(name)),deliveries:owner_alert_deliveries(id,channel,status,last_error,sent_at)&order=created_at.desc&limit=30");
       const calendar=(await db<Array<{last_synced_at:string|null;last_error:string|null;calendar_id:string|null}>>(env,"google_calendar_connection?id=eq.nurme&select=calendar_id,last_synced_at,last_error"))[0];
-      return json({emailConnected:!!s.email_refresh_token,emailEnabled:s.email_enabled,email:EMAIL,devices,alerts,calendarConfiguredAt:s.calendar_configured_at,calendarError:s.calendar_error,calendarLastSync:calendar?.last_synced_at,calendarSyncError:calendar?.last_error});
+      return json({emailConnected:!!s.email_refresh_token,emailEnabled:s.email_enabled,email:EMAIL,devices,alerts,calendarConfiguredAt:s.calendar_configured_at,calendarManualVerifiedAt:s.calendar_manual_verified_at,calendarError:s.calendar_error,calendarLastSync:calendar?.last_synced_at,calendarSyncError:calendar?.last_error});
     }
     if (request.method!=="POST") return json({error:"Método no permitido."},405);
     if (url.pathname.endsWith("/setup")) { const s=await ensureKeys(env); return json({publicKey:s.vapid_public_key}); }

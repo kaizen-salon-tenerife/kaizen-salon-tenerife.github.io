@@ -162,3 +162,23 @@ test('Gmail callback stores an encrypted sending credential only for Nurme and r
   assert.match((await calendarRoute(request(),env)).headers.get('location'),/result=invalid$/);assert.equal(exchanges,1);
  }finally{globalThis.fetch=original;}
 });
+
+test('manual verification preserves the API diagnostic and does not block calendar sync',async()=>{
+ const original=globalThis.fetch;const refresh=await seal('fake-refresh',env);const writes=[];
+ globalThis.fetch=async(url,options={})=>{
+  const u=new URL(url),body=options.body&&!(options.body instanceof URLSearchParams)?JSON.parse(options.body):null;
+  if(u.hostname==='oauth2.googleapis.com')return Response.json({access_token:'token'});
+  if(u.hostname==='www.googleapis.com'){
+   assert.ok(!u.pathname.includes('/calendarList/'),'manually verified preferences must not be overwritten');
+   return Response.json({});
+  }
+  if(u.pathname.endsWith('/owner_alert_settings')){
+   assert.notEqual(options.method,'PATCH','retain the original API error');
+   return Response.json([{calendar_configured_at:null,calendar_manual_verified_at:'2026-10-24T22:13:00Z'}]);
+  }
+  if(u.pathname.endsWith('/appointments'))return Response.json([]);
+  if(body?.lease_until&&body.lease_until!=='1970-01-01T00:00:00Z')return Response.json([{refresh_token:refresh,calendar_id:'calendar',cursor:'1970-01-01T00:00:00Z'}]);
+  writes.push(body);return Response.json([]);
+ };
+ try{await syncCalendar(env);assert.ok(writes.some(w=>w?.last_synced_at));}finally{globalThis.fetch=original;}
+});

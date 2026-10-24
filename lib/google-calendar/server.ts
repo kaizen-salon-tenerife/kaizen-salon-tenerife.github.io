@@ -158,8 +158,8 @@ export async function syncCalendar(env: CalendarConfig) {
     // Calendar preferences belong to Nurme's app-created calendar only.
     // A failure here must not stop appointment synchronization.
     try {
-      const settings = (await db<Array<{calendar_configured_at:string|null}>>(env,"owner_alert_settings?id=eq.nurme&select=calendar_configured_at"))[0];
-      if (!settings?.calendar_configured_at) {
+      const settings = (await db<Array<{calendar_configured_at:string|null;calendar_manual_verified_at?:string|null}>>(env,"owner_alert_settings?id=eq.nurme&select=calendar_configured_at,calendar_manual_verified_at"))[0];
+      if (!settings?.calendar_configured_at && !settings?.calendar_manual_verified_at) {
         const path="users/me/calendarList/"+encodeURIComponent(connection.calendar_id);
         const current=await google(tokens.access_token,path);
         if (!current.ok) throw new Error(`Google Calendar: no se pudieron leer los avisos (HTTP ${current.status}).`);

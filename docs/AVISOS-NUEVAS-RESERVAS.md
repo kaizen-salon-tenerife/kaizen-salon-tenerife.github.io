@@ -62,3 +62,18 @@ de Gmail/Calendar y modos de Concentración.
   trabajo de correo, permisos, reclamación exclusiva y recuperación de lease de
   correo ambiguo. No se conservan citas sintéticas.
 - Pruebas reales pendientes de la autorización de Gmail y del dispositivo de Nurme.
+
+## Comprobación real, 25 de octubre de 2026
+
+Gmail de Nurme quedó autorizado y un correo de prueba aceptado por Gmail se
+localizó en su bandeja de Recibidos. No se creó ninguna cita de prueba.
+
+La API devolvió 401 para las preferencias Calendar, mientras que la sincronización
+de citas siguió funcionando. Los avisos de Nuevos eventos, Eventos modificados y
+Eventos cancelados se configuraron directamente en la cuenta de Nurme, calendario
+«Citas MB Nurme Beauty», y se comprobaron tras recargar: los tres muestran «Correo».
+Se registra esta verificación en `calendar_manual_verified_at`; el error de API
+se conserva y no se presenta como una verificación de API satisfactoria.
+
+La recepción de push en el iPhone continúa pendiente de registrar ese dispositivo
+y comprobar allí el aviso de prueba.
