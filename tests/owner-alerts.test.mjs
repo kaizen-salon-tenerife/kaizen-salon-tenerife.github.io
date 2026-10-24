@@ -13,7 +13,20 @@ const env={SUPABASE_SECRET_KEY:'test',GOOGLE_CALENDAR_ENCRYPTION_KEY:'ab'.repeat
 const a={id:'11111111-1111-4111-8111-111111111111',status:'confirmed',starts_at:'2026-11-10T09:15:00',service_name:'Manicura + Pedicura',client:{name:'Ana'}};
 test('notification content preserves local appointment time and links to the appointment',()=>{
  const c=alertContent(a);assert.match(c.body,/Ana · Manicura \+ Pedicura · 10\/11\/2026 a las 09:15/);assert.ok(c.url.endsWith(a.id));
- const raw=Buffer.from(emailRaw(c,'test'),'base64url').toString();assert.match(raw,/To: nurmemartinbenitez@gmail.com/);assert.match(raw,/Content-Transfer-Encoding: base64/);assert.ok(Buffer.from(raw.split('\r\n\r\n')[1],'base64').toString().includes(c.url));
+ const raw=Buffer.from(emailRaw(c,'test'),'base64url').toString();assert.match(raw,/To: nurmemartinbenitez@gmail.com/);assert.match(raw,/Content-Type: multipart\/alternative/);
+ const parts=[...raw.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--/g)].map(m=>Buffer.from(m[1],'base64').toString());
+ assert.equal(parts.length,2);for(const part of parts)assert.ok(part.includes(c.url));
+ assert.match(parts[0],/Clienta: Ana\nServicios: Manicura \+ Pedicura\nFecha: 10\/11\/2026\nHora \(Canarias\): 09:15 h\nEstado: Confirmada/);
+ assert.match(parts[1],/Ver o modificar cita/);
+});
+
+test('HTML email escapes client and service data and supports a plain test notice',()=>{
+ const c=alertContent({...a,client:{name:'Ana <img src=x>'},service_name:'Uñas & <script>alert(1)</script>'});
+ const raw=Buffer.from(emailRaw(c,'safe'),'base64url').toString();
+ const html=Buffer.from(raw.match(/Content-Type: text\/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--/)[1],'base64').toString();
+ assert.ok(html.includes('Ana &lt;img src=x&gt;'));assert.ok(html.includes('Uñas &amp; &lt;script&gt;'));assert.ok(!html.includes('<script>'));assert.ok(!html.includes('<img'));
+ const testRaw=Buffer.from(emailRaw({title:'Prueba',body:'Sin cita creada',url:'https://example.com',tag:'test'},'test'),'base64url').toString();
+ assert.ok(testRaw.includes('multipart/alternative'));
 });
 test('push endpoints cannot target arbitrary servers, credentials, or insecure origins',()=>{
  const sub={endpoint:'https://web.push.apple.com/test',keys:{p256dh:'a'.repeat(87),auth:'b'.repeat(22)}};
