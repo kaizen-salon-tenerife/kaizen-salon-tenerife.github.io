@@ -7,6 +7,7 @@ type Settings = { email_enabled:boolean; email_refresh_token:string|null; vapid_
 type Device = { id:string; user_id:string; active:boolean; subscription:PushSubscription };
 type Job = { id:string; alert_id:string; channel:"email"|"push"; target:string; attempts:number; claim_id:string };
 type Appointment = { id:string; status:string; starts_at:string; service_name:string; client:{name:string}|null };
+type AlertContent = { title:string; body:string; url:string; tag:string; details?:{name:string;services:string;date:string;time:string} };
 function base64(bytes:Uint8Array) { return btoa(String.fromCharCode(...bytes)); }
 function url64(bytes:Uint8Array) { return base64(bytes).replaceAll("+","-").replaceAll("/","_").replaceAll("=",""); }
 const json = (data:unknown,status=200) => Response.json(data,{status,headers:{"Cache-Control":"no-store"}});
@@ -34,17 +35,27 @@ async function ensureKeys(env:CalendarConfig) {
   }
   return s;
 }
-export function alertContent(a:Appointment) {
+export function alertContent(a:Appointment):AlertContent {
   const name=(a.client?.name?.trim() || "Clienta").slice(0,100);
   const date=a.starts_at.slice(0,10).split("-").reverse().join("/");
-  return { title:"Nueva cita · MB Nurme Beauty", body:`${name} · ${a.service_name.slice(0,180)} · ${date} a las ${a.starts_at.slice(11,16)}`, url:`${ORIGIN}/panel?cita=${encodeURIComponent(a.id)}`, tag:`booking-${a.id}` };
+  return { title:"Nueva cita · MB Nurme Beauty", body:`${name} · ${a.service_name.slice(0,180)} · ${date} a las ${a.starts_at.slice(11,16)}`, url:`${ORIGIN}/panel?cita=${encodeURIComponent(a.id)}`, tag:`booking-${a.id}`, details:{name,services:a.service_name,date,time:a.starts_at.slice(11,16)} };
+}
+function escapeHtml(value:string) {
+  return value.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]!);
 }
 export function emailRaw(content:ReturnType<typeof alertContent>, id:string) {
   const subject=base64(new TextEncoder().encode(content.title));
-  const text=`${content.title}\n\n${content.body}\n\nAbrir en el panel:\n${content.url}\n\nAviso automático de la agenda de MB Nurme Beauty.`;
+  const fields=content.details ? [["Clienta",content.details.name],["Servicios",content.details.services],["Fecha",content.details.date],["Hora (Canarias)",content.details.time+" h"],["Estado","Confirmada"]] : [];
+  const text=`${content.title}\n\n${fields.length?fields.map(([label,value])=>`${label}: ${value}`).join("\n"):content.body}\n\nVer cita en el panel:\n${content.url}\n\nAviso automático de la agenda de MB Nurme Beauty.`;
+  // Inline styles and a table layout also work in mail clients without modern CSS.
+  const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;padding:24px 12px;background:#f7f3eb;color:#28231f;font-family:Arial,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #e6d8c7;border-radius:16px"><tr><td style="padding:28px 24px;background:#28231f;border-radius:16px 16px 0 0;color:#ffffff"><p style="margin:0 0 12px;color:#d6b675;font-size:13px;letter-spacing:1px">MB NURME BEAUTY</p><h1 style="margin:0;font-size:26px;font-weight:normal">${content.details?"Nueva cita confirmada":escapeHtml(content.title)}</h1></td></tr><tr><td style="padding:24px"><p style="margin:0 0 24px;line-height:1.6">${content.details?"Hola, Nurme. Una clienta ha reservado una cita desde la web. Estos son los detalles:":escapeHtml(content.body)}</p>${fields.length?`<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${fields.map(([label,value])=>`<tr><td style="padding:12px 0;border-bottom:1px solid #eee6dc"><div style="font-size:12px;color:#786552;margin-bottom:6px">${escapeHtml(label)}</div><div style="font-size:17px;line-height:1.5;overflow-wrap:anywhere">${escapeHtml(value)}</div></td></tr>`).join("")}</table>`:""}<p style="margin:28px 0"><a href="${escapeHtml(content.url)}" style="display:inline-block;padding:15px 22px;background:#74604e;border-radius:8px;color:#ffffff;text-decoration:none;font-weight:bold">${content.details?"Ver o modificar cita":"Abrir el panel"}</a></p><p style="margin:0;font-size:13px;line-height:1.6;color:#786552">${content.details?"La cita ya está guardada en tu agenda. Puedes consultar sus detalles y gestionar cualquier cambio desde el panel.":"Este aviso permite comprobar la presentación y la recepción del correo."}</p></td></tr><tr><td style="padding:18px 24px;border-top:1px solid #eee6dc;font-size:12px;line-height:1.6;color:#786552">Aviso automático de MB Nurme Beauty.<br>Si el botón no se abre, copia este enlace:<br><a href="${escapeHtml(content.url)}" style="color:#74604e;overflow-wrap:anywhere">${escapeHtml(content.url)}</a></td></tr></table></td></tr></table></body></html>`;
+  const boundary="mb-alternative-"+crypto.randomUUID();
+  const encoded=(value:string)=>base64(new TextEncoder().encode(value)).match(/.{1,76}/g)!.join("\r\n");
   return url64(new TextEncoder().encode([
     `From: MB Nurme Beauty <${EMAIL}>`,`To: ${EMAIL}`,`Subject: =?UTF-8?B?${subject}?=`,
-    `Message-ID: <mb-alert-${id}@mb-beauty.leonforge.workers.dev>`,"MIME-Version: 1.0","Content-Type: text/plain; charset=UTF-8","Content-Transfer-Encoding: base64","",base64(new TextEncoder().encode(text)),
+    `Message-ID: <mb-alert-${id}@mb-beauty.leonforge.workers.dev>`,"MIME-Version: 1.0",`Content-Type: multipart/alternative; boundary="${boundary}"`,"",
+    `--${boundary}`,"Content-Type: text/plain; charset=UTF-8","Content-Transfer-Encoding: base64","",encoded(text),
+    `--${boundary}`,"Content-Type: text/html; charset=UTF-8","Content-Transfer-Encoding: base64","",encoded(html),`--${boundary}--`,"",
   ].join("\r\n")));
 }
 async function push(env:CalendarConfig,s:Settings,d:Device,content:ReturnType<typeof alertContent>) {
