@@ -162,18 +162,19 @@ export async function syncCalendar(env: CalendarConfig) {
       if (!settings?.calendar_configured_at) {
         const path="users/me/calendarList/"+encodeURIComponent(connection.calendar_id);
         const current=await google(tokens.access_token,path);
-        if (!current.ok) throw new Error("Calendar preferences unavailable");
+        if (!current.ok) throw new Error(`Google Calendar: no se pudieron leer los avisos (HTTP ${current.status}).`);
         const entry=await current.json() as {notificationSettings?:{notifications?:Array<{type:string;method:string}>}};
         const notifications=entry.notificationSettings?.notifications ?? [];
         for (const type of ["eventCreation","eventChange","eventCancellation"]) {
           if (!notifications.some(n=>n.type===type && n.method==="email")) notifications.push({type,method:"email"});
         }
         const updated=await google(tokens.access_token,path,"PATCH",{notificationSettings:{notifications}});
-        if (!updated.ok) throw new Error("Calendar preferences unavailable");
+        if (!updated.ok) throw new Error(`Google Calendar: no se pudieron guardar los avisos (HTTP ${updated.status}).`);
         await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{calendar_configured_at:new Date().toISOString(),calendar_error:null});
       }
-    } catch {
-      await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{calendar_error:"No se pudieron configurar los avisos de Google. La sincronización de citas continúa."}).catch(()=>{});
+    } catch (error) {
+      const detail=error instanceof Error && /^Google Calendar: no se pudieron (leer|guardar) los avisos \(HTTP \d{3}\)\.$/.test(error.message) ? error.message : "No se pudieron configurar los avisos de Google.";
+      await db(env,"owner_alert_settings?id=eq.nurme","PATCH",{calendar_error:detail+" La sincronización de citas continúa."}).catch(()=>{});
     }
     const calendarMetadata = await google(tokens.access_token,"calendars/"+encodeURIComponent(connection.calendar_id),"PATCH",{
       summary:"Citas MB Nurme Beauty",description:"Citas de Nurme. Gestionadas desde el panel de MB Nurme Beauty.",
