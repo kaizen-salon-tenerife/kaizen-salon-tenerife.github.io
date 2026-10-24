@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { canEditService } from "@/lib/service-access";
 import AppointmentForm from "./appointment-form";
 import { refreshStaffSession, staffFetch } from "@/lib/staff-fetch";
+import { appointmentsForConfirmation } from "@/lib/whatsapp-confirmations";
 import AgendaWorkspace, {
   type AgendaProfessional,
   type AppointmentRow,
@@ -304,12 +305,7 @@ export default function PanelClient({
       appointment.status === "confirmed" &&
       appointment.startsAt.slice(0, 10) === tomorrowKey,
   );
-  const confirmationAppointments = initialAppointments.filter(
-    (appointment) =>
-      appointment.status === "confirmed" &&
-      Boolean(appointment.bookingRequestId) &&
-      appointment.startsAt.slice(0, 10) >= todayPaymentKey,
-  );
+  const confirmationAppointments = appointmentsForConfirmation(initialAppointments, todayPaymentKey);
   const waitlistAppointments = initialAppointments.filter(
     (appointment) =>
       appointment.status === "confirmed" &&
@@ -979,7 +975,7 @@ export default function PanelClient({
               </button>
               <button className={whatsappFilter === "confirmations" ? "active" : ""} type="button" onClick={() => setWhatsappFilter("confirmations")}>
                 <span className="whatsapp-summary-icon">✓</span>
-                <small>Confirmaciones web</small>
+                <small>Confirmaciones de citas</small>
                 <strong>{confirmationAppointments.length}</strong>
                 <b>{confirmationPendingCount ? `${confirmationPendingCount} por enviar` : "Todo al día"}</b>
               </button>
@@ -1023,7 +1019,7 @@ export default function PanelClient({
               {whatsappFilter === "confirmations" && (
                 <>
                   <header className="whatsapp-list-heading">
-                    <div><small>Reservas confirmadas en la web</small><h3>Confirmar por WhatsApp</h3></div>
+                    <div><small>Citas confirmadas · Web y panel</small><h3>Confirmar por WhatsApp</h3></div>
                     <p>Un mensaje de bienvenida da tranquilidad a la clienta y deja por escrito la fecha de su cita.</p>
                   </header>
                   <div className="whatsapp-message-list">
@@ -1031,7 +1027,7 @@ export default function PanelClient({
                       const message = confirmationWhatsappMessage(appointment);
                       return (
                         <article className="whatsapp-message-row" key={appointment.id}>
-                          <WhatsappClientSummary appointment={appointment} label="Nueva reserva web" />
+                          <WhatsappClientSummary appointment={appointment} label={appointment.bookingRequestId ? "Reserva web" : "Cita creada en el panel"} />
                           <div className="whatsapp-message-preview"><small>Mensaje preparado</small><p>{message}</p></div>
                           <WhatsappMessageActions
                             appointment={appointment}
@@ -1043,7 +1039,7 @@ export default function PanelClient({
                         </article>
                       );
                     })}
-                    {!confirmationAppointments.length && <WhatsappEmpty title="No hay reservas web próximas" text="Las nuevas citas confirmadas desde la página aparecerán aquí." />}
+                    {!confirmationAppointments.length && <WhatsappEmpty title="No hay citas próximas por confirmar" text="Las citas confirmadas desde la web o creadas en el panel aparecerán aquí." />}
                   </div>
                 </>
               )}
