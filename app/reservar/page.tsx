@@ -609,6 +609,8 @@ export default function BookingPage() {
                     <span>Referencia</span>
                     <strong>{bookingReference}</strong>
                   </div>
+                  <p>Guarda este código. Con él y el teléfono usado al reservar podrás cambiar o cancelar tu cita hasta 6 horas antes.</p>
+                  <Link className="mb-text-link" href="/mi-cita">Gestionar mi cita →</Link>
                 </div>
               ) : (
                 <>

@@ -2757,6 +2757,7 @@ footer { padding: 26px 0; background: #25221F; color: white; }
   .treatment-record-photos img { height: 260px; }
 }
 
+.mb-manage-home{display:inline-flex;margin-top:16px;margin-bottom:14px;padding:12px 16px;border:1px solid currentColor;border-radius:8px;font-weight:600}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
