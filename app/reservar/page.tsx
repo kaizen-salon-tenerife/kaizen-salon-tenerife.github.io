@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import BookingDateCalendar from "../components/booking-date-calendar";
+import { whatsappLink } from "@/lib/whatsapp-link";
 import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_SERVICE_DEFINITIONS,
@@ -223,7 +224,7 @@ export default function BookingPage() {
       .filter(Boolean)
       .join("\n");
 
-    return "https://wa.me/34652430072?text=" + encodeURIComponent(message);
+    return whatsappLink("34652430072",message);
   }, [bookingReference, day, name, notes, phone, selectedProfessionalName, selectedScheduleText, selectedSlot, selectedText, waitlist]);
 
   function toggleService(serviceId: string) {

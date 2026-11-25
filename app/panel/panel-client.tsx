@@ -7,6 +7,7 @@ import { canEditService } from "@/lib/service-access";
 import AppointmentForm from "./appointment-form";
 import { refreshStaffSession, staffFetch } from "@/lib/staff-fetch";
 import { appointmentsForConfirmation } from "@/lib/whatsapp-confirmations";
+import { whatsappLink } from "@/lib/whatsapp-link";
 import AgendaWorkspace, {
   type AgendaProfessional,
   type AppointmentRow,
@@ -1865,7 +1866,7 @@ function WhatsappMessageActions({
       {ready ? (
         <a
           className="whatsapp-open-button"
-          href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`}
+          href={whatsappLink(phone,message)}
           target="_blank"
           rel="noreferrer"
           onClick={() => onAction("opened")}
