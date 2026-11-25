@@ -53,7 +53,7 @@ test('email delivery sends once per claimed job and stores acceptance',async()=>
  };
  try{await deliverOwnerAlerts(env);assert.equal(sends,1);assert.equal(writes.at(-1).status,'sent');}finally{globalThis.fetch=original;}
 });
-test('email network ambiguity is flagged, and cancelled appointments are never sent',async()=>{
+test('email network ambiguity is flagged, and obsolete confirmation alerts are skipped',async()=>{
  for(const cancelled of [false,true]){
   const original=globalThis.fetch,writes=[];let sends=0;const refresh=await seal('refresh',env);
   globalThis.fetch=async(url,init={})=>{
@@ -67,6 +67,30 @@ test('email network ambiguity is flagged, and cancelled appointments are never s
   };
   try{await deliverOwnerAlerts(env);assert.equal(sends,cancelled?0:1);assert.equal(writes.at(-1).status,cancelled?'skipped':'uncertain');}finally{globalThis.fetch=original;}
  }
+});
+
+test('cancellation email uses the saved cancelled slot even if the appointment was edited later',async()=>{
+ const original=globalThis.fetch,writes=[];let sends=0;const refresh=await seal('refresh',env);
+ const snapshot={...a,status:'cancelled',client:{name:'Ana <test>'}};
+ globalThis.fetch=async(url,init={})=>{
+  const u=new URL(url);
+  if(u.hostname==='oauth2.googleapis.com')return Response.json({access_token:'token'});
+  if(u.hostname==='gmail.googleapis.com'){
+   sends++;
+   const raw=Buffer.from(JSON.parse(init.body).raw,'base64url').toString();
+   const parts=[...raw.matchAll(/Content-Transfer-Encoding: base64\r\n\r\n([\s\S]*?)\r\n--/g)].map(m=>Buffer.from(m[1],'base64').toString());
+   assert.match(parts[0],/Clienta: Ana <test>/);assert.match(parts[0],/Estado: Cancelada/);
+   assert.match(parts[0],/09:15/);assert.ok(!parts[0].includes('Nueva identidad'));
+   assert.match(parts[1],/Cita cancelada/);assert.match(parts[1],/Ana &lt;test&gt;/);
+   assert.ok(!parts[1].includes('Nueva cita confirmada'));assert.match(parts[1],/horario ha quedado libre/);
+   return Response.json({id:'sent'});
+  }
+  if(u.pathname.endsWith('/claim_owner_alert_deliveries'))return Response.json([{id:'cancel-job',alert_id:'alert',channel:'email',target:'nurme',attempts:1,claim_id:'claim'}]);
+  if(u.pathname.endsWith('/owner_alert_settings'))return Response.json([{email_refresh_token:refresh,email_enabled:true}]);
+  if(u.pathname.endsWith('/owner_booking_alerts'))return Response.json([{kind:'cancelled',snapshot,appointment:{...a,client:{name:'Nueva identidad'}}}]);
+  writes.push(JSON.parse(init.body));return Response.json([]);
+ };
+ try{await deliverOwnerAlerts(env);assert.equal(sends,1);assert.equal(writes.at(-1).status,'sent');}finally{globalThis.fetch=original;}
 });
 
 test('push delivery encrypts for the device and retires an expired subscription',async()=>{
