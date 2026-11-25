@@ -24,7 +24,10 @@ const worker = {
     if (url.pathname === "/api/manage-booking") {
       const response=await customerBookingRoute(request,env);
       // Changes commit before synchronization; the existing cron retries failures.
-      if (response.ok && response.headers.get("X-MB-Booking-Changed")==="1") ctx.waitUntil(syncCalendar(env).catch(()=>{ console.warn("Google Calendar: customer change synchronization pending"); }));
+      if (response.ok && response.headers.get("X-MB-Booking-Changed")==="1") {
+        ctx.waitUntil(syncCalendar(env).catch(()=>{ console.warn("Google Calendar: customer change synchronization pending"); }));
+        ctx.waitUntil(deliverOwnerAlerts(env).catch(()=>{ console.warn("Owner alerts: customer change delivery pending"); }));
+      }
       return response;
     }
     if (url.pathname.startsWith("/api/owner-alerts/")) {
