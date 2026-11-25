@@ -8,6 +8,13 @@ type Service={id:string;category:string;name:string;durationMinutes:number;price
 type Slot={time:string;startsAt:string;endsAt:string};
 const statusLabels:Record<string,string>={confirmed:"Confirmada",pending:"Pendiente",cancelled:"Cancelada",completed:"Realizada",no_show:"No acudió"};
 function dateLabel(value:string){return new Intl.DateTimeFormat("es-ES",{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(new Date(value.slice(0,10)+"T12:00:00Z"));}
+function bookingWhatsAppUrl(booking:Booking|null){
+  const cancelled=booking&&booking.appointments.length>0&&booking.appointments.every(a=>a.status==="cancelled");
+  const text=booking
+    ? `Hola Nurme 😊 Soy ${booking.name}. ${cancelled?"He cancelado mi cita desde la web y quería avisarte.":"Te escribo sobre mi cita."}\n\n🔖 Referencia: ${booking.reference}\n${booking.appointments.map(a=>`📅 ${dateLabel(a.startsAt)}\n🕘 ${a.startsAt.slice(11,16)} h (Canarias)\n💅 ${a.service}`).join("\n\n")}\n\n${cancelled?"¡Gracias por tu comprensión! 💛":"¿Me ayudas, por favor? ¡Gracias! 💛"}`
+    : "Hola Nurme 😊 Quería consultarte sobre mi cita en MB Nurme Beauty. ¿Me ayudas, por favor?";
+  return `https://wa.me/34652430072?text=${encodeURIComponent(text)}`;
+}
 async function api(body:unknown,signal?:AbortSignal){const r=await fetch("/api/manage-booking",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",signal});const v=await r.json();if(!r.ok)throw new Error(v.error||"No se pudo completar la operación.");return v;}
 export default function ManageBooking(){
   const [reference,setReference]=useState(""),[phone,setPhone]=useState(""),[token,setToken]=useState("");
@@ -40,6 +47,7 @@ export default function ManageBooking(){
     catch(e){setError(e instanceof Error?e.message:"No se pudo guardar.");}finally{setBusy(false);}
   }
   function reset(){setBooking(null);setToken("");setReference("");setPhone("");setEditing(false);setCancelling(false);setError("");setNotice("");}
+  const whatsappUrl=bookingWhatsAppUrl(booking);
   return <>
     {error&&<p className="customer-booking-error" role="alert">{error}</p>}{notice&&<p className="customer-booking-notice" role="status">{notice}</p>}
     {!booking?<form className="customer-booking-card" onSubmit={lookup}><h2>Consulta tu reserva</h2><label className="field"><span>Código de reserva</span><input required autoComplete="off" value={reference} onChange={e=>setReference(e.target.value.toUpperCase())} placeholder="Ej. KZ-ABC123" maxLength={12} autoCapitalize="characters" spellCheck={false}/></label><label className="field"><span>Teléfono usado al reservar</span><input required type="tel" autoComplete="tel" value={phone} onChange={e=>setPhone(e.target.value)} maxLength={24} placeholder="Incluye el prefijo si lo usaste"/></label><p>El código aparece en la confirmación al terminar la reserva. El teléfono nos ayuda a proteger tu cita.</p><button className="mb-button" disabled={busy}>{busy?"Consultando…":"Ver mi cita"}</button></form>:<>
@@ -47,7 +55,7 @@ export default function ManageBooking(){
       <p>Los cambios y cancelaciones online se permiten hasta 6 horas antes. Para gestiones fuera de ese plazo, contacta con Nurme.</p>
       {!editing&&!cancelling&&<div className="customer-booking-actions">{booking.canModify&&<button className="mb-button" onClick={()=>{setDate("");setSelected([]);setChangeServices(false);setEditing(true);setError("");setNotice("");}}>Modificar cita</button>}{booking.canCancel&&<button className="customer-booking-cancel" onClick={()=>{setCancelling(true);setError("");setNotice("");}}>Cancelar cita</button>}</div>}
       {!booking.canCancel&&booking.appointments.some(a=>["pending","confirmed"].includes(a.status))&&<p role="status">Esta cita requiere gestión directa con Nurme.</p>}
-      <a className="mb-text-link" href="https://wa.me/34652430072" target="_blank" rel="noopener noreferrer">Contactar con Nurme por WhatsApp ↗</a></section>
+      <a className="mb-text-link" href={whatsappUrl} target="_blank" rel="noopener noreferrer">Contactar con Nurme por WhatsApp ↗</a></section>
       {cancelling&&<section className="customer-booking-card customer-booking-confirm" role="alertdialog" aria-modal="false" aria-labelledby="cancel-title"><h2 id="cancel-title">¿Quieres cancelar tu cita?</h2><p>Se cancelarán todos los servicios de esta reserva. La cita se retirará de la agenda y el hueco quedará disponible para otra clienta.</p><div className="customer-booking-actions"><button className="customer-booking-cancel" disabled={busy} onClick={()=>void save("cancel")}>{busy?"Cancelando…":"Sí, cancelar mi cita"}</button><button className="mb-text-link" disabled={busy} onClick={()=>setCancelling(false)}>Conservar mi cita</button></div></section>}
       {editing&&<section className="customer-booking-card"><h2>Elige tu nueva cita</h2><p>Puedes mantener tus servicios o elegir otros del catálogo. Después selecciona fecha y hora.</p>{catalogError&&<p role="alert">{catalogError}</p>}<label className="customer-booking-check"><input type="checkbox" checked={changeServices} disabled={!services.length||busy} onChange={e=>setChangeServices(e.target.checked)}/> Cambiar también los servicios</label>
       {changeServices&&<fieldset className="customer-booking-services"><legend>Servicios de tu nueva cita (máximo 12)</legend>{services.map(s=><label className="customer-booking-check" key={s.id}><input type="checkbox" checked={selected.includes(s.id)} disabled={busy||(!selected.includes(s.id)&&selected.length>=12)} onChange={()=>setSelected(old=>old.includes(s.id)?old.filter(id=>id!==s.id):[...old,s.id])}/><span><strong>{s.name}</strong><small>{s.priceLabel} · {s.durationMinutes} min</small></span></label>)}</fieldset>}
@@ -55,6 +63,6 @@ export default function ManageBooking(){
       {chosen&&<p className="customer-booking-notice">Nueva fecha: {dateLabel(chosen)} a las {chosen.slice(11,16)} h (Canarias).</p>}<div className="customer-booking-actions"><button className="mb-button" disabled={busy||loadingSlots||!chosen} onClick={()=>void save("reschedule")}>{busy?"Guardando…":"Guardar cambios"}</button><button className="mb-text-link" disabled={busy} onClick={()=>{setEditing(false);setError("");}}>Volver sin cambiar</button></div></section>}
       <button className="mb-text-link" disabled={busy} onClick={reset}>Consultar otra reserva / Salir</button>
     </>}
-    <p className="customer-booking-help">¿No tienes el código o reservaste directamente con Nurme? <a href="https://wa.me/34652430072" target="_blank" rel="noopener noreferrer">Escríbenos por WhatsApp</a>.</p>
+    <p className="customer-booking-help">¿No tienes el código o reservaste directamente con Nurme? <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">Escríbenos por WhatsApp</a>.</p>
   </>;
 }
