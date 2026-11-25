@@ -34,3 +34,10 @@ Validación: tests de HTTP/tickets/límites y tests SQL transaccionales con roll
 (`tests/customer-booking.sql`) para identidad, permisos, horarios, bloqueo,
 reprogramación, revisión obsoleta, límite de antelación y cancelación idempotente.
 Las pruebas SQL no conservan clientas o citas sintéticas ni envían correos.
+
+Verificación publicada (25/11/2026): consulta con teléfono erróneo rechazada;
+consulta válida, cambio a dos servicios (45 minutos), cambio de hora,
+confirmación reversible y cancelación completadas mediante la web, también
+a tamaño de iPhone. Calendar procesó la cancelación sin errores. La clienta
+y la reserva sintéticas se retiraron después; no se generaron avisos por email.
+Se comprobaron expresamente los permisos del rol de servidor en producción.

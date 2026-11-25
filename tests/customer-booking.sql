@@ -44,3 +44,13 @@ begin
   result:=public.manage_customer_booking('KZ-QATEST','000000615','cancel',null,null,null,original->>'version');if result ? 'error' then raise exception 'Cancellation retry not idempotent'; end if;
 end $$;
 rollback;
+
+-- Exercise the actual server role as well: fixtures above deliberately run as
+-- the migration owner, but production invokes these RPCs as service_role.
+begin;
+set local role service_role;
+do $$ begin
+  if public.manage_customer_booking('KZ-QATEST','000000999')->>'error'<>'not_found' then raise exception 'Service role lookup failed'; end if;
+  if not public.consume_booking_management_attempt(repeat('c',64),12) then raise exception 'Service role rate limit failed'; end if;
+end $$;
+rollback;
