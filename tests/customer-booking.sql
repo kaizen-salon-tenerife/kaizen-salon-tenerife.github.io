@@ -1,0 +1,46 @@
+-- All fixtures, alerts and mutations are rolled back. No real client is changed.
+begin;
+do $$
+declare cid uuid:=gen_random_uuid(); bid uuid:=gen_random_uuid(); aid uuid:=gen_random_uuid(); other_client uuid:=gen_random_uuid(); other_appointment uuid:=gen_random_uuid();
+  result jsonb; original jsonb; day date:=(date_trunc('week',timezone('Atlantic/Canary',now())+interval '1 year'))::date;
+  initial_time timestamp; next_time timestamp; key text:=repeat('a',64);
+begin
+  if has_function_privilege('anon','public.manage_customer_booking(text,text,text,date,timestamp without time zone,text[],text)','execute') or has_function_privilege('authenticated','public.manage_customer_booking(text,text,text,date,timestamp without time zone,text[],text)','execute') then raise exception 'Management RPC must be service-only'; end if;
+  if not has_function_privilege('service_role','public.manage_customer_booking(text,text,text,date,timestamp without time zone,text[],text)','execute') then raise exception 'Server access missing'; end if;
+  for i in 1..12 loop if not public.consume_booking_management_attempt(key,12) then raise exception 'Rate limit too early'; end if; end loop;
+  if public.consume_booking_management_attempt(key,12) then raise exception 'Rate limit did not block'; end if;
+  insert into public.clients(id,name,phone,primary_professional_key,is_test) values(cid,'TEST CUSTOMER MANAGEMENT','000000615','nurme',true),(other_client,'OTHER TEST IDENTITY','000000616','nurme',true);
+  insert into public.booking_requests(id,client_id,reference,service_ids,service_summary,privacy_accepted_at,privacy_version) values(bid,cid,'KZ-QATEST',array['pestanas-retiro'],'Retiro de pestañas',now(),'test');
+  select slot into initial_time from generate_series(day+time '09:00',day+time '18:45',interval '15 minutes') slot where not exists(select 1 from public.appointments where professional_key='nurme' and status in ('pending','confirmed') and starts_at<slot+interval '15 minutes' and ends_at>slot) limit 1;
+  if initial_time is null then raise exception 'No fixture slot'; end if;
+  insert into public.appointments(id,client_id,booking_request_id,professional_key,service_name,starts_at,ends_at,status) values(aid,cid,bid,'nurme','Retiro de pestañas',initial_time,initial_time+interval '15 minutes','confirmed');
+  result:=public.manage_customer_booking('KZ-QATEST','000000999');if result->>'error'<>'not_found' then raise exception 'Wrong phone disclosed data'; end if;
+  original:=public.manage_customer_booking('kz-qatest','000 000 615');
+  if original->>'name'<>'TEST CUSTOMER MANAGEMENT' or not (original->>'canCancel')::boolean or original::text like '%000000615%' or original::text like '%notes%' then raise exception 'Unsafe lookup'; end if;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','slots',day);
+  if not exists(select 1 from jsonb_array_elements(result->'slots') s where (s->>'startsAt')::timestamp=initial_time) then raise exception 'Own slot should be available'; end if;
+  next_time:=((result->'slots'->1)->>'startsAt')::timestamp;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,next_time,array['pestanas-retiro','pestanas-retiro'],original->>'version');if result->>'error'<>'services' then raise exception 'Duplicate services accepted'; end if;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,day+interval '5 days'+time '09:00',null,original->>'version');if result->>'error'<>'hours' then raise exception 'Saturday accepted'; end if;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,day+time '19:00',null,original->>'version');if result->>'error'<>'hours' then raise exception 'Outside hours accepted'; end if;
+  insert into public.schedule_blocks(professional_key,starts_at,ends_at,title,created_by) select 'nurme',next_time,next_time+interval '15 minutes','TEST customer management',id from public.staff_profiles where is_active limit 1;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,next_time,null,original->>'version');if result->>'error'<>'occupied' then raise exception 'Blocked slot accepted'; end if;
+  delete from public.schedule_blocks where title='TEST customer management' and starts_at=next_time;
+  insert into public.appointments(id,client_id,professional_key,service_name,starts_at,ends_at,status) values(other_appointment,other_client,'nurme','TEST occupied',next_time,next_time+interval '15 minutes','confirmed');
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,next_time,null,original->>'version');if result->>'error'<>'occupied' then raise exception 'Occupied slot accepted'; end if;
+  delete from public.appointments where id=other_appointment;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','reschedule',null,next_time,array['pestanas-retiro','cejas-hilo'],original->>'version');if result ? 'error' then raise exception 'Reschedule failed: %',result; end if;
+  if (select extract(epoch from (ends_at-starts_at))/60 from public.appointments where id=aid)<>(select sum(duration_minutes) from public.services where id in ('pestanas-retiro','cejas-hilo')) then raise exception 'Multiple service durations not added'; end if;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','cancel',null,null,null,original->>'version');if result->>'error'<>'changed' then raise exception 'Stale form accepted'; end if;
+  update public.appointments set starts_at=timezone('Atlantic/Canary',now())-interval '10 years',ends_at=timezone('Atlantic/Canary',now())-interval '10 years'+interval '15 minutes' where id=aid;
+  original:=public.manage_customer_booking('KZ-QATEST','000000615');
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','cancel',null,null,null,original->>'version');if result->>'error'<>'cutoff' then raise exception 'Six hour limit bypassed'; end if;
+  update public.appointments set starts_at=next_time,ends_at=next_time+interval '15 minutes',client_id=other_client where id=aid;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615');if result->>'error'<>'not_found' then raise exception 'Reassigned client disclosed'; end if;
+  update public.appointments set client_id=cid where id=aid;
+  original:=public.manage_customer_booking('KZ-QATEST','000000615');
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','cancel',null,null,null,original->>'version');
+  if result->'appointments'->0->>'status'<>'cancelled' or (result->>'canCancel')::boolean then raise exception 'Cancellation failed'; end if;
+  result:=public.manage_customer_booking('KZ-QATEST','000000615','cancel',null,null,null,original->>'version');if result ? 'error' then raise exception 'Cancellation retry not idempotent'; end if;
+end $$;
+rollback;

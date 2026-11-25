@@ -36,6 +36,12 @@ export default function PrivacyPage() {
         </section>
 
         <section>
+          <h2>Gestionar una reserva online</h2>
+          <p>Para consultar, cambiar o cancelar una cita, comprobamos el código de reserva y el teléfono usado al reservar. La consulta muestra únicamente los datos de esa cita, sin fichas ni notas internas. No compartas tu código y teléfono con otras personas.</p>
+          <p>La sesión de gestión dura 30 minutos y no se guarda en el almacenamiento del navegador. Limitamos los intentos mediante un identificador derivado de la dirección de conexión, sin guardarla en claro, para proteger las reservas frente a consultas automáticas.</p>
+        </section>
+
+        <section>
           <h2>Fotografías</h2>
           <p>
             Las fotografías de antes y después son opcionales. Se guardan de forma
